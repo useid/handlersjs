@@ -4,3 +4,6 @@ export * from './handlers/handler';
 export * from './handlers/passthrough-handler';
 export * from './handlers/sequence-handler';
 export * from './handlers/waterfall-handler';
+export * from './logging/console-logger';
+export * from './logging/logger-level';
+export * from './logging/logger';

@@ -1,5 +1,5 @@
 {
-  "name": "@digita-ai/handlersjs-core",
+  "name": "@digita-ai/handlersjs-http",
   "version": "0.0.3",
   "description": "",
   "main": "./dist/public-api.js",
@@ -22,7 +22,7 @@
   "repository": {
     "type": "git",
     "url": "ssh://git@github.com/digita-ai/handlersjs.git",
-    "directory": "packages/handlersjs-core"
+    "directory": "packages/handlersjs-http"
   },
   "author": "Wouter Janssens",
   "license": "ISC",
@@ -37,16 +37,17 @@
     "typescript": "3.8.3"
   },
   "dependencies": {
+    "@digita-ai/handlersjs-core": "0.0.3",
     "rxjs": "6.3.3"
   },
-  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core",
+  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http",
   "lsd:components": "dist/components/components.jsonld",
   "lsd:contexts": {
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/context.jsonld": "dist/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/context.jsonld": "dist/components/context.jsonld"
   },
   "lsd:importPaths": {
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/": "dist/components/",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/config/": "config/",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/dist/": "dist/"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/": "dist/components/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/config/": "config/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/dist/": "dist/"
   }
 }

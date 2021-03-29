@@ -8,6 +8,10 @@
       "name": "core",
       "path": "packages/handlersjs-core"
     },
+    {
+      "name": "http",
+      "path": "packages/handlersjs-http"
+    },
   ],
   "settings": {
     "eslint.format.enable": true,
