@@ -92,3 +92,7 @@ jobs:
       - run: npm publish packages/handlersjs-core
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - run: npm publish packages/handlersjs-http
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
