@@ -37,7 +37,7 @@
     "typescript": "3.8.3"
   },
   "dependencies": {
-    "@handlersjs/core": "0.0.3",
+    "@digita-ai/handlersjs-core": "0.0.3",
     "rxjs": "6.3.3"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http",

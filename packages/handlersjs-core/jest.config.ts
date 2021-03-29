@@ -10,7 +10,7 @@ const config: Config.InitialOptions = {
   globals: {
     'ts-jest': {
       babelConfig: true,
-      tsconfig: 'tsconfig.json',
+      tsconfig: 'tsconfig.spec.json',
     },
   },
 };

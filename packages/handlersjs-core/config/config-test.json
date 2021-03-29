@@ -3,5 +3,12 @@
     "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/context.jsonld"
   ],
   "import": [],
-  "@graph": []
+  "@graph": [
+    {
+      "@id": "urn:handlersjs-core:test:ConsoleLogger",
+      "@type": "ConsoleLogger",
+      "DGTLoggerService:_minimumLevel": 1,
+      "DGTLoggerService:_minimumLevelPrintData": 1
+    }
+  ]
 }
