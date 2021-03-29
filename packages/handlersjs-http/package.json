@@ -1,0 +1,53 @@
+{
+  "name": "@digita-ai/handlersjs-http",
+  "version": "0.0.3",
+  "description": "",
+  "main": "./dist/public-api.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    ".componentsignore",
+    "dist",
+    "config"
+  ],
+  "types": "./dist/public-api.d.ts",
+  "scripts": {
+    "test": "jest --silent --passWithNoTests",
+    "test:ci": "jest --runInBand --passWithNoTests",
+    "build": "rimraf ./dist && npm run build:ts && npm run build:components",
+    "build:ts": "tsc",
+    "build:components": "componentsjs-generator -s lib -c dist/components -i .componentsignore"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/digita-ai/handlersjs.git",
+    "directory": "packages/handlersjs-http"
+  },
+  "author": "Wouter Janssens",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "24.0.11",
+    "componentsjs": "4.0.5",
+    "componentsjs-generator": "2.1.0",
+    "jest": "24.7.1",
+    "rimraf": "^2.7.1",
+    "ts-jest": "24.0.2",
+    "ts-node": "8.0.2 ",
+    "typescript": "3.8.3"
+  },
+  "dependencies": {
+    "@handlersjs/core": "0.0.3",
+    "rxjs": "6.3.3"
+  },
+  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http",
+  "lsd:components": "dist/components/components.jsonld",
+  "lsd:contexts": {
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/context.jsonld": "dist/components/context.jsonld"
+  },
+  "lsd:importPaths": {
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/": "dist/components/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/config/": "config/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/dist/": "dist/"
+  }
+}
