@@ -6,7 +6,7 @@ describe('ConsoleLogger', () => {
   let service: ConsoleLogger;
 
   beforeEach(async () => {
-    const mainModulePath = path.join(__dirname, '../../../');
+    const mainModulePath = path.join(__dirname, '../../');
     const configPath = path.join(mainModulePath, 'config/config-test.json');
 
     const manager = await ComponentsManager.build({ mainModulePath });
