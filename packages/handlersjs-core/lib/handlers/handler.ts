@@ -2,8 +2,8 @@ import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 export abstract class Handler<T, S> {
-  public abstract canHandle(input: T, intermediateOutput: S): Observable<boolean>;
-  public abstract handle(input: T, intermediateOutput: S): Observable<S>;
+  public abstract canHandle(input: T, intermediateOutput?: S): Observable<boolean>;
+  public abstract handle(input: T, intermediateOutput?: S): Observable<S>;
 
   safeHandle(input: T, intermediateOutput: S): Observable<S> {
     return of({ input, intermediateOutput }).pipe(
