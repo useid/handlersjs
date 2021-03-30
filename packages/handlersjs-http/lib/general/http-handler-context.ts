@@ -3,5 +3,5 @@ import { HttpHandlerRoute } from './http-handler-route';
 
 export interface HttpHandlerContext {
   request: HttpHandlerRequest;
-  route: HttpHandlerRoute;
+  route?: HttpHandlerRoute;
 }
