@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.6](https://github.com/digita-ai/handlersjs/compare/0.0.5...0.0.6) (2021-03-31)
+
+
+### Bug Fixes
+
+* optional intermediate output in subclasses ([0792b56](https://github.com/digita-ai/handlersjs/commit/0792b56fd6e8297a173275dc7863eedf1afc392e))
+* optional intermediate output in subclasses ([c394579](https://github.com/digita-ai/handlersjs/commit/c394579602c5725716a02226eeebf39b511cc530))
+
+
+### Features
+
+* url in request ([84a7239](https://github.com/digita-ai/handlersjs/commit/84a7239b980c631ef60511c40fd8ba0858bc433e))
+
+
+
+
+
 ## [0.0.5](https://github.com/digita-ai/handlersjs/compare/0.0.4...0.0.5) (2021-03-31)
 
 
