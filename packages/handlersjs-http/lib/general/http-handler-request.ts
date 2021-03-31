@@ -1,7 +1,8 @@
 export interface HttpHandlerRequest {
-  headers: { [key: string]: string };
+  path: string;
   method: string;
-  body?: any;
   parameters?: { [key: string]: string };
   query?: { [key: string]: string };
+  headers: { [key: string]: string };
+  body?: any;
 }
