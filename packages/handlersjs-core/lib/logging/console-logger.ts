@@ -1,49 +1,23 @@
 /* eslint-disable no-console -- this is a logger service */
 
 import { HandlerArgumentError } from '../errors/handler-argument-error';
+import { Logger } from './logger';
 import { LoggerLevel } from './logger-level';
 
-export class ConsoleLogger {
-  constructor(private readonly minimumLevel: LoggerLevel, private readonly minimumLevelPrintData: LoggerLevel) {}
+/**
+ * JavaScript console-based logger service
+ */
+export class ConsoleLogger extends Logger {
 
-  info(typeName: string, message: string, data?: any) {
-    if (!typeName) {
-      throw new HandlerArgumentError('Typename should be set', typeName);
-    }
-
-    if (!message) {
-      throw new HandlerArgumentError('Message should be set', message);
-    }
-
-    this.log(LoggerLevel.INFO, typeName, message, data);
-  }
-
-  debug(typeName: string, message: string, data?: any) {
-    if (!typeName) {
-      throw new HandlerArgumentError('Typename should be set', typeName);
-    }
-
-    if (!message) {
-      throw new HandlerArgumentError('Message should be set', message);
-    }
-
-    this.log(LoggerLevel.DEBUG, typeName, message, data);
-  }
-
-  error(typeName: string, message: string, error?: Error | any, caught?: any) {
-    if (!typeName) {
-      throw new HandlerArgumentError('Typename should be set', typeName);
-    }
-
-    if (!message) {
-      throw new HandlerArgumentError('Message should be set', message);
-    }
-
-    this.log(LoggerLevel.ERROR, typeName, message, { error, caught });
+  constructor(
+    protected readonly minimumLevel: LoggerLevel,
+    protected readonly minimumLevelPrintData: LoggerLevel,
+  ) {
+    super(minimumLevel, minimumLevelPrintData);
   }
 
   log(level: LoggerLevel, typeName: string, message: string, data?: any) {
-    if (!level) {
+    if (level === null || level === undefined) {
       throw new HandlerArgumentError('Level should be set', typeName);
     }
 
@@ -55,21 +29,33 @@ export class ConsoleLogger {
       throw new HandlerArgumentError('Message should be set', message);
     }
 
-    const displayDate: string = new Date().toLocaleTimeString();
+    const timestamp: string = new Date().toISOString();
 
-    if (level >= this.minimumLevel) {
-      if (level >= LoggerLevel.WARN) {
-        if (data && level >= this.minimumLevelPrintData) {
-          console.error('[' + displayDate + ' ' + typeName + '] ' + message, '\n', data);
-        } else {
-          console.error('[' + displayDate + ' ' + typeName + '] ' + message);
-        }
-      } else {
-        if (data && level >= this.minimumLevelPrintData) {
-          console.log('[' + displayDate + ' ' + typeName + '] ' + message, '\n', data);
-        } else {
-          console.log('[' + displayDate + ' ' + typeName + '] ' + message);
-        }
+    if (level <= this.minimumLevel) {
+      const logMessage = `[${timestamp} ${typeName}] ${message}`;
+      const logData = level <= this.minimumLevelPrintData ? '' : data||'';
+      const log = [ logMessage, logData ];
+      switch (level) {
+
+      case LoggerLevel.info:
+        console.info(...log);
+        break;
+
+      case LoggerLevel.debug:
+        console.debug(...log);
+        break;
+
+      case LoggerLevel.warn:
+        console.warn(...log);
+        break;
+
+      case LoggerLevel.error:
+        console.error(...log);
+        break;
+
+      default:
+        console.log(...log);
+        break;
       }
     }
   }
