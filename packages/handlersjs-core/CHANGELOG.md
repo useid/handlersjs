@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.5](https://github.com/digita-ai/handlersjs/compare/0.0.4...0.0.5) (2021-03-31)
+
+
+### Features
+
+* make handler's intermediate output param & context's router field optional ([e59ccd5](https://github.com/digita-ai/handlersjs/commit/e59ccd585502a22588e0c28f57c171102626a392))
+* set void as default handler types ([b1c7987](https://github.com/digita-ai/handlersjs/commit/b1c79872b219307cab333286c25ba8976897a197))
+
+
+
+
+
 ## [0.0.4](https://github.com/digita-ai/handlersjs/compare/0.0.3...0.0.4) (2021-03-29)
 
 
