@@ -18,15 +18,15 @@ export class ConsoleLogger extends Logger {
 
   log(level: LoggerLevel, typeName: string, message: string, data?: any) {
     if (level === null || level === undefined) {
-      throw new HandlerArgumentError('Level should be set', typeName);
+      throw new HandlerArgumentError('level should be set', typeName);
     }
 
     if (!typeName) {
-      throw new HandlerArgumentError('Typename should be set', typeName);
+      throw new HandlerArgumentError('typeName should be set', typeName);
     }
 
     if (!message) {
-      throw new HandlerArgumentError('Message should be set', message);
+      throw new HandlerArgumentError('message should be set', message);
     }
 
     const timestamp: string = new Date().toISOString();

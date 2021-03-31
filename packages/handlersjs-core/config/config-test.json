@@ -8,7 +8,7 @@
       "@id": "urn:handlersjs-core:test:ConsoleLogger",
       "@type": "ConsoleLogger",
       "ConsoleLogger:_minimumLevel": 6,
-      "ConsoleLogger:_minimumLevelPrintData": 4
+      "ConsoleLogger:_minimumLevelPrintData": 6
     }
   ]
 }

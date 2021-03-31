@@ -47,19 +47,18 @@ describe('ConsoleLogger', () => {
       }
     }
 
-    it('should throw error when level is null or undefined', () => {
-      expect(() => service.log(null, 'TestService', 'test message', 'data'))
-        .toThrowError('Level should be set');
-    });
-
-    it('should throw error when typeName is null or undefined', () => {
-      expect(() => service.log(LoggerLevel.info, null, 'test message', 'data'))
-        .toThrowError('Typename should be set');
-    });
-
-    it('should throw error when message is null or undefined', () => {
-      expect(() => service.log(LoggerLevel.info, 'TestService', null, 'data'))
-        .toThrowError('Message should be set');
+    const params = {
+      level: LoggerLevel.info,
+      typeName: ' TestService',
+      message: 'test message',
+    };
+    const args = Object.keys(params);
+    args.forEach((argument) => {
+      it(`should throw error when ${argument} is null or undefined`, () => {
+        const testArgs = args.map((arg) => arg === argument ? null : arg);
+        expect(() => service.log.apply(service.log, testArgs))
+          .toThrow(`${argument} should be set`);
+      });
     });
   });
 
@@ -80,14 +79,18 @@ describe('ConsoleLogger', () => {
           }
         });
 
-        it('should throw error when typeName is null or undefined', () => {
-          expect(() => service[level](null, 'test message', 'test data'))
-            .toThrowError('Typename should be set');
-        });
-
-        it('should throw error when message is null or undefined', () => {
-          expect(() => service[level]('TestService', null, 'test data'))
-            .toThrowError('Message should be set');
+        // test arguments for null or undefined
+        const params = {
+          level: LoggerLevel.info,
+          typeName: ' TestService',
+        };
+        const args = Object.keys(params);
+        args.forEach((argument) => {
+          it(`should throw error when ${argument} is null or undefined`, () => {
+            const testArgs = args.map((arg) => arg === argument ? null : arg);
+            expect(() => service.log.apply(service[level], testArgs))
+              .toThrow(`${argument} should be set`);
+          });
         });
       }
     }
