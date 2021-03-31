@@ -3,18 +3,18 @@ import { join } from 'path';
 import { from, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
+import { Logger } from '@digita-ai/handlersjs-core';
 import { HttpHandler } from '../general/http-handler';
 import { HttpHandlerContext } from '../general/http-handler-context';
 import { HttpHandlerResponse } from '../general/http-handler-response';
 import { HttpHandlerError } from '../errors/http-handler-error';
-import { Logger } from '@digita-ai/handlersjs-core';
 
 export class HttpHandlerStaticAssetService extends HttpHandler {
   constructor(protected logger: Logger, private path: string, private contentType: string) {
     super();
   }
 
-  canHandle(context: HttpHandlerContext, response: HttpHandlerResponse): Observable<boolean> {
+  canHandle(context: HttpHandlerContext, response?: HttpHandlerResponse): Observable<boolean> {
     this.logger.debug(HttpHandlerStaticAssetService.name, 'Checking canHandle', context.request);
 
     const canHandleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];
@@ -29,7 +29,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
     return of(hasAccept);
   }
 
-  handle(context: HttpHandlerContext, response: HttpHandlerResponse): Observable<HttpHandlerResponse> {
+  handle(context: HttpHandlerContext, response?: HttpHandlerResponse): Observable<HttpHandlerResponse> {
 
     return of({ path: join(process.cwd(), this.path) })
       .pipe(
