@@ -29,7 +29,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
     return of(hasAccept);
   }
 
-  handle(context: HttpHandlerContext, response: HttpHandlerResponse): Observable<HttpHandlerResponse> {
+  handle(context: HttpHandlerContext, response?: HttpHandlerResponse): Observable<HttpHandlerResponse> {
     const filename = context.request.parameters.filename;
 
     if(filename && filename.includes('../')) {
