@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises';
 import { join } from 'path';
-import { from, Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { from, Observable, of, throwError } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { Logger } from '@digita-ai/handlersjs-core';
 import { HttpHandler } from '../general/http-handler';
@@ -29,9 +29,16 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
     return of(hasAccept);
   }
 
-  handle(context: HttpHandlerContext, response?: HttpHandlerResponse): Observable<HttpHandlerResponse> {
+  handle(context: HttpHandlerContext, response: HttpHandlerResponse): Observable<HttpHandlerResponse> {
+    const filename = context.request.parameters.filename;
 
-    return of({ path: join(process.cwd(), this.path) })
+    if(filename && filename.includes('../')) {
+      throw new HttpHandlerError('Invalid filename set.', 422, response);
+    }
+
+    const path = filename ? join(process.cwd(), this.path, filename) : join(process.cwd(), this.path);
+
+    return of({ path })
       .pipe(
         switchMap((data) => from(readFile(data.path))
           .pipe(map((file) => ({ ...data, content: file.toString() })))),
@@ -44,6 +51,9 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
           },
           status: 200,
         })),
+        catchError((error, caught) => {
+          throw new HttpHandlerError('Error while trying to read file', 404, response);
+        }),
       );
   }
 }
