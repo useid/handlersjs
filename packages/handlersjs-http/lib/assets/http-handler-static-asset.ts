@@ -33,10 +33,10 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
     const filename = context.request.parameters.filename;
 
     if(filename && filename.includes('../')) {
-      throw new HttpHandlerError('Invalid filename set.', 422, response);
+      throw new HttpHandlerError('', 403, response);
     }
 
-    const path = filename ? join(process.cwd(), this.path, filename) : join(process.cwd(), this.path);
+    const path = join(process.cwd(), this.path, filename||'');
 
     return of({ path })
       .pipe(
