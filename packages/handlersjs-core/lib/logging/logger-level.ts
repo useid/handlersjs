@@ -1,8 +1,12 @@
+/**
+ * Level of log severity based on node.js'
+ */
 export enum LoggerLevel {
-  FATAL = 6,
-  ERROR = 5,
-  WARN = 4,
-  INFO = 3,
-  DEBUG = 2,
-  TRACE = 1,
+  error = 0,
+  warn = 1,
+  info = 2,
+  http = 3,
+  verbose = 4,
+  debug = 5,
+  silly = 6,
 }
