@@ -1,7 +1,20 @@
 {
   "@context": [
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/context.jsonld"
   ],
-  "import": [],
-  "@graph": []
+  "import": [
+    "files-dahc:config/config-test.json"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:handlersjs-http:test:HttpHandlerStaticAssetService",
+      "@type": "HttpHandlerStaticAssetService",
+      "HttpHandlerStaticAssetService:_logger": {
+        "@id": "urn:handlersjs-core:test:ConsoleLogger"
+      },
+      "HttpHandlerStaticAssetService:_path": "test-directory/",
+      "HttpHandlerStaticAssetService:_contentType": "text/plain"
+    }
+  ]
 }

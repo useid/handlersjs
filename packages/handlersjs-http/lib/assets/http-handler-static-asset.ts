@@ -23,7 +23,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
       : true;
 
     if(!hasAccept) {
-      throw new HttpHandlerError('Content type not supported', 415, response);
+      return throwError(new HttpHandlerError('Content type not supported', 415, response));
     }
 
     return of(hasAccept);
@@ -33,7 +33,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
     const filename = context.request.parameters.filename;
 
     if(filename && filename.includes('../')) {
-      throw new HttpHandlerError('', 403, response);
+      return throwError(new HttpHandlerError('', 403, response));
     }
 
     const path = join(process.cwd(), this.path, filename||'');
@@ -51,9 +51,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
           },
           status: 200,
         })),
-        catchError((error, caught) => {
-          throw new HttpHandlerError('Error while trying to read file', 404, response);
-        }),
+        catchError(() => throwError(new HttpHandlerError('Error while trying to read file', 404, response))),
       );
   }
 }
