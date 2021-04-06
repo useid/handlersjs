@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises';
 import { join } from 'path';
-import { from, Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { from, Observable, of, throwError } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { Logger } from '@digita-ai/handlersjs-core';
 import { HttpHandler } from '../general/http-handler';
@@ -23,15 +23,22 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
       : true;
 
     if(!hasAccept) {
-      throw new HttpHandlerError('Content type not supported', 415, response);
+      return throwError(new HttpHandlerError('Content type not supported', 415, response));
     }
 
     return of(hasAccept);
   }
 
   handle(context: HttpHandlerContext, response?: HttpHandlerResponse): Observable<HttpHandlerResponse> {
+    const filename = context.request.parameters.filename;
 
-    return of({ path: join(process.cwd(), this.path) })
+    if(filename && filename.includes('../')) {
+      return throwError(new HttpHandlerError('', 403, response));
+    }
+
+    const path = join(process.cwd(), this.path, filename||'');
+
+    return of({ path })
       .pipe(
         switchMap((data) => from(readFile(data.path))
           .pipe(map((file) => ({ ...data, content: file.toString() })))),
@@ -44,6 +51,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
           },
           status: 200,
         })),
+        catchError(() => throwError(new HttpHandlerError('Error while trying to read file', 404, response))),
       );
   }
 }
