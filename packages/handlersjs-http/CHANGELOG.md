@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.7](https://github.com/digita-ai/handlersjs/compare/0.0.6...0.0.7) (2021-04-07)
+
+
+### Features
+
+* serve multiple assets through a file pattern ([44daa44](https://github.com/digita-ai/handlersjs/commit/44daa44c77f985f69e78926b56332db3da627306))
+
+
+
+
+
 ## [0.0.6](https://github.com/digita-ai/handlersjs/compare/0.0.5...0.0.6) (2021-03-31)
 
 

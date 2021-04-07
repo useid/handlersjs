@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.7](https://github.com/digita-ai/handlersjs/compare/0.0.6...0.0.7) (2021-04-07)
+
+
+### Features
+
+* Align console logger with utils's console logger ([a5c723c](https://github.com/digita-ai/handlersjs/commit/a5c723cb256531cf907c25c134e4b5f1b1e93ea6))
+* upgraded logger service ([76e9bdb](https://github.com/digita-ai/handlersjs/commit/76e9bdbde001127d41ef71e5d7a06101e80cb1ea))
+
+
+
+
+
 ## [0.0.6](https://github.com/digita-ai/handlersjs/compare/0.0.5...0.0.6) (2021-03-31)
 
 **Note:** Version bump only for package @digita-ai/handlersjs-core
