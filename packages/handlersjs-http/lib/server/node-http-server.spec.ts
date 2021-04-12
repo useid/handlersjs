@@ -23,7 +23,7 @@ describe('NodeHttpServer', () => {
     };
     handler = new NodeHttpRequestResponseHandler(nestedHttpHandler);
     handler.handle = jest.fn().mockReturnValueOnce(of());
-    host = 'test';
+    host = 'localhost';
     port = 8080;
     server = new NodeHttpServer(host, port, handler);
     req = new IncomingMessage(new Socket());
