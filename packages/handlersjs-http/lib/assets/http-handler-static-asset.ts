@@ -35,7 +35,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
     const filename = context.request.parameters.filename;
 
     if(filename && filename.includes('../')) {
-      return throwError(new ForbiddenHttpError('Forbidden'));
+      return throwError(new ForbiddenHttpError());
     }
 
     const path = join(process.cwd(), this.path, filename||'');
