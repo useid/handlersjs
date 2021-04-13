@@ -7,7 +7,9 @@ import { Logger } from '@digita-ai/handlersjs-core';
 import { HttpHandler } from '../general/http-handler';
 import { HttpHandlerContext } from '../general/http-handler-context';
 import { HttpHandlerResponse } from '../general/http-handler-response';
-import { HttpHandlerError } from '../errors/http-handler-error';
+import { NotFoundHttpError } from 'lib/errors/not-found-http-error';
+import { UnsupportedMediaTypeHttpError } from 'lib/errors/unsupported-media-type-http-error';
+import { ForbiddenHttpError } from 'lib/errors/forbidden-http-error';
 
 export class HttpHandlerStaticAssetService extends HttpHandler {
   constructor(protected logger: Logger, private path: string, private contentType: string) {
@@ -23,7 +25,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
       : true;
 
     if(!hasAccept) {
-      return throwError(new HttpHandlerError('Content type not supported', 415, response));
+      return throwError(new UnsupportedMediaTypeHttpError('Content type not supported'));
     }
 
     return of(hasAccept);
@@ -33,7 +35,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
     const filename = context.request.parameters.filename;
 
     if(filename && filename.includes('../')) {
-      return throwError(new HttpHandlerError('', 403, response));
+      return throwError(new ForbiddenHttpError('Forbidden'));
     }
 
     const path = join(process.cwd(), this.path, filename||'');
@@ -51,7 +53,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
           },
           status: 200,
         })),
-        catchError(() => throwError(new HttpHandlerError('Error while trying to read file', 404, response))),
+        catchError(() => throwError(new NotFoundHttpError('Error while trying to read file'))),
       );
   }
 }
