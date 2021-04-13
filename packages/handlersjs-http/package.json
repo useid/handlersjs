@@ -14,7 +14,7 @@
   "types": "./dist/public-api.d.ts",
   "scripts": {
     "test": "jest --silent --passWithNoTests",
-    "test:ci": "jest --runInBand --passWithNoTests",
+    "test:ci": "jest --silent --runInBand --passWithNoTests",
     "build": "rimraf ./dist && npm run build:ts && npm run build:components",
     "build:ts": "tsc",
     "build:components": "componentsjs-generator -s lib -c dist/components -i .componentsignore"

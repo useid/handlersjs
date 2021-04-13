@@ -54,6 +54,7 @@ export class NodeHttpServer extends Server {
     });
 
     this.server.listen(this.port, this.host);
+
     return subject;
   }
 
@@ -65,7 +66,7 @@ export class NodeHttpServer extends Server {
     const subject = new Subject<Daemon>();
 
     this.server.on(('error'), (err) => {
-      subject.error(err);
+      subject.error(new Error(`The server ran into a problem: ${err}`));
     });
 
     this.server.on(('close'), () => {

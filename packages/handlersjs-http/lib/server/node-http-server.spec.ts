@@ -15,7 +15,7 @@ describe('NodeHttpServer', () => {
   let req: IncomingMessage;
   let res: ServerResponse;
 
-  beforeAll(() => {
+  beforeEach(() => {
     nestedHttpHandler = {
       canHandle: jest.fn(),
       handle: jest.fn(),
@@ -56,10 +56,10 @@ describe('NodeHttpServer', () => {
     });
 
     it('should return an error when something goes wrong', async () => {
-      host = 'test';
-      badServer = new NodeHttpServer(host, port, handler);
-      await expect(() => badServer.start().toPromise()).rejects.toThrow('The server ran into a problem:');
-      await badServer.stop().toPromise();
+      (server as any).server.listen = jest.fn().mockImplementationOnce(() => {
+        (server as any).server.emit('error', 'test error');
+      });
+      await expect(server.start().toPromise()).rejects.toThrow('The server ran into a problem:');
     });
   });
 
@@ -69,10 +69,12 @@ describe('NodeHttpServer', () => {
       await expect(server.stop().toPromise()).resolves.toEqual(server);
     });
 
-    // it('should return an error when something goes wrong', async () => {
-    //   await server.start().toPromise();
-    //   await expect (server.stop().toPromise()).rejects.toBeInstanceOf(Error);
-    // });
+    it('should return an error when something goes wrong', async () => {
+      (server as any).server.close = jest.fn().mockImplementationOnce(() => {
+        (server as any).server.emit('error', 'test error');
+      });
+      await expect(server.stop().toPromise()).rejects.toThrow('The server ran into a problem:');
+    });
   });
 
   describe('serverHelper()', () => {
