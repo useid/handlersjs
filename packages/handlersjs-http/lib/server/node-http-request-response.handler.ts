@@ -1,5 +1,5 @@
-import { Observable, of, throwError } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, Observable, of, Subject, throwError } from 'rxjs';
+import { map, switchMap, toArray } from 'rxjs/operators';
 import { HttpHandler } from '../general/http-handler';
 import { HttpHandlerContext } from '../general/http-handler-context';
 import { HttpHandlerRequest } from '../general/http-handler-request';
@@ -19,7 +19,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
   constructor(private httpHandler: HttpHandler) {
     super();
 
-    if(!httpHandler){
+    if (!httpHandler) {
       throw new Error('A HttpHandler must be provided');
     }
   }
@@ -33,7 +33,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
    * @returns an {Observable<void>} for completion detection
    */
   handle(nodeHttpStreams: NodeHttpStreams): Observable<void> {
-    if (!nodeHttpStreams.requestStream.url){
+    if (!nodeHttpStreams.requestStream.url) {
       return throwError(new Error('url of the request cannot be null or undefined.'));
     }
     if (!nodeHttpStreams.requestStream.method) {
@@ -42,16 +42,33 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
     if (!nodeHttpStreams.requestStream.headers) {
       return throwError(new Error('headers of the request cannot be null or undefined.'));
     }
-    const httpHandlerRequest: HttpHandlerRequest = {
-      path: nodeHttpStreams.requestStream.url,
-      method: nodeHttpStreams.requestStream.method,
-      headers: nodeHttpStreams.requestStream.headers as { [key: string]: string },
-    };
-    const httpHandlerContext: HttpHandlerContext = {
-      request: httpHandlerRequest,
-    };
 
-    return this.httpHandler.handle(httpHandlerContext).pipe(
+    const buffer = new Subject<any>();
+
+    nodeHttpStreams.requestStream.on('data', (chunk) => buffer.next(chunk));
+    nodeHttpStreams.requestStream.on('end', () => buffer.complete());
+
+    return combineLatest(
+      buffer.pipe(
+        toArray(),
+        map((chunks: any[]) => Buffer.concat(chunks).toString()),
+      ),
+      of(nodeHttpStreams.requestStream.url),
+      of(nodeHttpStreams.requestStream.method),
+      of(nodeHttpStreams.requestStream.headers),
+    ).pipe(
+      map(([ body, url, method, headers ]) => {
+
+        const httpHandlerRequest = {
+          path: url,
+          method,
+          headers: headers as { [key: string]: string },
+        };
+
+        return { request: body !== '' ? Object.assign(httpHandlerRequest, { body }) : httpHandlerRequest };
+
+      }),
+      switchMap((context: HttpHandlerContext) => this.httpHandler.handle(context)),
       map((response) => {
         nodeHttpStreams.responseStream.writeHead(response.status, response.headers);
         nodeHttpStreams.responseStream.write(response.body);

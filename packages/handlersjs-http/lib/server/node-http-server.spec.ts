@@ -1,4 +1,3 @@
-
 import { IncomingMessage, ServerResponse } from 'http';
 import { Socket } from 'net';
 import { of } from 'rxjs';
@@ -8,6 +7,7 @@ import { HttpHandler } from '../general/http-handler';
 
 describe('NodeHttpServer', () => {
   let server: NodeHttpServer;
+  let badServer: NodeHttpServer;
   let handler: NodeHttpRequestResponseHandler;
   let nestedHttpHandler: HttpHandler;
   let host: string;
@@ -50,33 +50,44 @@ describe('NodeHttpServer', () => {
   });
 
   describe('start', () => {
-    it('should return an observable of the NodeHttpServer', async () => {
+    it('should return server if all goes well', async () => {
       await expect(server.start().toPromise()).resolves.toEqual(server);
+      await server.stop().toPromise();
+    });
+
+    it('should return an error when something goes wrong', async () => {
+      host = 'test';
+      badServer = new NodeHttpServer(host, port, handler);
+      await expect(() => badServer.start().toPromise()).rejects.toThrow('getaddrinfo ENOTFOUND test');
+      await server.stop().toPromise();
     });
   });
 
   describe('stop', () => {
-    it('should return an observable of the NodeHttpServer', async () => {
+    it('should return server if all goes well', async () => {
+      await server.start().toPromise();
       await expect(server.stop().toPromise()).resolves.toEqual(server);
     });
+
+    // it('should return an error when something goes wrong', async () => {
+    //   await server.start().toPromise();
+    //   await expect (server.stop().toPromise()).rejects.toBeInstanceOf(Error);
+    // });
   });
 
   describe('serverHelper()', () => {
-    it('should call the handle function of the nested handler', async () => {
-      await server.serverHelper(req, res);
-
+    it('should call the handle function of the nested handler', () => {
+      server.serverHelper(req, res);
       expect(handler.handle).toHaveBeenCalledTimes(1);
     });
 
     it('should throw an error when request is null or undefined', () => {
       expect(() => server.serverHelper(null, res)).toThrow('request must be defined.');
-
       expect(() => server.serverHelper(undefined, res)).toThrow('request must be defined.');
     });
 
     it('should throw an error when response is null or undefined', () => {
       expect(() => server.serverHelper(req, null)).toThrow('response must be defined.');
-
       expect(() => server.serverHelper(req, undefined)).toThrow('response must be defined.');
     });
   });

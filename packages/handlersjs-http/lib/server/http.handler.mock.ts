@@ -21,7 +21,7 @@ export class MockHttpHandler extends HttpHandler {
    * @returns {Observable<HttpHandlerResponse>} - the mock response
    */
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
-    if (!context){
+    if (!context) {
       return throwError(new Error('Context cannot be null or undefined'));
     }
 

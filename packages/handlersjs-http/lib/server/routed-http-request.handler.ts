@@ -22,7 +22,7 @@ export class RoutedHttpRequestHandler extends HttpHandler {
   constructor(private handlerControllerList: HttpHandlerController[]) {
     super();
 
-    if(!handlerControllerList){
+    if (!handlerControllerList) {
       throw new Error('handlerControllerList must be defined.');
     }
 
@@ -34,7 +34,7 @@ export class RoutedHttpRequestHandler extends HttpHandler {
   }
 
   /**
-   * Passes the {HttpHandlerContext} to the handler of the {HttpHandlerRoute} mathing the request's path.
+   * Passes the {HttpHandlerContext} to the handler of the {HttpHandlerRoute} matching the request's path.
    *
    * @param {HttpHandlerContext} input - a HttpHandlerContext object containing a HttpHandlerRequest and HttpHandlerRoute
    */
@@ -45,9 +45,13 @@ export class RoutedHttpRequestHandler extends HttpHandler {
     if (!input.request) {
       return throwError(new Error('input.request must be defined.'));
     }
-    const request = input.request;
 
-    const matchingRoute = this.pathToRouteMap.get(request.path);
+    const request = input.request;
+    const splitPath = request.path.split('/');
+    splitPath.shift();
+    splitPath[0] = '/' + splitPath[0];
+
+    const matchingRoute = this.pathToRouteMap.get(splitPath[0].split('?')[0]);
     const routeIncludesMethod = matchingRoute?.operations
       .flatMap((operation) => operation.method).includes(request.method);
 
