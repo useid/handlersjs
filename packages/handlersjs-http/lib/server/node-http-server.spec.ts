@@ -58,8 +58,8 @@ describe('NodeHttpServer', () => {
     it('should return an error when something goes wrong', async () => {
       host = 'test';
       badServer = new NodeHttpServer(host, port, handler);
-      await expect(() => badServer.start().toPromise()).rejects.toThrow('getaddrinfo ENOTFOUND test');
-      await server.stop().toPromise();
+      await expect(() => badServer.start().toPromise()).rejects.toThrow('The server ran into a problem:');
+      await badServer.stop().toPromise();
     });
   });
 

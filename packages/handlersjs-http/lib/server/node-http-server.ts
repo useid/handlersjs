@@ -4,6 +4,7 @@ import { Daemon } from '../util/daemon';
 import { Server } from './../util/server';
 import { NodeHttpStreams } from './node-http-streams.model';
 import { NodeHttpStreamsHandler } from './node-http-streams.handler';
+import { HttpHandlerError } from 'lib/errors/http-handler-error';
 
 /**
  * A {Server} implemented with [Node.js HTTP]{@link https://nodejs.org/api/http.html}, handling requests through a {NodeHttpStreamsHandler}.
@@ -44,7 +45,7 @@ export class NodeHttpServer extends Server {
     const subject = new Subject<Daemon>();
 
     this.server.on(('error'), (err) => {
-      subject.error(err);
+      subject.error(new Error(`The server ran into a problem: ${err}`));
     });
 
     this.server.on(('listening'), () => {
