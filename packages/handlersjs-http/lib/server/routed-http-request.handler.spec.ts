@@ -1,41 +1,48 @@
 import { HttpHandler } from '../general/http-handler';
 import { HttpHandlerContext } from '../general/http-handler-context';
 import { HttpHandlerController } from '../general/http-handler-controller';
+import { HttpHandlerRequest } from '../general/http-handler-request';
+import { HttpHandlerRoute } from '../general/http-handler-route';
 import { RoutedHttpRequestHandler } from './routed-http-request.handler';
 
 describe('RoutedHttpRequestHandler', () => {
   let routedHttpRequestHandler: RoutedHttpRequestHandler;
   let handlerControllerList: HttpHandlerController[];
   let mockHttpHandler: HttpHandler;
+  let helper;
 
   beforeEach(() => {
-    mockHttpHandler = {
+    helper = {
       handle: jest.fn(),
       canHandle: jest.fn(),
       safeHandle: jest.fn(),
     };
-    handlerControllerList = [ {
-      label: '1',
-      routes: [ {
-        operations: [ {
-          method: 'GET',
-          publish: true,
+    mockHttpHandler = { ...helper };
+
+    handlerControllerList = [
+      {
+        label: '1',
+        routes: [ {
+          operations: [ {
+            method: 'GET',
+            publish: true,
+          } ],
+          path: '/path1',
+          handler: mockHttpHandler,
         } ],
-        path: '/path1',
-        handler: mockHttpHandler,
-      } ],
-    },
-    {
-      label: '2',
-      routes: [ {
-        operations: [ {
-          method: 'POST',
-          publish: true,
+      },
+      {
+        label: '2',
+        routes: [ {
+          operations: [ {
+            method: 'POST',
+            publish: true,
+          } ],
+          path: '/path2',
+          handler: mockHttpHandler,
         } ],
-        path: '/path2',
-        handler: mockHttpHandler,
-      } ],
-    } ];
+      },
+    ];
     routedHttpRequestHandler = new RoutedHttpRequestHandler(handlerControllerList);
   });
 
@@ -98,6 +105,138 @@ describe('RoutedHttpRequestHandler', () => {
 
       await expect(routedHttpRequestHandler.handle(httpHandlerContext2).toPromise())
         .rejects.toThrow('input.request must be defined.');
+    });
+
+    describe('right handler.handle is called and parse url- and query parameters correctly', () => {
+      let blablaMockHandler: HttpHandler;
+      let blablaRoute: HttpHandlerRoute;
+      let blablablaMockHandler: HttpHandler;
+      let blablablaRoute: HttpHandlerRoute;
+      let blablablieMockHandler: HttpHandler;
+      let blablablieRoute: HttpHandlerRoute;
+      let blobloMockHandler: HttpHandler;
+      let blobloRoute: HttpHandlerRoute;
+      let bloblovarMockHandler: HttpHandler;
+      let bloblovarRoute: HttpHandlerRoute;
+      let blovarMockHandler: HttpHandler;
+      let blovarRoute: HttpHandlerRoute;
+
+      beforeEach(() => {
+        const operations = [ { method: 'GET', publish: true,} ];
+
+        blablaMockHandler = { ...helper };
+        blablaRoute = { path: '/bla/bla', operations, handler: blablaMockHandler };
+        blablablaMockHandler = { ...helper };
+        blablablaRoute = { path: '/bla/bla/bla', operations, handler: blablablaMockHandler };
+        blablablieMockHandler = { ...helper };
+        blablablieRoute = { path: '/bla/bla/blie', operations, handler: blablablieMockHandler };
+        blobloMockHandler = { ...helper };
+        blobloRoute = { path: '/blo/blo', operations, handler: blobloMockHandler };
+        bloblovarMockHandler = { ...helper };
+        bloblovarRoute = { path: '/blo/blo/:var', operations, handler: bloblovarMockHandler };
+        blovarMockHandler = { ...helper };
+        blovarRoute = { path: '/blo/:var', operations, handler: blovarMockHandler };
+
+        handlerControllerList = [
+          {
+            label: 'testRoutes',
+            routes: [
+              blablaRoute,
+              blablablaRoute,
+              blablablieRoute,
+              blobloRoute,
+              bloblovarRoute,
+              blovarRoute,
+            ],
+          }
+        ];
+
+        routedHttpRequestHandler = new RoutedHttpRequestHandler(handlerControllerList);
+      });
+
+      it('path: /bla/bla', async () => {
+        const path = '/bla/bla';
+        const request: HttpHandlerRequest = { path, method: 'GET', headers: {} };
+        const ctx: HttpHandlerContext = { request };
+        await routedHttpRequestHandler.handle(ctx);
+        expect(blablaMockHandler.handle).toHaveBeenCalledTimes(1);
+        expect(blablaMockHandler.handle).toHaveBeenCalledWith({
+          request: { ...request, parameters: {}, query: {}},
+          route: blablaRoute,
+        });
+      });
+
+      it('path: /bla/bla/bla', async () => {
+        const path = '/bla/bla/bla';
+        const request: HttpHandlerRequest = { path, method: 'GET', headers: {} };
+        const ctx: HttpHandlerContext = { request };
+        await routedHttpRequestHandler.handle(ctx);
+        expect(blablaMockHandler.handle).toHaveBeenCalledTimes(1);
+        expect(blablaMockHandler.handle).toHaveBeenCalledWith({
+          request: { ...request, parameters: {}, query: {}},
+          route: blablablaRoute,
+        });
+      });
+
+      it('path: /bla/bla/blie', async () => {
+        const path = '/bla/bla/blie';
+        const request: HttpHandlerRequest = { path, method: 'GET', headers: {} };
+        const ctx: HttpHandlerContext = { request };
+        await routedHttpRequestHandler.handle(ctx);
+        expect(blablaMockHandler.handle).toHaveBeenCalledTimes(1);
+        expect(blablaMockHandler.handle).toHaveBeenCalledWith({
+          request: { ...request, parameters: {}, query: {}},
+          route: blablablieRoute,
+        });
+      });
+
+      it('path: /blo/blo', async () => {
+        const path = '/blo/blo';
+        const request: HttpHandlerRequest = { path, method: 'GET', headers: {} };
+        const ctx: HttpHandlerContext = { request };
+        await routedHttpRequestHandler.handle(ctx);
+        expect(blablaMockHandler.handle).toHaveBeenCalledTimes(1);
+        expect(blablaMockHandler.handle).toHaveBeenCalledWith({
+          request: { ...request, parameters: {}, query: {}},
+          route: blobloRoute,
+        });
+      });
+
+      it('path: /blo/blo/:var', async () => {
+        const path = '/blo/blo/variable';
+        const request: HttpHandlerRequest = { path, method: 'GET', headers: {} };
+        const ctx: HttpHandlerContext = { request };
+        await routedHttpRequestHandler.handle(ctx);
+        expect(blablaMockHandler.handle).toHaveBeenCalledTimes(1);
+        expect(blablaMockHandler.handle).toHaveBeenCalledWith({
+          request: { ...request, parameters: { var: 'variable' }, query: {}},
+          route: bloblovarRoute,
+        });
+      });
+
+      it('path: /blo/:var', async () => {
+        const path = '/kk';
+        const request: HttpHandlerRequest = { path, method: 'GET', headers: {} };
+        const ctx: HttpHandlerContext = { request };
+        await routedHttpRequestHandler.handle(ctx);
+        expect(blablaMockHandler.handle).toHaveBeenCalledTimes(1);
+        expect(blablaMockHandler.handle).toHaveBeenCalledWith({
+          request: { ...request, parameters: { var: 'variable' }, query: {}},
+          route: blovarRoute,
+        });
+      });
+
+      it('path: /blo/blo/:var?test=good&works=yes', async () => {
+        const path = '/blo/blo/variable?test=good&works=yes';
+        const request: HttpHandlerRequest = { path, method: 'GET', headers: {} };
+        const ctx: HttpHandlerContext = { request };
+        await routedHttpRequestHandler.handle(ctx);
+        expect(blablaMockHandler.handle).toHaveBeenCalledTimes(1);
+        expect(blablaMockHandler.handle).toHaveBeenCalledWith({
+          request: { ...request, parameters: { var: 'variable' }, query: { test: 'good', works: 'yes' }},
+          route: bloblovarRoute,
+        });
+      });
     });
   });
 
