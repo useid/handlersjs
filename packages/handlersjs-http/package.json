@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@digita-ai/handlersjs-core": "0.0.7",
+    "mock-http": "^1.1.0",
     "rxjs": "6.3.3"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http",

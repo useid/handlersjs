@@ -1,5 +1,5 @@
-import { combineLatest, Observable, of, Subject, throwError } from 'rxjs';
-import { map, switchMap, toArray } from 'rxjs/operators';
+import { combineLatest, forkJoin, Observable, of, Subject, throwError, zip } from 'rxjs';
+import { map, switchMap, tap, toArray } from 'rxjs/operators';
 import { HttpHandler } from '../general/http-handler';
 import { HttpHandlerContext } from '../general/http-handler-context';
 import { HttpHandlerRequest } from '../general/http-handler-request';
@@ -48,21 +48,20 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
     nodeHttpStreams.requestStream.on('data', (chunk) => buffer.next(chunk));
     nodeHttpStreams.requestStream.on('end', () => buffer.complete());
 
-    return combineLatest(
-      buffer.pipe(
-        toArray(),
-        map((chunks: any[]) => Buffer.concat(chunks).toString()),
-      ),
-      of(nodeHttpStreams.requestStream.url),
-      of(nodeHttpStreams.requestStream.method),
-      of(nodeHttpStreams.requestStream.headers),
-    ).pipe(
-      map(([ body, url, method, headers ]) => {
+    return buffer.pipe(
+      toArray(),
+      map((chunks: any[]) => Buffer.concat(chunks).toString()),
+      map((body) => {
+        const urlObject: URL = new URL(nodeHttpStreams.requestStream.url);
+
+        const query = {};
+        urlObject.searchParams.forEach((value, key) => query[key] = value);
 
         const httpHandlerRequest = {
-          path: url,
-          method,
-          headers: headers as { [key: string]: string },
+          path: urlObject.pathname,
+          method: nodeHttpStreams.requestStream.method,
+          headers: nodeHttpStreams.requestStream.headers as { [key: string]: string },
+          query,
         };
 
         return { request: body !== '' ? Object.assign(httpHandlerRequest, { body }) : httpHandlerRequest };
