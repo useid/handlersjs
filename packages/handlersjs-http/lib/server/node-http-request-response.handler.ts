@@ -59,11 +59,20 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
     ).pipe(
       map(([ body, url, method, headers ]) => {
 
-        const httpHandlerRequest = {
+        let httpHandlerRequest = {
           path: url,
           method,
           headers: headers as { [key: string]: string },
         };
+
+        const splitURL =  url.split('?');
+        if (splitURL.length > 1) {
+          const splitQuery = splitURL[1].split('&')
+            .map((term: string) => term.split('='));
+          const query = new Map<string, string>(splitQuery
+            .map((param) => [ param[0], param[1] ]));
+          httpHandlerRequest = Object.assign(httpHandlerRequest, { query });
+        }
 
         return { request: body !== '' ? Object.assign(httpHandlerRequest, { body }) : httpHandlerRequest };
 
