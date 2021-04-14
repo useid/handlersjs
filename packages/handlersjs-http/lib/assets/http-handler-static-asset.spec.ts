@@ -15,7 +15,7 @@ describe('HttpHandlerStaticAssetService', () => {
   });
 
   describe('canHandle', () => {
-    it('should return throw a 415-error when content-type is not supported', async (done) => {
+    it('throws a 415-error when content-type is not supported', async (done) => {
       const context: HttpHandlerContext = {
         route: null,
         request: {
@@ -39,8 +39,8 @@ describe('HttpHandlerStaticAssetService', () => {
             // do nothing
           },
           (err) => {
-            expect(err.constructor.name).toBe('HttpHandlerError');
-            expect(err.status).toBe(415);
+            expect(err.constructor.name).toBe('UnsupportedMediaTypeHttpError');
+            expect(err.statusCode).toBe(415);
             done();
           },
         );
@@ -102,7 +102,7 @@ describe('HttpHandlerStaticAssetService', () => {
   });
 
   describe('handle', () => {
-    it('should return throw a 403-error when filename is invalid', async (done) => {
+    it('throws a 403-error when filename is invalid', async (done) => {
       const context: HttpHandlerContext = {
         route: null,
         request: {
@@ -127,14 +127,14 @@ describe('HttpHandlerStaticAssetService', () => {
             // do nothing
           },
           (err) => {
-            expect(err.constructor.name).toBe('HttpHandlerError');
-            expect(err.status).toBe(403);
+            expect(err.constructor.name).toBe('ForbiddenHttpError');
+            expect(err.statusCode).toBe(403);
             done();
           },
         );
     });
 
-    it('should return throw a 404-error when file is not found', async (done) => {
+    it('throws a 404-error when file is not found', async (done) => {
       const context: HttpHandlerContext = {
         route: null,
         request: {
@@ -159,8 +159,8 @@ describe('HttpHandlerStaticAssetService', () => {
             // do nothing
           },
           (err) => {
-            expect(err.constructor.name).toBe('HttpHandlerError');
-            expect(err.status).toBe(404);
+            expect(err.constructor.name).toBe('NotFoundHttpError');
+            expect(err.statusCode).toBe(404);
             done();
           },
         );
