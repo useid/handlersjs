@@ -5,6 +5,13 @@ import { HttpHandlerRequest } from '../general/http-handler-request';
 import { HttpHandlerRoute } from '../general/http-handler-route';
 import { RoutedHttpRequestHandler } from './routed-http-request.handler';
 
+function getMockedHttpHandler(): HttpHandler {
+  return {
+    handle: jest.fn(),
+    canHandle: jest.fn(),
+    safeHandle: jest.fn(),
+  };
+}
 describe('RoutedHttpRequestHandler', () => {
   let routedHttpRequestHandler: RoutedHttpRequestHandler;
   let handlerControllerList: HttpHandlerController[];
@@ -12,12 +19,7 @@ describe('RoutedHttpRequestHandler', () => {
   let helper;
 
   beforeEach(() => {
-    helper = {
-      handle: jest.fn(),
-      canHandle: jest.fn(),
-      safeHandle: jest.fn(),
-    };
-    mockHttpHandler = { ...helper };
+    mockHttpHandler = getMockedHttpHandler();
 
     handlerControllerList = [
       {
@@ -124,17 +126,17 @@ describe('RoutedHttpRequestHandler', () => {
       beforeEach(() => {
         const operations = [ { method: 'GET', publish: true,} ];
 
-        blablaMockHandler = { ...helper };
+        blablaMockHandler = getMockedHttpHandler();
         blablaRoute = { path: '/bla/bla', operations, handler: blablaMockHandler };
-        blablablaMockHandler = { ...helper };
+        blablablaMockHandler = getMockedHttpHandler();
         blablablaRoute = { path: '/bla/bla/bla', operations, handler: blablablaMockHandler };
-        blablablieMockHandler = { ...helper };
+        blablablieMockHandler = getMockedHttpHandler();
         blablablieRoute = { path: '/bla/bla/blie', operations, handler: blablablieMockHandler };
-        blobloMockHandler = { ...helper };
+        blobloMockHandler = getMockedHttpHandler();
         blobloRoute = { path: '/blo/blo', operations, handler: blobloMockHandler };
-        bloblovarMockHandler = { ...helper };
+        bloblovarMockHandler = getMockedHttpHandler();
         bloblovarRoute = { path: '/blo/blo/:var', operations, handler: bloblovarMockHandler };
-        blovarMockHandler = { ...helper };
+        blovarMockHandler = getMockedHttpHandler();
         blovarRoute = { path: '/blo/:var', operations, handler: blovarMockHandler };
 
         handlerControllerList = [
@@ -171,8 +173,8 @@ describe('RoutedHttpRequestHandler', () => {
         const request: HttpHandlerRequest = { path, method: 'GET', headers: {} };
         const ctx: HttpHandlerContext = { request };
         await routedHttpRequestHandler.handle(ctx);
-        expect(blablaMockHandler.handle).toHaveBeenCalledTimes(1);
-        expect(blablaMockHandler.handle).toHaveBeenCalledWith({
+        expect(blablablaMockHandler.handle).toHaveBeenCalledTimes(1);
+        expect(blablablaMockHandler.handle).toHaveBeenCalledWith({
           request: { ...request, parameters: {}, query: {}},
           route: blablablaRoute,
         });
@@ -183,8 +185,8 @@ describe('RoutedHttpRequestHandler', () => {
         const request: HttpHandlerRequest = { path, method: 'GET', headers: {} };
         const ctx: HttpHandlerContext = { request };
         await routedHttpRequestHandler.handle(ctx);
-        expect(blablaMockHandler.handle).toHaveBeenCalledTimes(1);
-        expect(blablaMockHandler.handle).toHaveBeenCalledWith({
+        expect(blablablieMockHandler.handle).toHaveBeenCalledTimes(1);
+        expect(blablablieMockHandler.handle).toHaveBeenCalledWith({
           request: { ...request, parameters: {}, query: {}},
           route: blablablieRoute,
         });
@@ -195,8 +197,8 @@ describe('RoutedHttpRequestHandler', () => {
         const request: HttpHandlerRequest = { path, method: 'GET', headers: {} };
         const ctx: HttpHandlerContext = { request };
         await routedHttpRequestHandler.handle(ctx);
-        expect(blablaMockHandler.handle).toHaveBeenCalledTimes(1);
-        expect(blablaMockHandler.handle).toHaveBeenCalledWith({
+        expect(blobloMockHandler.handle).toHaveBeenCalledTimes(1);
+        expect(blobloMockHandler.handle).toHaveBeenCalledWith({
           request: { ...request, parameters: {}, query: {}},
           route: blobloRoute,
         });
@@ -207,20 +209,20 @@ describe('RoutedHttpRequestHandler', () => {
         const request: HttpHandlerRequest = { path, method: 'GET', headers: {} };
         const ctx: HttpHandlerContext = { request };
         await routedHttpRequestHandler.handle(ctx);
-        expect(blablaMockHandler.handle).toHaveBeenCalledTimes(1);
-        expect(blablaMockHandler.handle).toHaveBeenCalledWith({
+        expect(bloblovarMockHandler.handle).toHaveBeenCalledTimes(1);
+        expect(bloblovarMockHandler.handle).toHaveBeenCalledWith({
           request: { ...request, parameters: { var: 'variable' }, query: {}},
           route: bloblovarRoute,
         });
       });
 
       it('path: /blo/:var', async () => {
-        const path = '/kk';
+        const path = '/blo/variable';
         const request: HttpHandlerRequest = { path, method: 'GET', headers: {} };
         const ctx: HttpHandlerContext = { request };
         await routedHttpRequestHandler.handle(ctx);
-        expect(blablaMockHandler.handle).toHaveBeenCalledTimes(1);
-        expect(blablaMockHandler.handle).toHaveBeenCalledWith({
+        expect(blovarMockHandler.handle).toHaveBeenCalledTimes(1);
+        expect(blovarMockHandler.handle).toHaveBeenCalledWith({
           request: { ...request, parameters: { var: 'variable' }, query: {}},
           route: blovarRoute,
         });
@@ -231,8 +233,8 @@ describe('RoutedHttpRequestHandler', () => {
         const request: HttpHandlerRequest = { path, method: 'GET', headers: {} };
         const ctx: HttpHandlerContext = { request };
         await routedHttpRequestHandler.handle(ctx);
-        expect(blablaMockHandler.handle).toHaveBeenCalledTimes(1);
-        expect(blablaMockHandler.handle).toHaveBeenCalledWith({
+        expect(bloblovarMockHandler.handle).toHaveBeenCalledTimes(1);
+        expect(bloblovarMockHandler.handle).toHaveBeenCalledWith({
           request: { ...request, parameters: { var: 'variable' }, query: { test: 'good', works: 'yes' }},
           route: bloblovarRoute,
         });
