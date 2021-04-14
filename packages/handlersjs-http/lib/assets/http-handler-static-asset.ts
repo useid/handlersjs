@@ -7,9 +7,9 @@ import { Logger } from '@digita-ai/handlersjs-core';
 import { HttpHandler } from '../general/http-handler';
 import { HttpHandlerContext } from '../general/http-handler-context';
 import { HttpHandlerResponse } from '../general/http-handler-response';
-import { NotFoundHttpError } from 'lib/errors/not-found-http-error';
-import { UnsupportedMediaTypeHttpError } from 'lib/errors/unsupported-media-type-http-error';
-import { ForbiddenHttpError } from 'lib/errors/forbidden-http-error';
+import { NotFoundHttpError } from '../errors/not-found-http-error';
+import { UnsupportedMediaTypeHttpError } from '../errors/unsupported-media-type-http-error';
+import { ForbiddenHttpError } from '../errors/forbidden-http-error';
 
 export class HttpHandlerStaticAssetService extends HttpHandler {
   constructor(protected logger: Logger, private path: string, private contentType: string) {
