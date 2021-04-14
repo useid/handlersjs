@@ -64,11 +64,10 @@ export class RoutedHttpRequestHandler extends HttpHandler {
       if (!routeMatch) {
         return false;
       }
-      // add parameters and query from requestPath to the request object
+      // add parameters from requestPath to the request object
       const parameters = this.extractParameters(routeSegments, pathSegments);
       request.parameters = request.parameters ? { ...request.parameters, ...parameters } : parameters;
-      const query = this.extractQueryParameters(path);
-      request.query = request.query ? { ...request.query, ...query } : query;
+
       return routeMatch;
     });
     const matchingRoute = this.pathToRouteMap.get(match);
@@ -85,18 +84,6 @@ export class RoutedHttpRequestHandler extends HttpHandler {
    */
   canHandle(context: HttpHandlerContext): Observable<boolean> {
     return context && context.request ? of(true) : of(false);
-  }
-
-  private extractQueryParameters(path: string): {[key: string]: string} {
-    const query = {};
-    if (path.split('?').length > 1) {
-      const queries = path.split('?')[1];
-      queries.split('&').forEach((entry) => {
-        const temp = entry.split('=');
-        query[temp[0]] = decodeURIComponent(temp[1]);
-      });
-    }
-    return query;
   }
 
   private extractParameters(routeSegments: string[], pathSegments: string[]): {[key: string]: string} {
