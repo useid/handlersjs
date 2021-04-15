@@ -7,7 +7,7 @@ describe('MockHttpHandler', () => {
 
   beforeEach(() => {
     handler = new MockHttpHandler();
-    context = { request: { headers: {}, method: '', path: '' } };
+    context = { request: { headers: {}, method: '', url: new URL('http://example.com') } };
   });
 
   it('should be correctly instantiated', () => {
