@@ -126,16 +126,25 @@ describe('RoutedHttpRequestHandler', () => {
         '/dynamicParam/one': dynamicOneHandler,
       }
 
-      for (let [key, value] of Object.entries(pathsAndRoutes)) {
+      Object.keys(pathsAndRoutes).forEach(async (key) => {
         const ctx: HttpHandlerContext = { request: { path: key, method: 'GET', headers: {} } };
         await routedHttpRequestHandler.handle(ctx);
-      };
-      for (let [key, value] of Object.entries(pathsAndRoutes)) {
+      });
+
+      Object.entries(pathsAndRoutes).forEach(([key, value]) => {
         expect(value.handle).toHaveBeenCalledTimes(1);
-        expect(value.handle).toHaveBeenCalledWith(expect.objectContaining({
-          request: { parameters: { dynamic: 'dynamicParam' }, headers: {}, path: key, method: 'GET' },
-        }));
-      };
+        expect(value.handle).toHaveBeenCalledWith(
+          expect.objectContaining({
+            request: { 
+              parameters: { dynamic: 'dynamicParam' }, 
+              headers: {}, 
+              path: key, 
+              method: 'GET' 
+            },
+          })
+        );
+      });
+
       expect(neverHandler.handle).toHaveBeenCalledTimes(0);
     });
 
@@ -169,13 +178,15 @@ describe('RoutedHttpRequestHandler', () => {
         '/dynamicParam/one': dynamicOneHandler,
       }
 
-      for (let [key, value] of Object.entries(pathsAndRoutes)) {
+      Object.keys(pathsAndRoutes).forEach(async (key) => {
         const ctx: HttpHandlerContext = { request: { path: key, method: 'GET', headers: {} } };
         await routedHttpRequestHandler.handle(ctx);
-      };
-      for (let [key, value] of Object.entries(pathsAndRoutes)) {
+      });
+
+      Object.entries(pathsAndRoutes).forEach(([key, value]) => {
         expect(value.handle).toHaveBeenCalledTimes(1);
-      };
+      });
+
       expect(neverHandler.handle).toHaveBeenCalledTimes(0);
     });
   });

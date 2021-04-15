@@ -59,21 +59,21 @@ export class RoutedHttpRequestHandler extends HttpHandler {
       }
       // If each segment in the url matches the corresponding segment in the route path,
       // or the route path segment starts with a ':' then the route is matched.
-      const routeMatch = routeSegments.every((seg, i) => seg === pathSegments[i] || seg[0] === ':');
-      // No matching routes found
-      if (!routeMatch) {
-        return false;
-      }
-      // add parameters from requestPath to the request object
-      const parameters = this.extractParameters(routeSegments, pathSegments);
-      request.parameters = request.parameters ? { ...request.parameters, ...parameters } : parameters;
+      return routeSegments.every((seg, i) => seg === pathSegments[i] || seg[0] === ':');
 
-      return routeMatch;
     });
     const matchingRoute = this.pathToRouteMap.get(match);
     const methodSupported = matchingRoute?.operations.map((o) => o.method).includes(request.method);
 
-    return matchingRoute && methodSupported ? matchingRoute.handler.handle({ request, route: matchingRoute }) : of({ body: '', headers: {}, status: 404 });
+    if (!matchingRoute || !methodSupported) {
+      return of({ body: '', headers: {}, status: 404 });
+    }
+
+    // add parameters from requestPath to the request object
+    const parameters = this.extractParameters(match.split('/').slice(1), pathSegments);
+    const requestWithParams = Object.assign(request, { parameters });
+
+    return matchingRoute.handler.handle({ request: requestWithParams, route: matchingRoute });
   }
 
   /**
