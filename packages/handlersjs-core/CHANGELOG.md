@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.8](https://github.com/digita-ai/handlersjs/compare/0.0.7...0.0.8) (2021-04-15)
+
+
+### Features
+
+* dynamic routing with full path ([#23](https://github.com/digita-ai/handlersjs/issues/23)) ([a563c4a](https://github.com/digita-ai/handlersjs/commit/a563c4a7aa0d5cab7c4508cf47f9a2179a704d7e))
+
+
+
+
+
 ## [0.0.7](https://github.com/digita-ai/handlersjs/compare/0.0.6...0.0.7) (2021-04-07)
 
 
