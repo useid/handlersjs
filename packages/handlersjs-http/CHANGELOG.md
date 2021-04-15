@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.11](https://github.com/digita-ai/handlersjs/compare/0.0.10...0.0.11) (2021-04-15)
+
+
+### Features
+
+* use DOM URL instead of path & query ([eb12064](https://github.com/digita-ai/handlersjs/commit/eb120643bfd71f84e49f42a9445b4b055dea4f15))
+
+
+
+
+
 ## [0.0.10](https://github.com/digita-ai/handlersjs/compare/0.0.9...0.0.10) (2021-04-15)
 
 
