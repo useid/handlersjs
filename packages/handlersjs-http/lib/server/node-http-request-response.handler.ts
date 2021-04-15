@@ -54,14 +54,10 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
       map((body) => {
         const urlObject: URL = new URL(nodeHttpStreams.requestStream.url, `http://${nodeHttpStreams.requestStream.headers.host}`);
 
-        const query = {};
-        urlObject.searchParams.forEach((value, key) => query[key] = value);
-
         const httpHandlerRequest = {
-          path: urlObject.pathname,
+          url: urlObject,
           method: nodeHttpStreams.requestStream.method,
           headers: nodeHttpStreams.requestStream.headers as { [key: string]: string },
-          query,
         };
 
         return { request: body !== '' ? Object.assign(httpHandlerRequest, { body }) : httpHandlerRequest };

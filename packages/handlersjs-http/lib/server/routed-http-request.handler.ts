@@ -46,7 +46,7 @@ export class RoutedHttpRequestHandler extends HttpHandler {
     }
 
     const request = input.request;
-    const path = request.path;
+    const path = request.url.pathname;
 
     const pathSegments = path.split('?')[0].split('/').slice(1);
 

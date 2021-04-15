@@ -98,11 +98,11 @@ describe('NodeHttpRequestResponseHandler', () => {
       expect(streamMock.responseStream.end).toHaveBeenCalledTimes(1);
     });
 
-    it('should parse query parameters correctly', async () => {
+    it('should parse the url correctly', async () => {
       await handler.handle(streamMock).toPromise();
       expect(nestedHttpHandler.handle).toHaveBeenCalledTimes(1);
       expect(nestedHttpHandler.handle).toHaveBeenCalledWith(expect.objectContaining({
-        request: { query: { works: 'yes' }, method: 'GET', headers: {}, path: '/test'},
+        request: { url: new URL('http://localhost:3000/test?works=yes'), method: 'GET', headers: {} },
       }));
     });
   });

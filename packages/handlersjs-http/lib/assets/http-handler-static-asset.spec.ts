@@ -19,7 +19,7 @@ describe('HttpHandlerStaticAssetService', () => {
       const context: HttpHandlerContext = {
         route: null,
         request: {
-          path: '',
+          url: new URL('http://example.com'),
           method: 'get',
           headers: { 
             accept: 'application/json'
@@ -50,7 +50,7 @@ describe('HttpHandlerStaticAssetService', () => {
       const context: HttpHandlerContext = {
         route: null,
         request: {
-          path: '',
+          url: new URL('http://example.com'),
           method: 'get',
           headers: {             
             accept: 'text/plain'
@@ -78,7 +78,7 @@ describe('HttpHandlerStaticAssetService', () => {
       const context: HttpHandlerContext = {
         route: null,
         request: {
-          path: '',
+          url: new URL('http://example.com'),
           method: 'get',
           headers: { },
         },
@@ -106,7 +106,7 @@ describe('HttpHandlerStaticAssetService', () => {
       const context: HttpHandlerContext = {
         route: null,
         request: {
-          path: '',
+          url: new URL('http://example.com'),
           method: 'get',
           headers: { },
           parameters: {
@@ -138,7 +138,7 @@ describe('HttpHandlerStaticAssetService', () => {
       const context: HttpHandlerContext = {
         route: null,
         request: {
-          path: '',
+          url: new URL('http://example.com'),
           method: 'get',
           headers: { },
           parameters: {
@@ -170,7 +170,7 @@ describe('HttpHandlerStaticAssetService', () => {
       const context: HttpHandlerContext = {
         route: null,
         request: {
-          path: '',
+          url: new URL('http://example.com'),
           method: 'get',
           headers: { },
           parameters: {

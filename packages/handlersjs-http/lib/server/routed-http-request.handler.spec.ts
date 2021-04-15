@@ -67,7 +67,7 @@ describe('RoutedHttpRequestHandler', () => {
   describe('handle', () => {
     it('should call the handle function of the handler in the HttpHandlerRoute when the requested route exists', async () => {
       const httpHandlerContext: HttpHandlerContext = {
-        request: { path: '/path1', method: 'GET', headers: {} },
+        request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
       };
       await routedHttpRequestHandler.handle(httpHandlerContext);
       expect(mockHttpHandler.handle).toHaveBeenCalledTimes(1);
@@ -75,7 +75,7 @@ describe('RoutedHttpRequestHandler', () => {
 
     it('should return a 404 response when the path does not exist', async () => {
       const httpHandlerContext: HttpHandlerContext = {
-        request: { path: '/nonExistantPath', method: 'GET', headers: {} },
+        request: { url: new URL('/nonExistantPath', 'http://example.com'), method: 'GET', headers: {} },
       };
       await expect(routedHttpRequestHandler.handle(httpHandlerContext).toPromise())
         .resolves.toEqual(expect.objectContaining({ status: 404 }));
@@ -83,7 +83,7 @@ describe('RoutedHttpRequestHandler', () => {
 
     it('should return a 404 response when the path exists, but the method does not match ', async () => {
       const httpHandlerContext: HttpHandlerContext = {
-        request: { path: '/path2', method: 'GET', headers: {} },
+        request: { url: new URL('/path2', 'http://example.com'), method: 'GET', headers: {} },
       };
       await expect(routedHttpRequestHandler.handle(httpHandlerContext).toPromise())
         .resolves.toEqual(expect.objectContaining({ status: 404 }));
@@ -127,7 +127,7 @@ describe('RoutedHttpRequestHandler', () => {
       }
 
       Object.keys(pathsAndRoutes).forEach(async (key) => {
-        const ctx: HttpHandlerContext = { request: { path: key, method: 'GET', headers: {} } };
+        const ctx: HttpHandlerContext = { request: { url: new URL(key, 'http://example.com'), method: 'GET', headers: {} } };
         await routedHttpRequestHandler.handle(ctx);
       });
 
@@ -138,7 +138,7 @@ describe('RoutedHttpRequestHandler', () => {
             request: { 
               parameters: { dynamic: 'dynamicParam' }, 
               headers: {}, 
-              path: key, 
+              url: new URL(key, 'http://example.com'), 
               method: 'GET' 
             },
           })
@@ -179,7 +179,7 @@ describe('RoutedHttpRequestHandler', () => {
       }
 
       Object.keys(pathsAndRoutes).forEach(async (key) => {
-        const ctx: HttpHandlerContext = { request: { path: key, method: 'GET', headers: {} } };
+        const ctx: HttpHandlerContext = { request: { url: new URL(key, 'http://example.com'), method: 'GET', headers: {} } };
         await routedHttpRequestHandler.handle(ctx);
       });
 
@@ -194,7 +194,7 @@ describe('RoutedHttpRequestHandler', () => {
   describe('canHandle', () => {
     it ('should return true when context and request are defined', async () => {
       const httpHandlerContext: HttpHandlerContext = {
-        request: { path: '/path1', method: 'GET', headers: {} },
+        request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
       };
       await expect(routedHttpRequestHandler.canHandle(httpHandlerContext).toPromise()).resolves.toEqual(true);
     });
