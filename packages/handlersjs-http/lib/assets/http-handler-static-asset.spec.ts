@@ -33,7 +33,7 @@ describe('HttpHandlerStaticAssetService', () => {
         status: 200,
       };
 
-        service.canHandle(context, response)
+        service.canHandle(context)
         .subscribe(
           (payload) => {
             // do nothing
@@ -64,7 +64,7 @@ describe('HttpHandlerStaticAssetService', () => {
         status: 200,
       };
   
-        service.canHandle(context, response)
+        service.canHandle(context)
         .subscribe(
           (payload) => {
             // do nothing
@@ -90,7 +90,7 @@ describe('HttpHandlerStaticAssetService', () => {
         status: 200,
       };
   
-        service.canHandle(context, response)
+        service.canHandle(context)
         .subscribe(
           (payload) => {
             // do nothing
@@ -121,7 +121,7 @@ describe('HttpHandlerStaticAssetService', () => {
         status: 200,
       };
   
-        service.handle(context, response)
+        service.handle(context)
         .subscribe(
           (payload) => {
             // do nothing
@@ -153,7 +153,7 @@ describe('HttpHandlerStaticAssetService', () => {
         status: 200,
       };
   
-        service.handle(context, response)
+        service.handle(context)
         .subscribe(
           (payload) => {
             // do nothing
@@ -185,7 +185,7 @@ describe('HttpHandlerStaticAssetService', () => {
         status: 200,
       };
   
-        service.handle(context, response)
+        service.handle(context)
         .subscribe(
           (payload) => {
             // do nothing
