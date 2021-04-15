@@ -31,7 +31,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
     return of(hasAccept);
   }
 
-  handle(context: HttpHandlerContext, response?: HttpHandlerResponse): Observable<HttpHandlerResponse> {
+  handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
     const filename = context.request.parameters.filename;
 
     if(filename && filename.includes('../')) {
@@ -45,10 +45,8 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
         switchMap((data) => from(readFile(data.path))
           .pipe(map((file) => ({ ...data, content: file.toString() })))),
         map((data) => ({
-          ...response,
           body: data.content,
           headers: {
-            ...response.headers,
             'Content-Type': this.contentType,
           },
           status: 200,
