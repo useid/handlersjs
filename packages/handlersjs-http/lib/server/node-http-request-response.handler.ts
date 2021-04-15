@@ -52,7 +52,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
       toArray(),
       map((chunks: any[]) => Buffer.concat(chunks).toString()),
       map((body) => {
-        const urlObject: URL = new URL(nodeHttpStreams.requestStream.url);
+        const urlObject: URL = new URL(nodeHttpStreams.requestStream.url, `http://${nodeHttpStreams.requestStream.headers.host}`);
 
         const query = {};
         urlObject.searchParams.forEach((value, key) => query[key] = value);
