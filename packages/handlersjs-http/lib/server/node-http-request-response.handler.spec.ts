@@ -1,9 +1,9 @@
-import { Socket } from 'net';
 import { IncomingMessage, ServerResponse } from 'http';
 import { of } from 'rxjs';
 import { NodeHttpRequestResponseHandler } from './node-http-request-response.handler';
 import { NodeHttpStreams } from './node-http-streams.model';
 import { HttpHandler } from '../general/http-handler';
+import * as mockhttp from 'mock-http';
 
 describe('NodeHttpRequestResponseHandler', () => {
   let handler: NodeHttpRequestResponseHandler;
@@ -19,13 +19,13 @@ describe('NodeHttpRequestResponseHandler', () => {
       safeHandle: jest.fn(),
     } as HttpHandler;
     handler = new NodeHttpRequestResponseHandler(nestedHttpHandler);
-    req = new IncomingMessage(new Socket());
-    req.url = 'www.test.test';
-    req.method = 'GET';
-    req.headers = {};
-    res = new ServerResponse(req);
-    res.writeHead = jest.fn();
+    req = new mockhttp.Request({
+      url: 'http://localhost:3000/test?works=yes',
+      method: 'GET',
+    });
+    res = new mockhttp.Response();
     res.write = jest.fn();
+    res.writeHead = jest.fn();
     res.end = jest.fn();
     streamMock = {
       requestStream: req,
@@ -37,7 +37,7 @@ describe('NodeHttpRequestResponseHandler', () => {
     expect(handler).toBeTruthy();
   });
 
-  it('should throw an error if handler is null or undefined', () => {
+  it('throws when handler is null or undefined', () => {
     expect(() => new NodeHttpRequestResponseHandler(null)).toThrow('A HttpHandler must be provided');
 
     expect(() => new NodeHttpRequestResponseHandler(undefined)).toThrow('A HttpHandler must be provided');
@@ -48,7 +48,7 @@ describe('NodeHttpRequestResponseHandler', () => {
   });
 
   describe('handle', () => {
-    it('should error when url is null/undefined', async () => {
+    it('throws when url is null/undefined', async () => {
       streamMock.requestStream.url = null;
       expect(streamMock.requestStream.url).toBeNull();
       await expect(handler.handle(streamMock).toPromise()).rejects.toThrow('url of the request cannot be null or undefined.');
@@ -58,7 +58,7 @@ describe('NodeHttpRequestResponseHandler', () => {
       await expect(handler.handle(streamMock).toPromise()).rejects.toThrow('url of the request cannot be null or undefined.');
     });
 
-    it('should error when method is null/undefined', async () => {
+    it('throws when method is null/undefined', async () => {
       streamMock.requestStream.method = null;
       expect(streamMock.requestStream.method).toBeNull();
       await expect(handler.handle(streamMock).toPromise()).rejects.toThrow('method of the request cannot be null or undefined.');
@@ -68,7 +68,7 @@ describe('NodeHttpRequestResponseHandler', () => {
       await expect(handler.handle(streamMock).toPromise()).rejects.toThrow('method of the request cannot be null or undefined.');
     });
 
-    it('should error when headers is null/undefined', async () => {
+    it('throws when headers is null/undefined', async () => {
       streamMock.requestStream.headers = null;
       expect(streamMock.requestStream.headers).toBeNull();
       await expect(handler.handle(streamMock).toPromise()).rejects.toThrow('headers of the request cannot be null or undefined.');
@@ -78,25 +78,33 @@ describe('NodeHttpRequestResponseHandler', () => {
       await expect(handler.handle(streamMock).toPromise()).rejects.toThrow('headers of the request cannot be null or undefined.');
     });
 
-    // it('should call the nested handlers handle method', async () => {
-    //   await handler.handle(streamMock).toPromise();
-    //   expect(nestedHttpHandler.handle).toHaveBeenCalledTimes(1);
-    // });
+    it('should call the nested handlers handle method', async () => {
+      await handler.handle(streamMock).toPromise();
+      expect(nestedHttpHandler.handle).toHaveBeenCalledTimes(1);
+    });
 
-    // it('should write the headers to response stream', async () => {
-    //   await handler.handle(streamMock).toPromise();
-    //   expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(200, {});
-    // });
+    it('should write the headers to response stream', async () => {
+      await handler.handle(streamMock).toPromise();
+      expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(200, {});
+    });
 
-    // it('should write the body to response stream', async () => {
-    //   await handler.handle(streamMock).toPromise();
-    //   expect(streamMock.responseStream.write).toHaveBeenCalledWith({});
-    // });
+    it('should write the body to response stream', async () => {
+      await handler.handle(streamMock).toPromise();
+      expect(streamMock.responseStream.write).toHaveBeenCalledWith({});
+    });
 
-    // it('should close the output stream', async () => {
-    //   await handler.handle(streamMock).toPromise();
-    //   expect(streamMock.responseStream.end).toHaveBeenCalledTimes(1);
-    // });
+    it('should close the output stream', async () => {
+      await handler.handle(streamMock).toPromise();
+      expect(streamMock.responseStream.end).toHaveBeenCalledTimes(1);
+    });
+
+    it('should parse query parameters correctly', async () => {
+      await handler.handle(streamMock).toPromise();
+      expect(nestedHttpHandler.handle).toHaveBeenCalledTimes(1);
+      expect(nestedHttpHandler.handle).toHaveBeenCalledWith(expect.objectContaining({
+        request: { query: { works: 'yes' }, method: 'GET', headers: {}, path: '/test'},
+      }));
+    });
   });
 
   describe('canHandle', () => {

@@ -1,41 +1,54 @@
 import { HttpHandler } from '../general/http-handler';
 import { HttpHandlerContext } from '../general/http-handler-context';
 import { HttpHandlerController } from '../general/http-handler-controller';
+import { HttpHandlerRoute } from '../general/http-handler-route';
 import { RoutedHttpRequestHandler } from './routed-http-request.handler';
 
+function getMockedHttpHandler(): HttpHandler {
+  return {
+    handle: jest.fn(),
+    canHandle: jest.fn(),
+    safeHandle: jest.fn(),
+  };
+}
+function getMockedHttpHandlerAndRoute(route: string): { handler: HttpHandler, route: HttpHandlerRoute } {
+  const operations = [ { method: 'GET', publish: true,} ];
+  const handler = getMockedHttpHandler();
+  return { handler, route: { path: route, operations, handler} };
+}
 describe('RoutedHttpRequestHandler', () => {
   let routedHttpRequestHandler: RoutedHttpRequestHandler;
   let handlerControllerList: HttpHandlerController[];
   let mockHttpHandler: HttpHandler;
+  let helper;
 
   beforeEach(() => {
-    mockHttpHandler = {
-      handle: jest.fn(),
-      canHandle: jest.fn(),
-      safeHandle: jest.fn(),
-    };
-    handlerControllerList = [ {
-      label: '1',
-      routes: [ {
-        operations: [ {
-          method: 'GET',
-          publish: true,
+    mockHttpHandler = getMockedHttpHandler();
+
+    handlerControllerList = [
+      {
+        label: '1',
+        routes: [ {
+          operations: [ {
+            method: 'GET',
+            publish: true,
+          } ],
+          path: '/path1',
+          handler: mockHttpHandler,
         } ],
-        path: '/path1',
-        handler: mockHttpHandler,
-      } ],
-    },
-    {
-      label: '2',
-      routes: [ {
-        operations: [ {
-          method: 'POST',
-          publish: true,
+      },
+      {
+        label: '2',
+        routes: [ {
+          operations: [ {
+            method: 'POST',
+            publish: true,
+          } ],
+          path: '/path2',
+          handler: mockHttpHandler,
         } ],
-        path: '/path2',
-        handler: mockHttpHandler,
-      } ],
-    } ];
+      },
+    ];
     routedHttpRequestHandler = new RoutedHttpRequestHandler(handlerControllerList);
   });
 
@@ -98,6 +111,83 @@ describe('RoutedHttpRequestHandler', () => {
 
       await expect(routedHttpRequestHandler.handle(httpHandlerContext2).toPromise())
         .rejects.toThrow('input.request must be defined.');
+    });
+
+    it('should parse url parameters correctly', async() => {
+      const { handler: oneDynamicHandler, route: oneDynamicRoute } = getMockedHttpHandlerAndRoute('/one/:dynamic');
+      const { handler: dynamicOneHandler, route: dynamicOneRoute } = getMockedHttpHandlerAndRoute('/:dynamic/one');
+      const { handler: neverHandler, route: neverRoute } = getMockedHttpHandlerAndRoute('/never');
+      routedHttpRequestHandler = new RoutedHttpRequestHandler([
+        { label: 'testRoutes', routes: [ oneDynamicRoute, dynamicOneRoute, neverRoute ] }
+      ]);
+
+      const pathsAndRoutes = {
+        '/one/dynamicParam': oneDynamicHandler,
+        '/dynamicParam/one': dynamicOneHandler,
+      }
+
+      Object.keys(pathsAndRoutes).forEach(async (key) => {
+        const ctx: HttpHandlerContext = { request: { path: key, method: 'GET', headers: {} } };
+        await routedHttpRequestHandler.handle(ctx);
+      });
+
+      Object.entries(pathsAndRoutes).forEach(([key, value]) => {
+        expect(value.handle).toHaveBeenCalledTimes(1);
+        expect(value.handle).toHaveBeenCalledWith(
+          expect.objectContaining({
+            request: { 
+              parameters: { dynamic: 'dynamicParam' }, 
+              headers: {}, 
+              path: key, 
+              method: 'GET' 
+            },
+          })
+        );
+      });
+
+      expect(neverHandler.handle).toHaveBeenCalledTimes(0);
+    });
+
+    it('should call the right handler depending on the path', async() => {
+      const { handler: oneHandler, route: oneRoute } = getMockedHttpHandlerAndRoute('/one');
+      const { handler: twoHandler, route: twoRoute } = getMockedHttpHandlerAndRoute('/two');
+      const { handler: nestedOneHandler, route: nestedOneRoute } = getMockedHttpHandlerAndRoute('/nested/one');
+      const { handler: nestedNestedOneHandler, route: nestedNestedOneRoute } = getMockedHttpHandlerAndRoute('/nested/nested/one');
+      const { handler: nestedTwoHandler, route: nestedTwoRoute } = getMockedHttpHandlerAndRoute('/nested/two');
+      const { handler: oneDynamicHandler, route: oneDynamicRoute } = getMockedHttpHandlerAndRoute('/one/:dynamic');
+      const { handler: dynamicOneHandler, route: dynamicOneRoute } = getMockedHttpHandlerAndRoute('/:dynamic/one');
+      const { handler: neverHandler, route: neverRoute } = getMockedHttpHandlerAndRoute('/never');
+
+      routedHttpRequestHandler = new RoutedHttpRequestHandler([
+        {
+          label: 'testRoutes',
+          routes: [
+            oneRoute, twoRoute, nestedOneRoute, nestedNestedOneRoute, nestedTwoRoute,
+            oneDynamicRoute, dynamicOneRoute, neverRoute,
+          ],
+        }
+      ]);
+
+      const pathsAndRoutes = {
+        '/one': oneHandler,
+        '/two': twoHandler,
+        '/nested/one': nestedOneHandler,
+        '/nested/nested/one': nestedNestedOneHandler,
+        '/nested/two': nestedTwoHandler,
+        '/one/dynamicParam': oneDynamicHandler,
+        '/dynamicParam/one': dynamicOneHandler,
+      }
+
+      Object.keys(pathsAndRoutes).forEach(async (key) => {
+        const ctx: HttpHandlerContext = { request: { path: key, method: 'GET', headers: {} } };
+        await routedHttpRequestHandler.handle(ctx);
+      });
+
+      Object.entries(pathsAndRoutes).forEach(([key, value]) => {
+        expect(value.handle).toHaveBeenCalledTimes(1);
+      });
+
+      expect(neverHandler.handle).toHaveBeenCalledTimes(0);
     });
   });
 
