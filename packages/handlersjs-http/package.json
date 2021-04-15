@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/handlersjs-http",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "",
   "main": "./dist/public-api.js",
   "directories": {
@@ -37,7 +37,7 @@
     "typescript": "3.8.3"
   },
   "dependencies": {
-    "@digita-ai/handlersjs-core": "0.0.9",
+    "@digita-ai/handlersjs-core": "0.0.10",
     "mock-http": "^1.1.0",
     "rxjs": "6.3.3"
   },

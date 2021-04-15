@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.10](https://github.com/digita-ai/handlersjs/compare/0.0.9...0.0.10) (2021-04-15)
+
+
+### Bug Fixes
+
+* make response optional in asset handler ([1a2f937](https://github.com/digita-ai/handlersjs/commit/1a2f93706f970bb0074520d0ea0bd1e710b6f9cc))
+
+
+
+
+
 ## [0.0.9](https://github.com/digita-ai/handlersjs/compare/0.0.8...0.0.9) (2021-04-15)
 
 **Note:** Version bump only for package @digita-ai/handlersjs-http
