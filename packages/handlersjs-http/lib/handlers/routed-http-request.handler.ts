@@ -1,9 +1,9 @@
 import { Observable, of, throwError } from 'rxjs';
-import { HttpHandler } from '../general/http-handler';
-import { HttpHandlerContext } from '../general/http-handler-context';
-import { HttpHandlerController } from '../general/http-handler-controller';
-import { HttpHandlerResponse } from '../general/http-handler-response';
-import { HttpHandlerRoute } from '../general/http-handler-route';
+import { HttpHandler } from '../models/http-handler';
+import { HttpHandlerContext } from '../models/http-handler-context';
+import { HttpHandlerController } from '../models/http-handler-controller';
+import { HttpHandlerResponse } from '../models/http-handler-response';
+import { HttpHandlerRoute } from '../models/http-handler-route';
 
 /**
  * A {HttpHandler} handling requests based on routes in a given list of {HttpHandlerController}s.

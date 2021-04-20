@@ -1,8 +1,8 @@
 import { Observable, of } from 'rxjs';
 import { Logger } from '@digita-ai/handlersjs-core';
-import { HttpHandler } from '../general/http-handler';
-import { HttpHandlerContext } from '../general/http-handler-context';
-import { HttpHandlerResponse } from '../general/http-handler-response';
+import { HttpHandler } from '../models/http-handler';
+import { HttpHandlerContext } from '../models/http-handler-context';
+import { HttpHandlerResponse } from '../models/http-handler-response';
 
 export class HttpHandlerOptionsService extends HttpHandler {
   constructor(protected logger: Logger) {

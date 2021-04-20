@@ -1,30 +1,38 @@
 import { Observable, of } from 'rxjs';
 import { Logger } from '@digita-ai/handlersjs-core';
-import { HttpHandler } from '../general/http-handler';
-import { HttpHandlerContext } from '../general/http-handler-context';
-import { HttpHandlerResponse } from '../general/http-handler-response';
-import { HttpHandlerCorsOptions } from './http-handler-cors-options';
+import { HttpHandler } from '../models/http-handler';
+import { HttpHandlerContext } from '../models/http-handler-context';
+import { HttpHandlerResponse } from '../models/http-handler-response';
+
+export abstract class HttpHandlerCorsOptions {
+  constructor(
+    public allowMethods?: string[],
+    public exposeHeaders?: string[],
+    public allowHeaders?: string[],
+    public origin?: string,
+    public maxAge?: number,
+    public credentials?: boolean,
+  ) { }
+}
 
 export class HttpHandlerCorsService extends HttpHandler {
   constructor(protected logger: Logger, private options: HttpHandlerCorsOptions) {
     super();
   }
 
-  canHandle(context: HttpHandlerContext, response?: HttpHandlerResponse): Observable<boolean> {
+  canHandle(context: HttpHandlerContext): Observable<boolean> {
     this.logger.debug(HttpHandlerCorsService.name, 'Checking canHandle');
 
     return of(true);
   }
 
-  handle(context: HttpHandlerContext, response?: HttpHandlerResponse): Observable<HttpHandlerResponse> {
+  handle(context: HttpHandlerContext, response: HttpHandlerResponse): Observable<HttpHandlerResponse> {
     this.logger.debug(HttpHandlerCorsService.name, 'Running handle', { headers: context?.request?.headers, options: this.options });
 
     const corsHeaders = {};
     let status = response.status;
 
-    const origin = this.options.origin ? this.options.origin : context.request.headers.Referer;
-
-    corsHeaders['Access-Control-Allow-Origin'] = origin;
+    corsHeaders['Access-Control-Allow-Origin'] = this.options.origin ? this.options.origin : context.request.headers.Referer;
 
     if (this.options.credentials === true) {
       corsHeaders['Access-Control-Allow-Credentials'] = 'true';

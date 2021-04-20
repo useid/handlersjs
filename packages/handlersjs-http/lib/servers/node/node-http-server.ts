@@ -1,7 +1,7 @@
 import { createServer, IncomingMessage, ServerResponse } from 'http';
 import { of, Subject } from 'rxjs';
-import { Daemon } from '../util/daemon';
-import { Server } from './../util/server';
+import { Daemon } from '../../util/daemon';
+import { Server } from '../../util/server';
 import { NodeHttpStreams } from './node-http-streams.model';
 import { NodeHttpStreamsHandler } from './node-http-streams.handler';
 import { HttpHandlerError } from 'lib/errors/http-handler-error';

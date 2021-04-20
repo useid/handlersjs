@@ -4,9 +4,9 @@ import { from, Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { Logger } from '@digita-ai/handlersjs-core';
-import { HttpHandler } from '../general/http-handler';
-import { HttpHandlerContext } from '../general/http-handler-context';
-import { HttpHandlerResponse } from '../general/http-handler-response';
+import { HttpHandler } from '../models/http-handler';
+import { HttpHandlerContext } from '../models/http-handler-context';
+import { HttpHandlerResponse } from '../models/http-handler-response';
 import { NotFoundHttpError } from '../errors/not-found-http-error';
 import { UnsupportedMediaTypeHttpError } from '../errors/unsupported-media-type-http-error';
 import { ForbiddenHttpError } from '../errors/forbidden-http-error';
@@ -16,7 +16,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
     super();
   }
 
-  canHandle(context: HttpHandlerContext, response?: HttpHandlerResponse): Observable<boolean> {
+  canHandle(context: HttpHandlerContext): Observable<boolean> {
     this.logger.debug(HttpHandlerStaticAssetService.name, 'Checking canHandle', context.request);
 
     const canHandleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];

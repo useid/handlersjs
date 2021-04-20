@@ -1,5 +1,5 @@
 import { HandlerError } from '@digita-ai/handlersjs-core';
-import { HttpHandlerResponse } from '../general/http-handler-response';
+import { HttpHandlerResponse } from '../models/http-handler-response';
 
 export class HttpHandlerError extends HandlerError {
   public readonly name = HttpHandlerError.name;
