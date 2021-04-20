@@ -43,6 +43,9 @@ describe('RoutedHttpRequestHandler', () => {
           operations: [ {
             method: 'POST',
             publish: true,
+          }, {
+            method: 'OPTIONS',
+            publish: false,
           } ],
           path: '/path2',
           handler: mockHttpHandler,
@@ -81,12 +84,12 @@ describe('RoutedHttpRequestHandler', () => {
         .resolves.toEqual(expect.objectContaining({ status: 404 }));
     });
 
-    it('should return a 404 response when the path exists, but the method does not match ', async () => {
+    it('should return a 405 with Allow header when method does not match ', async () => {
       const httpHandlerContext: HttpHandlerContext = {
         request: { url: new URL('/path2', 'http://example.com'), method: 'GET', headers: {} },
       };
       await expect(routedHttpRequestHandler.handle(httpHandlerContext).toPromise())
-        .resolves.toEqual(expect.objectContaining({ status: 404 }));
+        .resolves.toEqual(expect.objectContaining({ status: 405, headers: { Allow: 'POST, OPTIONS'  } }));
     });
 
     it('should throw an error when called with null or undefined', async () => {

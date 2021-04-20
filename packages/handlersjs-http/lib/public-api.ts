@@ -10,7 +10,6 @@ export * from './errors/not-implemented-http-error';
 export * from './errors/unauthorized-http-error';
 export * from './errors/unsupported-media-type-http-error';
 export * from './handlers/http-cors.handler';
-export * from './handlers/http-handler-options';
 export * from './handlers/http-handler-static-asset';
 export * from './handlers/http.handler.mock';
 export * from './handlers/routed-http-request.handler';
