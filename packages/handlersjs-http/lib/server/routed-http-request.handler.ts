@@ -63,10 +63,15 @@ export class RoutedHttpRequestHandler extends HttpHandler {
 
     });
     const matchingRoute = this.pathToRouteMap.get(match);
-    const methodSupported = matchingRoute?.operations.map((o) => o.method).includes(request.method);
+    const supportedMethods = matchingRoute?.operations.map((o) => o.method);
+    const methodSupported = supportedMethods?.includes(request.method);
 
     if (!matchingRoute || !methodSupported) {
-      return of({ body: '', headers: {}, status: 404 });
+      return of({
+        body: '',
+        headers: (matchingRoute && !methodSupported) ? { Allow: supportedMethods.toString() } : {},
+        status: 404,
+      });
     }
 
     // add parameters from requestPath to the request object

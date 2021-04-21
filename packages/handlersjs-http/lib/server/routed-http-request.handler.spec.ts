@@ -85,8 +85,9 @@ describe('RoutedHttpRequestHandler', () => {
       const httpHandlerContext: HttpHandlerContext = {
         request: { url: new URL('/path2', 'http://example.com'), method: 'GET', headers: {} },
       };
-      await expect(routedHttpRequestHandler.handle(httpHandlerContext).toPromise())
-        .resolves.toEqual(expect.objectContaining({ status: 404 }));
+      const response = routedHttpRequestHandler.handle(httpHandlerContext).toPromise();
+      await expect(response).resolves.toEqual(expect.objectContaining({ status: 404 }));
+      await expect(response).resolves.toEqual(expect.objectContaining({ headers: { Allow: "POST" }}));
     });
 
     it('should throw an error when called with null or undefined', async () => {
