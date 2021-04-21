@@ -66,7 +66,9 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
       switchMap((context: HttpHandlerContext) => this.httpHandler.handle(context)),
       map((response) => {
         nodeHttpStreams.responseStream.writeHead(response.status, response.headers);
-        nodeHttpStreams.responseStream.write(response.body);
+        if (response?.body) {
+          nodeHttpStreams.responseStream.write(response.body);
+        }
         nodeHttpStreams.responseStream.end();
       }),
     );
