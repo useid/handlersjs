@@ -62,15 +62,19 @@ export class RoutedHttpRequestHandler extends HttpHandler {
       return routeSegments.every((seg, i) => seg === pathSegments[i] || seg[0] === ':');
 
     });
+
+    if (!match) {
+      return of({ body: '', headers: {}, status: 404 });
+    }
     const matchingRoute = this.pathToRouteMap.get(match);
     const supportedMethods = matchingRoute?.operations.map((o) => o.method);
     const methodSupported = supportedMethods?.includes(request.method);
 
-    if (!matchingRoute || !methodSupported) {
+    if (!methodSupported) {
       return of({
         body: '',
-        headers: (matchingRoute && !methodSupported) ? { Allow: supportedMethods.toString() } : {},
-        status: 404,
+        headers: { Allow: supportedMethods?.join(', ') },
+        status: 405,
       });
     }
 
