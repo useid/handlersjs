@@ -18,20 +18,18 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
 
   canHandle(context: HttpHandlerContext, response?: HttpHandlerResponse): Observable<boolean> {
     this.logger.debug(HttpHandlerStaticAssetService.name, 'Checking canHandle', context.request);
-
-    const canHandleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];
-    const hasAccept = context.request.headers.accept
-      ? context.request.headers.accept.split(',').some((contentType) => canHandleAcceptHeaders.includes(contentType.trim()))
-      : true;
-
-    if(!hasAccept) {
-      return throwError(new UnsupportedMediaTypeHttpError('Content type not supported'));
-    }
-
-    return of(hasAccept);
+    return of(true);
   }
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
+    const canHandleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];
+    if (context.request?.headers?.accept) {
+      const reqHeaders = context.request.headers.accept.split(',');
+      if (!reqHeaders.some((contentType) => canHandleAcceptHeaders.includes(contentType.trim()))) {
+        return throwError(new UnsupportedMediaTypeHttpError('Content type not supported'));
+      }
+    }
+
     const filename = context.request.parameters.filename;
 
     if(filename && filename.includes('../')) {

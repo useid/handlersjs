@@ -1,5 +1,5 @@
-export interface HttpHandlerResponse {
-  body: any;
+export interface HttpHandlerResponse<T = unknown> {
+  body?: T;
   headers: { [key: string]: string };
   status: number;
 }
