@@ -1,6 +1,6 @@
-import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { from, Observable, of } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
+import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { Handler } from './handler';
 
 export class WaterfallHandler<T, S> extends Handler<T, S> {
@@ -31,7 +31,7 @@ export class WaterfallHandler<T, S> extends Handler<T, S> {
     if (!this.handlers) {
       throw new HandlerArgumentError('Argument this.handlers should be set.', this.handlers);
     }
-    
+
     return from(handlers).pipe(
       switchMap((handler) =>
         handler.canHandle(input, intermediateOutput).pipe(map((canHandle) => ({ canHandle, handler })))),

@@ -1,9 +1,9 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { of } from 'rxjs';
+import * as mockhttp from 'mock-http';
+import { HttpHandler } from '../../models/http-handler';
 import { NodeHttpRequestResponseHandler } from './node-http-request-response.handler';
 import { NodeHttpStreams } from './node-http-streams.model';
-import { HttpHandler } from '../../models/http-handler';
-import * as mockhttp from 'mock-http';
 
 describe('NodeHttpRequestResponseHandler', () => {
   let handler: NodeHttpRequestResponseHandler;

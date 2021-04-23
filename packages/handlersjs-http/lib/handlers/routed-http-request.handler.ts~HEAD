@@ -66,7 +66,7 @@ export class RoutedHttpRequestHandler extends HttpHandler {
     if (!match) {
       return of({ headers: {}, status: 404 });
     }
-    
+
     const matchingRoute = this.pathToRouteMap.get(match);
 <<<<<<< HEAD:packages/handlersjs-http/lib/handlers/routed-http-request.handler.ts
 

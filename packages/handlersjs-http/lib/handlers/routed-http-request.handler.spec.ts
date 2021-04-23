@@ -1,21 +1,20 @@
+import { of } from 'rxjs';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerController } from '../models/http-handler-controller';
 import { HttpHandlerRoute } from '../models/http-handler-route';
 import { RoutedHttpRequestHandler } from './routed-http-request.handler';
 
-function getMockedHttpHandler(): HttpHandler {
-  return {
-    handle: jest.fn(),
-    canHandle: jest.fn(),
-    safeHandle: jest.fn(),
-  };
-}
-function getMockedHttpHandlerAndRoute(route: string): { handler: HttpHandler; route: HttpHandlerRoute } {
-  const operations = [ { method: 'GET', publish: true } ];
+const getMockedHttpHandler = (): HttpHandler => ({
+  handle: jest.fn().mockReturnValue(of({ status: 200, headers: {} })),
+  canHandle: jest.fn(),
+  safeHandle: jest.fn(),
+});
+const getMockedHttpHandlerAndRoute = (route: string): { handler: HttpHandler; route: HttpHandlerRoute } => {
+  const operations = [ { method: 'GET', publish: true} ];
   const handler = getMockedHttpHandler();
   return { handler, route: { path: route, operations, handler} };
-}
+};
 describe('RoutedHttpRequestHandler', () => {
   let routedHttpRequestHandler: RoutedHttpRequestHandler;
   let handlerControllerList: HttpHandlerController[];

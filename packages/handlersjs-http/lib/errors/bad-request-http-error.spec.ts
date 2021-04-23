@@ -15,12 +15,11 @@ describe('An BadRequestHttpError', (): void => {
     expect(error.message).toEqual('The given input is not supported by the server configuration.');
   });
 
-
   describe('IsInstance', () => {
-      it('returns true if isInstance && status code === 400', () => {
-        const error = new BadRequestHttpError('test');
-        expect(BadRequestHttpError.isInstance(error)).toEqual(true);
-      });
+    it('returns true if isInstance && status code === 400', () => {
+      const error = new BadRequestHttpError('test');
+      expect(BadRequestHttpError.isInstance(error)).toEqual(true);
+    });
   });
 
 });

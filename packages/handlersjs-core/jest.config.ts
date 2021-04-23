@@ -4,7 +4,6 @@ import type { Config } from '@jest/types';
 // Sync object
 const config: Config.InitialOptions = {
   moduleFileExtensions: [ 'ts', 'js' ],
-  rootDir: 'lib',
   testRegex: '.spec.ts$',
   coverageDirectory: '../coverage',
   collectCoverageFrom: [ '**/*.{ts,js}' ],
@@ -23,7 +22,7 @@ const config: Config.InitialOptions = {
   testEnvironment: 'node',
   globals: {
     'ts-jest': {
-      tsconfig: 'tsconfig.spec.json',
+      tsconfig: '<rootDir>/tsconfig.spec.json',
     },
   },
 };

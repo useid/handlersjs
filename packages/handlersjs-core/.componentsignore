@@ -1,4 +1,5 @@
 [
   "Error",
-  "LoggerLevel"
+  "LoggerLevel",
+  "HandlerArgumentError"
 ]
