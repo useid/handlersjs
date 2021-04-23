@@ -3,7 +3,7 @@ import { Socket } from 'net';
 import { of } from 'rxjs';
 import { NodeHttpServer } from './node-http-server';
 import { NodeHttpRequestResponseHandler } from './node-http-request-response.handler';
-import { HttpHandler } from '../general/http-handler';
+import { HttpHandler } from '../../models/http-handler';
 
 describe('NodeHttpServer', () => {
   let server: NodeHttpServer;

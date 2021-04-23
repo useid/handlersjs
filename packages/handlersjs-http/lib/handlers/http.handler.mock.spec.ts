@@ -1,4 +1,4 @@
-import { HttpHandlerContext } from '../general/http-handler-context';
+import { HttpHandlerContext } from '../models/http-handler-context';
 import { MockHttpHandler } from './http.handler.mock';
 
 describe('MockHttpHandler', () => {

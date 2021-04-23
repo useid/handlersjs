@@ -1,7 +1,7 @@
-import { HttpHandler } from '../general/http-handler';
-import { HttpHandlerContext } from '../general/http-handler-context';
-import { HttpHandlerController } from '../general/http-handler-controller';
-import { HttpHandlerRoute } from '../general/http-handler-route';
+import { HttpHandler } from '../models/http-handler';
+import { HttpHandlerContext } from '../models/http-handler-context';
+import { HttpHandlerController } from '../models/http-handler-controller';
+import { HttpHandlerRoute } from '../models/http-handler-route';
 import { RoutedHttpRequestHandler } from './routed-http-request.handler';
 
 function getMockedHttpHandler(): HttpHandler {
@@ -11,8 +11,8 @@ function getMockedHttpHandler(): HttpHandler {
     safeHandle: jest.fn(),
   };
 }
-function getMockedHttpHandlerAndRoute(route: string): { handler: HttpHandler, route: HttpHandlerRoute } {
-  const operations = [ { method: 'GET', publish: true,} ];
+function getMockedHttpHandlerAndRoute(route: string): { handler: HttpHandler; route: HttpHandlerRoute } {
+  const operations = [ { method: 'GET', publish: true } ];
   const handler = getMockedHttpHandler();
   return { handler, route: { path: route, operations, handler} };
 }
@@ -91,7 +91,7 @@ describe('RoutedHttpRequestHandler', () => {
       };
       const response = routedHttpRequestHandler.handle(httpHandlerContext).toPromise();
       await expect(response).resolves.toEqual(expect.objectContaining({ status: 405 }));
-      await expect(response).resolves.toEqual(expect.objectContaining({ headers: { Allow: "POST, PUT" }}));
+      await expect(response).resolves.toEqual(expect.objectContaining({ headers: { Allow: 'POST, PUT' }}));
     });
 
     it('should throw an error when called with null or undefined', async () => {
@@ -123,30 +123,30 @@ describe('RoutedHttpRequestHandler', () => {
       const { handler: dynamicOneHandler, route: dynamicOneRoute } = getMockedHttpHandlerAndRoute('/:dynamic/one');
       const { handler: neverHandler, route: neverRoute } = getMockedHttpHandlerAndRoute('/never');
       routedHttpRequestHandler = new RoutedHttpRequestHandler([
-        { label: 'testRoutes', routes: [ oneDynamicRoute, dynamicOneRoute, neverRoute ] }
+        { label: 'testRoutes', routes: [ oneDynamicRoute, dynamicOneRoute, neverRoute ] },
       ]);
 
       const pathsAndRoutes = {
         '/one/dynamicParam': oneDynamicHandler,
         '/dynamicParam/one': dynamicOneHandler,
-      }
+      };
 
       Object.keys(pathsAndRoutes).forEach(async (key) => {
         const ctx: HttpHandlerContext = { request: { url: new URL(key, 'http://example.com'), method: 'GET', headers: {} } };
         await routedHttpRequestHandler.handle(ctx);
       });
 
-      Object.entries(pathsAndRoutes).forEach(([key, value]) => {
+      Object.entries(pathsAndRoutes).forEach(([ key, value ]) => {
         expect(value.handle).toHaveBeenCalledTimes(1);
         expect(value.handle).toHaveBeenCalledWith(
           expect.objectContaining({
-            request: { 
-              parameters: { dynamic: 'dynamicParam' }, 
-              headers: {}, 
-              url: new URL(key, 'http://example.com'), 
-              method: 'GET' 
+            request: {
+              parameters: { dynamic: 'dynamicParam' },
+              headers: {},
+              url: new URL(key, 'http://example.com'),
+              method: 'GET',
             },
-          })
+          }),
         );
       });
 
@@ -167,10 +167,16 @@ describe('RoutedHttpRequestHandler', () => {
         {
           label: 'testRoutes',
           routes: [
-            oneRoute, twoRoute, nestedOneRoute, nestedNestedOneRoute, nestedTwoRoute,
-            oneDynamicRoute, dynamicOneRoute, neverRoute,
+            oneRoute,
+            twoRoute,
+            nestedOneRoute,
+            nestedNestedOneRoute,
+            nestedTwoRoute,
+            oneDynamicRoute,
+            dynamicOneRoute,
+            neverRoute,
           ],
-        }
+        },
       ]);
 
       const pathsAndRoutes = {
@@ -181,14 +187,14 @@ describe('RoutedHttpRequestHandler', () => {
         '/nested/two': nestedTwoHandler,
         '/one/dynamicParam': oneDynamicHandler,
         '/dynamicParam/one': dynamicOneHandler,
-      }
+      };
 
       Object.keys(pathsAndRoutes).forEach(async (key) => {
         const ctx: HttpHandlerContext = { request: { url: new URL(key, 'http://example.com'), method: 'GET', headers: {} } };
         await routedHttpRequestHandler.handle(ctx);
       });
 
-      Object.entries(pathsAndRoutes).forEach(([key, value]) => {
+      Object.entries(pathsAndRoutes).forEach(([ key, value ]) => {
         expect(value.handle).toHaveBeenCalledTimes(1);
       });
 

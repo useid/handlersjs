@@ -1,8 +1,8 @@
 import { combineLatest, forkJoin, Observable, of, Subject, throwError, zip } from 'rxjs';
 import { map, switchMap, tap, toArray } from 'rxjs/operators';
-import { HttpHandler } from '../general/http-handler';
-import { HttpHandlerContext } from '../general/http-handler-context';
-import { HttpHandlerRequest } from '../general/http-handler-request';
+import { HttpHandler } from '../../models/http-handler';
+import { HttpHandlerContext } from '../../models/http-handler-context';
+import { HttpHandlerRequest } from '../../models/http-handler-request';
 import { NodeHttpStreamsHandler } from './node-http-streams.handler';
 import { NodeHttpStreams } from './node-http-streams.model';
 

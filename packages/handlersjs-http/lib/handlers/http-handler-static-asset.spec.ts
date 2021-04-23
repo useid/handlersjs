@@ -1,6 +1,6 @@
 import { TestService, mainModulePath, configPath } from '../../setup-tests';
-import { HttpHandlerResponse } from '../general/http-handler-response';
-import { HttpHandlerContext } from '../general/http-handler-context';
+import { HttpHandlerResponse } from '../models/http-handler-response';
+import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerStaticAssetService } from './http-handler-static-asset';
 import { NotFoundHttpError } from '../errors/not-found-http-error';
 import { ForbiddenHttpError } from '../errors/forbidden-http-error';

@@ -1,9 +1,9 @@
 import { Observable, of, throwError } from 'rxjs';
-import { HttpHandler } from '../general/http-handler';
-import { HttpHandlerContext } from '../general/http-handler-context';
-import { HttpHandlerController } from '../general/http-handler-controller';
-import { HttpHandlerResponse } from '../general/http-handler-response';
-import { HttpHandlerRoute } from '../general/http-handler-route';
+import { HttpHandler } from '../models/http-handler';
+import { HttpHandlerContext } from '../models/http-handler-context';
+import { HttpHandlerController } from '../models/http-handler-controller';
+import { HttpHandlerResponse } from '../models/http-handler-response';
+import { HttpHandlerRoute } from '../models/http-handler-route';
 
 /**
  * A {HttpHandler} handling requests based on routes in a given list of {HttpHandlerController}s.
@@ -68,6 +68,11 @@ export class RoutedHttpRequestHandler extends HttpHandler {
     }
     
     const matchingRoute = this.pathToRouteMap.get(match);
+<<<<<<< HEAD:packages/handlersjs-http/lib/handlers/routed-http-request.handler.ts
+
+    if (!matchingRoute) {
+      return of({ body: '', headers: {}, status: 404 });
+=======
     const supportedMethods = matchingRoute?.operations.map((o) => o.method);
     const methodSupported = supportedMethods?.includes(request.method);
 
@@ -77,6 +82,13 @@ export class RoutedHttpRequestHandler extends HttpHandler {
         headers: { Allow: supportedMethods?.join(', ') },
         status: 405,
       });
+>>>>>>> refs/remotes/origin/develop:packages/handlersjs-http/lib/server/routed-http-request.handler.ts
+    }
+
+    const methodSupported = matchingRoute?.operations.map((o) => o.method).includes(request.method);
+
+    if (!methodSupported) {
+      return of({ body: '', headers: { Allow: matchingRoute.operations.map((op) => op.method).join(', ') }, status: 405 });
     }
 
     // add parameters from requestPath to the request object
