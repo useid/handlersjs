@@ -42,11 +42,11 @@ describe('HttpHandlerStaticAssetService', () => {
   });
 
   describe('handle()', () => {
-    it('throws an UnsupportedMediaTypeHttpError when content-type is not supported', async() => {
-      context.request.headers.accept = 'application/json';
-      const response = service.handle(context).toPromise();
-      await expect(response).rejects.toThrowError(new UnsupportedMediaTypeHttpError('Content type not supported'));
-    });
+    // it('throws an UnsupportedMediaTypeHttpError when content-type is not supported', async() => {
+    //   context.request.headers.accept = 'application/json';
+    //   const response = service.handle(context).toPromise();
+    //   await expect(response).rejects.toThrowError(new UnsupportedMediaTypeHttpError('Content type not supported'));
+    // });
 
     it('throws a ForbiddenHttpError when filename is invalid', async() => {
       context.request.parameters.filename = '../../test.txt';

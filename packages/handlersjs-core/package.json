@@ -17,7 +17,10 @@
     "test:ci": "jest --silent --runInBand --passWithNoTests",
     "build": "rimraf ./dist && npm run build:ts && npm run build:components",
     "build:ts": "tsc",
-    "build:components": "componentsjs-generator -s lib -c dist/components -i .componentsignore"
+    "build:components": "componentsjs-generator -s lib -c dist/components -i .componentsignore",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "lint:staged": "lint-staged"
   },
   "repository": {
     "type": "git",
@@ -37,6 +40,7 @@
     "typescript": "3.8.3"
   },
   "dependencies": {
+    "lint-staged": "^10.5.4",
     "rxjs": "6.3.3"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core",

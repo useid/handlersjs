@@ -7,10 +7,10 @@ const config: Config.InitialOptions = {
   verbose: true,
   preset: 'ts-jest',
   testEnvironment: 'node',
+  rootDir: './',
   globals: {
     'ts-jest': {
-      babelConfig: true,
-      tsconfig: 'tsconfig.json',
+      tsconfig: '<rootDir>/tsconfig.json',
     },
   },
 };

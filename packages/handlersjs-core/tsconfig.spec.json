@@ -4,9 +4,6 @@
     "declaration": false,
     "inlineSources": false,
   },
-  "files": [
-    "./jest.config.ts"
-  ],
   "exclude": [
     "dist",
     "node_modules"
