@@ -2,9 +2,9 @@
   "name": "root",
   "private": true,
   "lint-staged": {
-      "**/*.(js|ts)": [
-          "eslint --fix"
-      ]
+    "**/*.(js|ts)": [
+      "eslint --fix"
+    ]
   },
   "scripts": {
     "postinstall": "husky install",
