@@ -1,9 +1,9 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { Socket } from 'net';
 import { of } from 'rxjs';
+import { HttpHandler } from '../general/http-handler';
 import { NodeHttpServer } from './node-http-server';
 import { NodeHttpRequestResponseHandler } from './node-http-request-response.handler';
-import { HttpHandler } from '../general/http-handler';
 
 describe('NodeHttpServer', () => {
   let server: NodeHttpServer;

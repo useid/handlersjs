@@ -1,6 +1,6 @@
-import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { from, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { Handler } from './handler';
 
 export class SequenceHandler<T, S> extends Handler<T, S> {
@@ -22,7 +22,7 @@ export class SequenceHandler<T, S> extends Handler<T, S> {
     if (!this.handlers) {
       throw new HandlerArgumentError('Argument this.handlers should be set.', this.handlers);
     }
-    
+
     let temporaryIntermediateOutput = intermediateOutput;
 
     for (const handler of handlers) {

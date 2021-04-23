@@ -66,7 +66,7 @@ export class RoutedHttpRequestHandler extends HttpHandler {
     if (!match) {
       return of({ headers: {}, status: 404 });
     }
-    
+
     const matchingRoute = this.pathToRouteMap.get(match);
     const supportedMethods = matchingRoute?.operations.map((o) => o.method);
     const methodSupported = supportedMethods?.includes(request.method);

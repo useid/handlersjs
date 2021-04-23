@@ -11,7 +11,7 @@ import { UnsupportedMediaTypeHttpError } from './unsupported-media-type-http-err
 
 // Only used to make typings easier in the tests
 class FixedHttpError extends HttpError {
-  public constructor(message?: string) {
+  constructor(message?: string) {
     super(0, '', message);
   }
 }
