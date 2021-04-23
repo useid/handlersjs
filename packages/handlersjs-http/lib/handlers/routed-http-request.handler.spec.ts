@@ -1,11 +1,12 @@
-import { HttpHandler } from '../general/http-handler';
-import { HttpHandlerContext } from '../general/http-handler-context';
-import { HttpHandlerController } from '../general/http-handler-controller';
-import { HttpHandlerRoute } from '../general/http-handler-route';
+import { of } from 'rxjs';
+import { HttpHandler } from '../models/http-handler';
+import { HttpHandlerContext } from '../models/http-handler-context';
+import { HttpHandlerController } from '../models/http-handler-controller';
+import { HttpHandlerRoute } from '../models/http-handler-route';
 import { RoutedHttpRequestHandler } from './routed-http-request.handler';
 
 const getMockedHttpHandler = (): HttpHandler => ({
-  handle: jest.fn(),
+  handle: jest.fn().mockReturnValue(of({ status: 200, headers: {} })),
   canHandle: jest.fn(),
   safeHandle: jest.fn(),
 });

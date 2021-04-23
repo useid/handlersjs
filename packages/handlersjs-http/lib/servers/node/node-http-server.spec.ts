@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { Socket } from 'net';
 import { of } from 'rxjs';
-import { HttpHandler } from '../general/http-handler';
+import { HttpHandler } from '../../models/http-handler';
 import { NodeHttpServer } from './node-http-server';
 import { NodeHttpRequestResponseHandler } from './node-http-request-response.handler';
 

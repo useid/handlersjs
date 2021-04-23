@@ -1,4 +1,4 @@
-import { HttpHandlerContext } from '../general/http-handler-context';
+import { HttpHandlerContext } from '../models/http-handler-context';
 import { MockHttpHandler } from './http.handler.mock';
 
 describe('MockHttpHandler', () => {
@@ -7,7 +7,7 @@ describe('MockHttpHandler', () => {
 
   beforeEach(() => {
     handler = new MockHttpHandler();
-    context = { request: { headers: {}, method: '', url: new URL('http://example.com') } };
+    context = { request: { headers: {}, method: 'GET', url: new URL('http://example.com') } };
   });
 
   it('should be correctly instantiated', () => {

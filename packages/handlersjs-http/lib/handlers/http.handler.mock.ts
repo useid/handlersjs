@@ -1,7 +1,7 @@
 import { Observable, of, throwError } from 'rxjs';
-import { HttpHandlerContext } from '../general/http-handler-context';
-import { HttpHandler } from '../general/http-handler';
-import { HttpHandlerResponse } from '../general/http-handler-response';
+import { HttpHandlerContext } from '../models/http-handler-context';
+import { HttpHandler } from '../models/http-handler';
+import { HttpHandlerResponse } from '../models/http-handler-response';
 
 /**
  * A mock of an HttpHandler used for tests

@@ -1,9 +1,10 @@
 import { Observable, of, throwError } from 'rxjs';
-import { HttpHandler } from '../general/http-handler';
-import { HttpHandlerContext } from '../general/http-handler-context';
-import { HttpHandlerController } from '../general/http-handler-controller';
-import { HttpHandlerResponse } from '../general/http-handler-response';
-import { HttpHandlerRoute } from '../general/http-handler-route';
+import { map } from 'rxjs/operators';
+import { HttpHandler } from '../models/http-handler';
+import { HttpHandlerContext } from '../models/http-handler-context';
+import { HttpHandlerController } from '../models/http-handler-controller';
+import { HttpHandlerResponse } from '../models/http-handler-response';
+import { HttpHandlerRoute } from '../models/http-handler-route';
 
 /**
  * A {HttpHandler} handling requests based on routes in a given list of {HttpHandlerController}s.
@@ -64,26 +65,35 @@ export class RoutedHttpRequestHandler extends HttpHandler {
     });
 
     if (!match) {
-      return of({ headers: {}, status: 404 });
+      return of({ body: '', headers: {}, status: 404 });
     }
 
     const matchingRoute = this.pathToRouteMap.get(match);
-    const supportedMethods = matchingRoute?.operations.map((o) => o.method);
-    const methodSupported = supportedMethods?.includes(request.method);
+
+    if (!matchingRoute) {
+      return of({ body: '', headers: {}, status: 404 });
+    }
+
+    const allowedMethods = matchingRoute.operations.map((op) => op.method);
+    const methodSupported = allowedMethods.includes(request.method);
 
     if (!methodSupported) {
-      return of({
-        body: '',
-        headers: { Allow: supportedMethods?.join(', ') },
-        status: 405,
-      });
+      return of({ body: '', headers: { Allow: allowedMethods.join(', ') }, status: 405 });
     }
 
     // add parameters from requestPath to the request object
     const parameters = this.extractParameters(match.split('/').slice(1), pathSegments);
     const requestWithParams = Object.assign(request, { parameters });
 
-    return matchingRoute.handler.handle({ request: requestWithParams, route: matchingRoute });
+    return matchingRoute.handler.handle({ request: requestWithParams, route: matchingRoute }).pipe(
+      map((response) => ({
+        ... response,
+        headers: {
+          ... response.headers,
+          Allow: allowedMethods.join(', '),
+        },
+      })),
+    );
   }
 
   /**
@@ -97,7 +107,7 @@ export class RoutedHttpRequestHandler extends HttpHandler {
   }
 
   private extractParameters(routeSegments: string[], pathSegments: string[]): {[key: string]: string} {
-    const parameters = {};
+    const parameters: { [key: string]: string } = {};
     routeSegments.forEach((segment, i) => {
       if (segment[0] === ':') {
         const propName = segment.slice(1); // Cut ':'
