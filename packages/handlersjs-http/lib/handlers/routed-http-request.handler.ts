@@ -21,16 +21,20 @@ export class RoutedHttpRequestHandler extends HttpHandler {
    * @param {HttpHandlerController[]} handlerControllerList - a list of HttpHandlerController objects
    */
   constructor(private handlerControllerList: HttpHandlerController[]) {
+
     super();
 
     if (!handlerControllerList) {
+
       throw new Error('handlerControllerList must be defined.');
+
     }
 
     this.pathToRouteMap = new Map(
       this.handlerControllerList.flatMap((controller) =>
         controller.routes.map((route) => [ route.path, { controller, route } ])),
     );
+
   }
 
   /**
@@ -53,11 +57,16 @@ export class RoutedHttpRequestHandler extends HttpHandler {
 
     // Find a matching route
     const match = Array.from(this.pathToRouteMap.keys()).find((route) => {
+
       const routeSegments = route.split('/').slice(1);
+
       // If there are different numbers of segments, then the route does not match the URL.
       if (routeSegments.length !== pathSegments.length) {
+
         return false;
+
       }
+
       // If each segment in the url matches the corresponding segment in the route path,
       // or the route path segment starts with a ':' then the route is matched.
       return routeSegments.every((seg, i) => seg === pathSegments[i] || seg[0] === ':');
@@ -67,14 +76,18 @@ export class RoutedHttpRequestHandler extends HttpHandler {
     const matchingRoute = match ? this.pathToRouteMap.get(match) : undefined;
 
     if (!matchingRoute) {
+
       return of({ body: '', headers: {}, status: 404 });
+
     }
 
     const allowedMethods = matchingRoute.route.operations.map((op) => op.method);
     const methodSupported = allowedMethods.includes(request.method);
 
     if (!methodSupported) {
+
       return of({ body: '', headers: { Allow: allowedMethods.join(', ') }, status: 405 });
+
     }
 
     // add parameters from requestPath to the request object
@@ -93,6 +106,7 @@ export class RoutedHttpRequestHandler extends HttpHandler {
         },
       })),
     );
+
   }
 
   /**
@@ -102,17 +116,27 @@ export class RoutedHttpRequestHandler extends HttpHandler {
    * @param {HttpHandlerContext} context - a HttpHandlerContext object containing a HttpHandlerRequest and HttpHandlerRoute
    */
   canHandle(context: HttpHandlerContext): Observable<boolean> {
+
     return context && context.request ? of(true) : of(false);
+
   }
 
-  private extractParameters(routeSegments: string[], pathSegments: string[]): {[key: string]: string} {
+  private extractParameters(routeSegments: string[], pathSegments: string[]): { [key: string]: string } {
+
     const parameters: { [key: string]: string } = {};
     routeSegments.forEach((segment, i) => {
+
       if (segment[0] === ':') {
+
         const propName = segment.slice(1); // Cut ':'
         parameters[propName] = decodeURIComponent(pathSegments[i]);
+
       }
+
     });
+
     return parameters;
+
   }
+
 }

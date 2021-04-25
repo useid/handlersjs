@@ -12,17 +12,22 @@ import { NodeHttpStreams } from './node-http-streams.model';
  * passing it through a {HttpHandler} and writing the resulting {HttpHandlerResponse} to the response stream.
  */
 export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
+
   /**
    * Creates a {NodeHttpRequestResponseHandler} passing requests through the given handler.
    *
    * @param {HttpHandler} httpHandler - the handler through which to pass incoming requests.
    */
   constructor(private httpHandler: HttpHandler) {
+
     super();
 
     if (!httpHandler) {
+
       throw new Error('A HttpHandler must be provided');
+
     }
+
   }
 
   /**
@@ -37,13 +42,18 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
     const url = nodeHttpStreams.requestStream.url;
     if (!url) {
       return throwError(new Error('url of the request cannot be null or undefined.'));
+
     }
     const method = Object.values(HttpMethods).find((m) => m === nodeHttpStreams.requestStream.method);
     if (!method) {
       return throwError(new Error('method of the request cannot be null or undefined.'));
+
     }
+
     if (!nodeHttpStreams.requestStream.headers) {
+
       return throwError(new Error('headers of the request cannot be null or undefined.'));
+
     }
 
     const buffer = new Subject<any>();
@@ -53,7 +63,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
     return buffer.pipe(
       toArray(),
-      map((chunks: any[]) => Buffer.concat(chunks).toString()),
+      map((chunks) => Buffer.concat(chunks).toString()),
       map((body) => {
         const urlObject: URL = new URL(url, `http://${nodeHttpStreams.requestStream.headers.host}`);
 
@@ -68,13 +78,20 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
       }),
       switchMap((context: HttpHandlerContext) => this.httpHandler.handle(context)),
       map((response) => {
+
         nodeHttpStreams.responseStream.writeHead(response.status, response.headers);
+
         if (response?.body) {
+
           nodeHttpStreams.responseStream.write(response.body);
+
         }
+
         nodeHttpStreams.responseStream.end();
+
       }),
     );
+
   }
 
   /**
@@ -84,6 +101,9 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
    * @returns always `of(true)`
    */
   canHandle(input: NodeHttpStreams): Observable<boolean> {
+
     return input && input.requestStream && input.responseStream ? of(true) : of(false);
+
   }
+
 }

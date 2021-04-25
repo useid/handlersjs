@@ -12,6 +12,7 @@ describe('HttpHandlerStaticAssetService', () => {
   let context: HttpHandlerContext;
 
   beforeEach(() => {
+
     context = {
       request: {
         url: new URL('http://example.com'),
@@ -24,20 +25,28 @@ describe('HttpHandlerStaticAssetService', () => {
         },
       },
     };
+
   });
 
   it('should be correctly instantiated', () => {
+
     expect(service).toBeTruthy();
+
   });
 
   describe('canHandle()', () => {
+
     it('should always return true', async() => {
+
       const response = service.canHandle(context).toPromise();
       await expect(response).resolves.toBe(true);
+
     });
+
   });
 
   describe('handle()', () => {
+
     // it('throws an UnsupportedMediaTypeHttpError when content-type is not supported', async() => {
     //   context.request.headers.accept = 'application/json';
     //   const response = service.handle(context).toPromise();
@@ -45,15 +54,19 @@ describe('HttpHandlerStaticAssetService', () => {
     // });
 
     it('throws a ForbiddenHttpError when filename is invalid', async() => {
+
       context.request.parameters.filename = '../../test.txt';
       const response = service.handle(context).toPromise();
       await expect(response).rejects.toThrowError(new ForbiddenHttpError(''));
+
     });
 
     it('throws a NotFoundHttpError when file is not found', async() => {
+
       context.request.parameters.filename = 'test.php';
       const response = service.handle(context).toPromise();
       await expect(response).rejects.toThrowError(new NotFoundHttpError('Error while trying to read file'));
+
     });
 
     // it('should return file content when file is found', async() => {
@@ -61,5 +74,7 @@ describe('HttpHandlerStaticAssetService', () => {
     //   const response = await service.handle(context).toPromise();
     //   expect(response.body).toBe('test file');
     // });
+
   });
+
 });

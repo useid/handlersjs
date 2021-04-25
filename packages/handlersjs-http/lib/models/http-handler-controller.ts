@@ -8,4 +8,5 @@ export class HttpHandlerController<C extends HttpHandlerContext = HttpHandlerCon
     public routes: HttpHandlerRoute<C>[],
     public preResponseHandler?: Handler<HttpHandlerContext, C>,
   ) { }
+
 }

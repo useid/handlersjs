@@ -14,4 +14,5 @@ export abstract class Daemon {
    * Stop the server
    */
   abstract stop(): Observable<Daemon>;
+
 }

@@ -29,11 +29,17 @@ import { HttpError } from './http-error';
  * Usually this implies future availability (e.g., a new feature of a web-service API).
  */
 export class NotImplementedHttpError extends HttpError {
+
   constructor(message?: string) {
+
     super(501, 'NotImplementedHttpError', message);
+
   }
 
-  static isInstance(error: any): error is NotImplementedHttpError {
+  static isInstance(error: unknown): error is NotImplementedHttpError {
+
     return HttpError.isInstance(error) && error.statusCode === 501;
+
   }
+
 }

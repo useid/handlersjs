@@ -6,6 +6,7 @@ import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpMethods } from 'lib/models/http-method';
 
 export abstract class HttpCorsOptions {
+
   constructor(
     public origins?: string[],
     public allowMethods?: string[],
@@ -14,6 +15,7 @@ export abstract class HttpCorsOptions {
     public credentials?: boolean,
     public maxAge?: number,
   ) { }
+
 }
 
 const cleanHeaders = (headers: { [key: string]: string }) => Object.keys(headers).reduce<{ [key: string]: string }>(
@@ -33,10 +35,13 @@ export class HttpCorsRequestHandler extends HttpHandler {
     private passThroughOptions: boolean = false,
   ) {
     super();
+
   }
 
   canHandle(context: HttpHandlerContext): Observable<boolean> {
+
     return of(true);
+
   }
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
@@ -49,6 +54,7 @@ export class HttpCorsRequestHandler extends HttpHandler {
 
     const {
       ['origin']: requestedOrigin,
+      /* eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructuring for removal */
       ['access-control-request-method']: requestedMethod,
       ['access-control-request-headers']: requestedHeaders,
       ... noCorsHeaders
@@ -93,6 +99,7 @@ export class HttpCorsRequestHandler extends HttpHandler {
         map((response) => ({
           ... response,
           headers: {
+
             ... response.headers,
             ... allowOrigin && ({
               ... (allowOrigin !== '*') && { 'vary': 'origin' },
@@ -126,5 +133,7 @@ export class HttpCorsRequestHandler extends HttpHandler {
       );
 
     }
+
   }
+
 }
