@@ -16,6 +16,9 @@
     "extends": "@digita-ai/lerna-config",
     "version": "0.1.0"
   },
+  "eslintConfig": {
+    "extends": [ "@digita-ai/eslint-config" ]
+  },
   "scripts": {
     "postinstall": "husky install",
     "release": "lerna version",
