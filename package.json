@@ -12,12 +12,16 @@
       "<rootDir>/packages/*/"
     ]
   },
+  "lerna": {
+    "extends": "@digita-ai/lerna-config",
+    "version": "0.1.0"
+  },
   "scripts": {
     "postinstall": "husky install",
     "release": "lerna version",
     "start": "lerna run start --parallel",
-    "bootstrap": "npm ci && lerna bootstrap --ignore-prepublish",
-    "bootstrap:no-ci": "npm i && lerna bootstrap --no-ci --ignore-prepublish",
+    "bootstrap": "npm ci && lerna bootstrap",
+    "bootstrap:no-ci": "npm i && lerna bootstrap --no-ci",
     "build": "lerna run build --since HEAD",
     "build:all": "lerna run build",
     "lint": "lerna run lint --since HEAD --parallel",
@@ -34,6 +38,7 @@
     "@commitlint/config-conventional": "^11.0.0",
     "@commitlint/config-lerna-scopes": "^11.0.0",
     "@digita-ai/jest-config": "^0.1.2",
+    "@digita-ai/lerna-config": "^0.1.2",
     "@types/jest": "^26.0.22",
     "@types/node": "^14.14.41",
     "@typescript-eslint/eslint-plugin": "^4.10.0",
