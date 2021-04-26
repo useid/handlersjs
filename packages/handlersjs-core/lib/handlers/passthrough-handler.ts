@@ -1,5 +1,5 @@
 import { from, Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, mapTo, switchMap } from 'rxjs/operators';
 import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { Handler } from './handler';
 
@@ -17,10 +17,8 @@ export class PassthroughHandler<T, S> extends Handler<T, S> {
       throw new HandlerArgumentError('Argument this.handler should be set.', this.handler);
     }
 
-    return of({ handler: this.handler, input, intermediateOutput }).pipe(
-      switchMap((data) => from(data.handler.safeHandle(input, intermediateOutput))
-        .pipe(map((newIntermediateOutput) => ({ ...data, newIntermediateOutput })))),
-      map((data) => data.intermediateOutput),
+    return from(this.handler.handle(input, intermediateOutput)).pipe(
+      mapTo(intermediateOutput),
     );
   }
 }
