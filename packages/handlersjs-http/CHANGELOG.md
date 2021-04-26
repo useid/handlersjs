@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.1.1](https://github.com/digita-ai/handlersjs/compare/v0.1.0...v0.1.1) (2021-04-26)
+
+
+### **Bug Fixes**
+
+* temporary body type revert ([360f7dd](https://github.com/digita-ai/handlersjs/commit/360f7dd84967cd65cbadb287a6b9e24422e6c842))
+
+
+
 ## 0.1.0 (2021-04-23)
 
 
