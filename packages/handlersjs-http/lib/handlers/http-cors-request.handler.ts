@@ -54,6 +54,8 @@ export class HttpCorsRequestHandler extends HttpHandler {
         ? requestOrigin
         : '*';
 
+    const allowHeadersOrRequested = allowHeaders?.join(',') ?? requestHeaders;
+
     if (context.request.method === 'OPTIONS') {
 
       /* Preflight Request */
@@ -70,7 +72,7 @@ export class HttpCorsRequestHandler extends HttpHandler {
               ... (allowOrigin !== '*') && { 'Vary': 'Origin' },
               'Access-Control-Allow-Origin': allowOrigin,
               'Access-Control-Allow-Methods': (allowMethods ?? routeMethods ?? allMethods).join(', '),
-              'Access-Control-Allow-Headers': allowHeaders?.join(',') ?? context.request.headers['Access-Control-Request-Headers'],
+              ... (allowHeadersOrRequested) && { 'Access-Control-Allow-Headers': allowHeadersOrRequested },
               ... (credentials) && { 'Access-Control-Allow-Credentials': 'true' },
               'Access-Control-Max-Age': (maxAge ?? -1).toString(),
             }),
