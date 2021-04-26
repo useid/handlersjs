@@ -11,6 +11,22 @@
     "dist",
     "config"
   ],
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 0,
+        "functions": 0,
+        "lines": 0,
+        "statements": 0
+      }
+    },
+    "displayName": "core",
+    "preset": "@digita-ai/jest-config",
+    "rootDir": "lib",
+    "roots": [ "<rootDir>" ],              "//": "add dirs to search through multiple roots",
+    "testEnvironment": "node",             "//": "or jsdom",
+    "testEnvironmentOptions": {},          "//": "can set options passed to jsdom or node env"
+  },
   "types": "./dist/public-api.d.ts",
   "scripts": {
     "test": "jest --coverage --passWithNoTests",
