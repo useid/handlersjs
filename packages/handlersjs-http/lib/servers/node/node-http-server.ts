@@ -11,7 +11,7 @@ import { HttpHandlerError } from 'lib/errors/http-handler-error';
  */
 export class NodeHttpServer extends Server {
 
-  private server;
+  private server: any;
 
   /**
    * Creates a {NodeHttpServer} listening on `http://``host``:``port`, passing requests through the given {NodeHttpStreamsHandler}.
@@ -44,7 +44,7 @@ export class NodeHttpServer extends Server {
   start() {
     const subject = new Subject<Daemon>();
 
-    this.server.on(('error'), (err) => {
+    this.server.on(('error'), (err: any) => {
       subject.error(new Error(`The server ran into a problem: ${err}`));
     });
 
@@ -65,7 +65,7 @@ export class NodeHttpServer extends Server {
   stop() {
     const subject = new Subject<Daemon>();
 
-    this.server.on(('error'), (err) => {
+    this.server.on(('error'), (err: any) => {
       subject.error(new Error(`The server ran into a problem: ${err}`));
     });
 

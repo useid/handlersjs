@@ -2,7 +2,7 @@ import { combineLatest, forkJoin, Observable, of, Subject, throwError, zip } fro
 import { map, switchMap, tap, toArray } from 'rxjs/operators';
 import { HttpHandler } from '../../models/http-handler';
 import { HttpHandlerContext } from '../../models/http-handler-context';
-import { HttpHandlerRequest } from '../../models/http-handler-request';
+import { HttpHandlerRequest, methodType } from '../../models/http-handler-request';
 import { NodeHttpStreamsHandler } from './node-http-streams.handler';
 import { NodeHttpStreams } from './node-http-streams.model';
 
@@ -33,10 +33,12 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
    * @returns an {Observable<void>} for completion detection
    */
   handle(nodeHttpStreams: NodeHttpStreams): Observable<void> {
-    if (!nodeHttpStreams.requestStream.url) {
+    const url = nodeHttpStreams.requestStream.url;
+    if (!url) {
       return throwError(new Error('url of the request cannot be null or undefined.'));
     }
-    if (!nodeHttpStreams.requestStream.method) {
+    const method = nodeHttpStreams.requestStream.method as methodType;
+    if (!method) {
       return throwError(new Error('method of the request cannot be null or undefined.'));
     }
     if (!nodeHttpStreams.requestStream.headers) {
@@ -52,11 +54,11 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
       toArray(),
       map((chunks: any[]) => Buffer.concat(chunks).toString()),
       map((body) => {
-        const urlObject: URL = new URL(nodeHttpStreams.requestStream.url, `http://${nodeHttpStreams.requestStream.headers.host}`);
+        const urlObject: URL = new URL(url, `http://${nodeHttpStreams.requestStream.headers.host}`);
 
-        const httpHandlerRequest = {
+        const httpHandlerRequest: HttpHandlerRequest = {
           url: urlObject,
-          method: nodeHttpStreams.requestStream.method,
+          method,
           headers: nodeHttpStreams.requestStream.headers as { [key: string]: string },
         };
 

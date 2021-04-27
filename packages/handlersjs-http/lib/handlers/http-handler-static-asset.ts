@@ -2,7 +2,6 @@ import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { from, Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import * as _ from 'lodash';
 import { Logger } from '@digita-ai/handlersjs-core';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -30,7 +29,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
       }
     }
 
-    const filename = context.request.parameters.filename;
+    const filename = context.request.parameters?.filename;
 
     if(filename && filename.includes('../')) {
       return throwError(new ForbiddenHttpError());

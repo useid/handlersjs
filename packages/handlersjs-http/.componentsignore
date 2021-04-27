@@ -4,5 +4,11 @@
   "HandlerError",
   "HttpHandlerOperationSecurityType",
   "HttpHandlerResponse",
-  "Logger"
+  "Logger",
+  "HttpCorsOptions",
+  "HttpCorsRequestHandler",
+  "HttpHandlerController",
+  "HttpHandlerOperationMedia",
+  "HttpHandlerOperationResponse",
+  "HttpHandlerOperation"
 ]

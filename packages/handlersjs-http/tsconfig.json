@@ -14,7 +14,7 @@
         "typeRoots": [
             "node_modules/@types"
         ],
-        "strict": false,
+        "strict": true,
         "sourceMap": true,
         "declaration": true,
         "downlevelIteration": true,
