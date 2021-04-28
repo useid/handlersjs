@@ -12,25 +12,23 @@
     "config"
   ],
   "jest": {
+    "preset": "@digita-ai/jest-config",
+    "displayName": "core",
+    "rootDir": "lib",
     "coverageThreshold": {
       "global": {
-        "branches": 0,
-        "functions": 0,
-        "lines": 0,
-        "statements": 0
+        "branches": 4.26,
+        "functions": 2.63,
+        "lines": 6.15,
+        "statements": 6.11
       }
-    },
-    "displayName": "core",
-    "preset": "@digita-ai/jest-config",
-    "rootDir": "lib",
-    "roots": [ "<rootDir>" ],              "//": "add dirs to search through multiple roots",
-    "testEnvironment": "node",             "//": "or jsdom",
-    "testEnvironmentOptions": {},          "//": "can set options passed to jsdom or node env"
+    }
   },
   "types": "./dist/public-api.d.ts",
   "scripts": {
     "test": "jest --coverage --passWithNoTests",
     "test:ci": "jest --silent --runInBand --passWithNoTests",
+    "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json",
     "build": "rimraf ./dist && npm run build:ts && npm run build:components",
     "build:ts": "tsc",
     "build:components": "componentsjs-generator -s lib -c dist/components -i .componentsignore",
@@ -50,13 +48,13 @@
     "componentsjs": "4.0.5",
     "componentsjs-generator": "2.1.0",
     "jest": "^26.6.3",
+    "jest-coverage-thresholds-bumper": "^0.0.3",
+    "lint-staged": "^10.5.4",
     "rimraf": "^2.7.1",
-    "ts-jest": "^26.4.4",
     "ts-node": "^9.1.1",
     "typescript": "3.8.3"
   },
   "dependencies": {
-    "lint-staged": "^10.5.4",
     "rxjs": "6.3.3"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core",
