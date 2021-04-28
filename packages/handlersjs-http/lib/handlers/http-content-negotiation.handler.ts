@@ -34,13 +34,17 @@ export class HttpContentNegotiationHandler extends HttpHandler {
         ? this.defaultContentType
         : request.headers.accept;
 
-    return this.handler.handle(context).pipe(
-      switchMap((response) => this.isContentTypeSupported(contentType).pipe(
-        map((isContentTypeSupported) => ({ response, isContentTypeSupported})),
-      )),
-      map(({ response, isContentTypeSupported}) => isContentTypeSupported ?
-        {...response, headers: {...response.headers, 'content-type': contentType}} :
-        {...response, status: 406,  body: ''}),
+    return this.isContentTypeSupported(contentType).pipe(
+      switchMap((isContentTypeSupported) => !isContentTypeSupported ? of({ status: 406, headers: {} }) :
+        this.handler.handle(context).pipe(
+          map((response) => ({
+            ...response,
+            headers: {
+              ...response.headers,
+              'content-type': contentType,
+            },
+          })),
+        )),
     );
   }
 
