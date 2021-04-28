@@ -43,7 +43,8 @@
   "dependencies": {
     "@digita-ai/handlersjs-core": "0.1.2",
     "mock-http": "^1.1.0",
-    "rxjs": "6.3.3"
+    "rxjs": "6.3.3",
+    "rdf-serialize": "^1.0.1"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http",
   "lsd:components": "dist/components/components.jsonld",
