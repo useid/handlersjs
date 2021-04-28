@@ -3,9 +3,12 @@ import { ComponentsManager } from 'componentsjs';
 import { ConsoleLogger } from './console-logger';
 import { LoggerLevel } from './logger-level';
 
+jest.mock('console');
+
 describe('ConsoleLogger', () => {
   let service: ConsoleLogger;
   let manager: ComponentsManager<any>;
+  const spy = new Map();
 
   beforeAll(async () => {
     const mainModulePath = path.join(__dirname, '../../');
@@ -16,11 +19,19 @@ describe('ConsoleLogger', () => {
 
   beforeEach(async () => {
     service = await manager.instantiate('urn:handlersjs-core:test:ConsoleLogger');
+    spy.set('warn', jest.spyOn(console, 'warn').mockImplementation(() => undefined));
+    spy.set('info', jest.spyOn(console, 'info').mockImplementation(() => undefined));
+    spy.set('debug', jest.spyOn(console, 'debug').mockImplementation(() => undefined));
+    spy.set('error', jest.spyOn(console, 'error').mockImplementation(() => undefined));
+    spy.set('log', jest.spyOn(console, 'log').mockImplementation(() => undefined));
   });
 
   afterEach(() => {
     // clear spies
     jest.clearAllMocks();
+    for (const [ key, value ] of Object.entries(spy)) {
+      value.mockReset();
+    }
   });
 
   it('should be correctly instantiated', () => {
@@ -29,36 +40,25 @@ describe('ConsoleLogger', () => {
 
   describe('log', () => {
 
-    const levels = [ 'info', 'debug', 'warn', 'error' ];
-
     it('LoggerLevel.silly should call console.log', () => {
-      const consoleSpy = jest.spyOn(console, 'log');
       service.log(LoggerLevel.silly, 'TestService', 'test message', 'data');
-      expect(consoleSpy).toHaveBeenCalled();
+      expect(spy.get('log')).toHaveBeenCalledTimes(1);
     });
 
-    for (const level of levels) {
-      if (level) {
-        it(`LoggerLevel.${level} should call console.${level}`, () => {
-          const consoleSpy = jest.spyOn(console, level as any);
-          service.log(LoggerLevel[level], 'TestService', 'test message', 'data');
-          expect(consoleSpy).toHaveBeenCalled();
-        });
-      }
-    }
+    it.each([ 'info', 'debug', 'warn', 'error' ])('LoggerLevel.%s should call console.%s', (level) => {
+      service.log(LoggerLevel[level], 'TestService', 'test message', 'data');
+      expect(spy.get(level)).toHaveBeenCalledTimes(1);
+    });
 
     const params = {
       level: LoggerLevel.info,
       typeName: ' TestService',
       message: 'test message',
     };
-    const args = Object.keys(params);
-    args.forEach((argument) => {
-      it(`should throw error when ${argument} is null or undefined`, () => {
-        const testArgs = args.map((arg) => arg === argument ? null : arg);
-        expect(() => service.log.apply(service.log, testArgs))
-          .toThrow(`${argument} should be set`);
-      });
+    it.each(Object.keys(params))('throws when %s is null or undefined', (keyToBeNull) => {
+      const testArgs = { ...params };
+      testArgs[keyToBeNull] = undefined;
+      expect(() => service.log.apply(service.log, testArgs)).toThrow(`${keyToBeNull} should be set`);
     });
   });
 
