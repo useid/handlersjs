@@ -1,8 +1,9 @@
-import { combineLatest, forkJoin, Observable, of, Subject, throwError, zip } from 'rxjs';
-import { map, switchMap, tap, toArray } from 'rxjs/operators';
+import { Observable, of, Subject, throwError } from 'rxjs';
+import { map, switchMap, toArray } from 'rxjs/operators';
 import { HttpHandler } from '../../models/http-handler';
 import { HttpHandlerContext } from '../../models/http-handler-context';
-import { HttpHandlerRequest, methodType } from '../../models/http-handler-request';
+import { HttpHandlerRequest } from '../../models/http-handler-request';
+import { HttpMethods } from '../../models/http-method';
 import { NodeHttpStreamsHandler } from './node-http-streams.handler';
 import { NodeHttpStreams } from './node-http-streams.model';
 
@@ -37,7 +38,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
     if (!url) {
       return throwError(new Error('url of the request cannot be null or undefined.'));
     }
-    const method = nodeHttpStreams.requestStream.method as methodType;
+    const method = Object.values(HttpMethods).find((m) => m === nodeHttpStreams.requestStream.method);
     if (!method) {
       return throwError(new Error('method of the request cannot be null or undefined.'));
     }
