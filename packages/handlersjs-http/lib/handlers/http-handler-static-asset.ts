@@ -23,7 +23,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
     const canHandleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];
     if (context.request?.headers?.accept) {
-      const reqHeaders = context.request.headers.accept.split(',');
+      const reqHeaders = context.request.headers.accept.split(',').map((accept) => accept.split(';')[0]);
       if (!reqHeaders.some((contentType) => canHandleAcceptHeaders.includes(contentType.trim()))) {
         return throwError(new UnsupportedMediaTypeHttpError('Content type not supported'));
       }

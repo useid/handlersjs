@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "@digita-ai/handlersjs-core": "0.1.2",
+    "jest-mock-extended": "^1.0.13",
     "mock-http": "^1.1.0",
     "rxjs": "6.3.3"
   },

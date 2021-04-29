@@ -1,17 +1,16 @@
-import { createServer, IncomingMessage, ServerResponse } from 'http';
-import { of, Subject } from 'rxjs';
-import { Daemon } from '../../util/daemon';
+import { createServer, IncomingMessage, ServerResponse, Server as NodeServer } from 'http';
+import { Subject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Server } from '../../util/server';
 import { NodeHttpStreams } from './node-http-streams.model';
 import { NodeHttpStreamsHandler } from './node-http-streams.handler';
-import { HttpHandlerError } from 'lib/errors/http-handler-error';
 
 /**
  * A {Server} implemented with [Node.js HTTP]{@link https://nodejs.org/api/http.html}, handling requests through a {NodeHttpStreamsHandler}.
  */
 export class NodeHttpServer extends Server {
 
-  private server: any;
+  private server: NodeServer;
 
   /**
    * Creates a {NodeHttpServer} listening on `http://``host``:``port`, passing requests through the given {NodeHttpStreamsHandler}.
@@ -42,13 +41,13 @@ export class NodeHttpServer extends Server {
    * {@inheritDoc Server.start}
    */
   start() {
-    const subject = new Subject<Daemon>();
+    const subject = new Subject<this>();
 
-    this.server.on(('error'), (err: any) => {
+    this.server.on(('error'), (err: unknown) => {
       subject.error(new Error(`The server ran into a problem: ${err}`));
     });
 
-    this.server.on(('listening'), () => {
+    this.server.on('listening', () => {
       subject.next(this);
       subject.complete();
     });
@@ -63,13 +62,13 @@ export class NodeHttpServer extends Server {
    * {@inheritDoc Server.start}
    */
   stop() {
-    const subject = new Subject<Daemon>();
+    const subject = new Subject<this>();
 
-    this.server.on(('error'), (err: any) => {
+    this.server.on(('error'), (err: unknown) => {
       subject.error(new Error(`The server ran into a problem: ${err}`));
     });
 
-    this.server.on(('close'), () => {
+    this.server.on('close', () => {
       subject.next(this);
       subject.complete();
     });

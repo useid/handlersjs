@@ -1,17 +1,13 @@
-import { TestService, mainModulePath, configPath } from '../../setup-tests';
-import { HttpHandlerResponse } from '../models/http-handler-response';
+import { mock } from 'jest-mock-extended';
+import { Logger } from '@digita-ai/handlersjs-core';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { NotFoundHttpError } from '../errors/not-found-http-error';
 import { ForbiddenHttpError } from '../errors/forbidden-http-error';
-import { UnsupportedMediaTypeHttpError } from '../errors/unsupported-media-type-http-error';
 import { HttpHandlerStaticAssetService } from './http-handler-static-asset';
 
 describe('HttpHandlerStaticAssetService', () => {
-  let service: HttpHandlerStaticAssetService;
 
-  beforeAll(async () => {
-    service = await TestService.instantiate('urn:handlersjs-http:test:HttpHandlerStaticAssetService', mainModulePath, configPath);
-  });
+  const service: HttpHandlerStaticAssetService = new HttpHandlerStaticAssetService(mock<Logger>(), 'test-directory/', 'text/plain');
 
   let context: HttpHandlerContext;
 

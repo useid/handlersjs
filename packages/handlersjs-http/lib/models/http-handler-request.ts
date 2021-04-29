@@ -1,7 +1,8 @@
-export type methodType = 'CONNECT' | 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT' | 'TRACE';
+import { HttpMethod } from './http-method';
+
 export interface HttpHandlerRequest<B = any> {
   url: URL;
-  method: methodType;
+  method: HttpMethod;
   parameters?: { [key: string]: string };
   headers: { [key: string]: string };
   body?: B;
