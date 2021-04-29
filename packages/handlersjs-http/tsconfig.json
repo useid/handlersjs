@@ -14,7 +14,9 @@
         "typeRoots": [
             "node_modules/@types"
         ],
-        "strict": false,
+        "strict": true,
+        "strictNullChecks": false, // Needed to use optional parameters with componentsjs
+        "strictPropertyInitialization": false, // Needed to use optional parameters with componentsjs
         "sourceMap": true,
         "declaration": true,
         "downlevelIteration": true,

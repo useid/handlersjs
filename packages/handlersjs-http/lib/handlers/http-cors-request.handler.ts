@@ -16,7 +16,7 @@ export abstract class HttpCorsOptions {
   ) { }
 }
 
-const cleanHeaders = (headers) => Object.keys(headers).reduce(
+const cleanHeaders = (headers: { [key: string]: string }) => Object.keys(headers).reduce<{ [key: string]: string }>(
   (acc, key) => {
     const lKey = key.toLowerCase();
     return acc[lKey]

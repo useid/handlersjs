@@ -1,4 +1,5 @@
 import { HttpHandler } from './http-handler';
+import { HttpHandlerContext } from './http-handler-context';
 
 export abstract class HttpHandlerOperationMediaPayload {
 }
@@ -40,10 +41,10 @@ export abstract class HttpHandlerOperation {
   ) {}
 }
 
-export abstract class HttpHandlerRoute {
+export abstract class HttpHandlerRoute<C extends HttpHandlerContext = HttpHandlerContext> {
   constructor(
     public operations: HttpHandlerOperation[],
     public path: string,
-    public handler: HttpHandler,
+    public handler: HttpHandler<C>,
   ) {}
 }

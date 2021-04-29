@@ -43,7 +43,7 @@ export class NodeHttpServer extends Server {
   start() {
     const subject = new Subject<this>();
 
-    this.server.on('error', (err) => {
+    this.server.on(('error'), (err: unknown) => {
       subject.error(new Error(`The server ran into a problem: ${err}`));
     });
 
@@ -64,7 +64,7 @@ export class NodeHttpServer extends Server {
   stop() {
     const subject = new Subject<this>();
 
-    this.server.on('error', (err) => {
+    this.server.on(('error'), (err: unknown) => {
       subject.error(new Error(`The server ran into a problem: ${err}`));
     });
 
