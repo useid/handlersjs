@@ -3,6 +3,7 @@ import { map } from 'rxjs/operators';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
+import { HttpMethods } from 'lib/models/http-method';
 
 export abstract class HttpCorsOptions {
   constructor(
@@ -15,9 +16,22 @@ export abstract class HttpCorsOptions {
   ) { }
 }
 
+const cleanHeaders = (headers: { [key: string]: string }) => Object.keys(headers).reduce<{ [key: string]: string }>(
+  (acc, key) => {
+    const lKey = key.toLowerCase();
+    return acc[lKey]
+      ? { ... acc, [lKey]: `${acc[lKey]},${headers[key]}` }
+      : { ... acc, [lKey]: headers[key] };
+  }, {} as { [key: string]: string },
+);
+
 export class HttpCorsRequestHandler extends HttpHandler {
 
-  constructor(private handler: HttpHandler, private options?: HttpCorsOptions) {
+  constructor(
+    private handler: HttpHandler,
+    private options?: HttpCorsOptions,
+    private passThroughOptions: boolean = false,
+  ) {
     super();
   }
 
@@ -29,12 +43,16 @@ export class HttpCorsRequestHandler extends HttpHandler {
 
     const { origins, allowMethods, allowHeaders, exposeHeaders, credentials, maxAge } = this.options || ({});
 
+    const requestHeaders = context.request.headers;
+
+    const cleanRequestHeaders = cleanHeaders(requestHeaders);
+
     const {
-      ['Origin']: requestOrigin,
-      ['Access-Control-Request-Method']: requestMethod,
-      ['Access-Control-Request-Headers']: requestHeaders,
+      ['origin']: requestedOrigin,
+      ['access-control-request-method']: requestedMethod,
+      ['access-control-request-headers']: requestedHeaders,
       ... noCorsHeaders
-    } = context.request.headers;
+    } = cleanRequestHeaders;
 
     const noCorsRequestContext = {
       ... context,
@@ -47,34 +65,42 @@ export class HttpCorsRequestHandler extends HttpHandler {
     };
 
     const allowOrigin = origins
-      ? origins.includes(requestOrigin)
-        ? requestOrigin
+      ? origins.includes(requestedOrigin)
+        ? requestedOrigin
         : undefined
       : credentials
-        ? requestOrigin
+        ? requestedOrigin
         : '*';
 
-    const allowHeadersOrRequested = allowHeaders?.join(',') ?? requestHeaders;
+    const allowHeadersOrRequested = allowHeaders?.join(',') ?? requestedHeaders;
 
     if (context.request.method === 'OPTIONS') {
 
       /* Preflight Request */
 
       const routeMethods = context.route?.operations.map((op) => op.method);
-      const allMethods = [ 'GET', 'HEAD', 'PUT', 'POST', 'DELETE', 'PATCH' ];
+      const allMethods = Object.values(HttpMethods);
 
-      return this.handler.handle(noCorsRequestContext).pipe(
+      const initialOptions = this.passThroughOptions
+        ? this.handler.handle(noCorsRequestContext)
+        : of({ status: 204, headers: {} });
+
+      return initialOptions.pipe(
+        map((response) => ({
+          ... response,
+          headers: cleanHeaders(response.headers),
+        })),
         map((response) => ({
           ... response,
           headers: {
             ... response.headers,
             ... allowOrigin && ({
-              ... (allowOrigin !== '*') && { 'Vary': 'Origin' },
-              'Access-Control-Allow-Origin': allowOrigin,
-              'Access-Control-Allow-Methods': (allowMethods ?? routeMethods ?? allMethods).join(', '),
-              ... (allowHeadersOrRequested) && { 'Access-Control-Allow-Headers': allowHeadersOrRequested },
-              ... (credentials) && { 'Access-Control-Allow-Credentials': 'true' },
-              'Access-Control-Max-Age': (maxAge ?? -1).toString(),
+              ... (allowOrigin !== '*') && { 'vary': 'origin' },
+              'access-control-allow-origin': allowOrigin,
+              'access-control-allow-methods': (allowMethods ?? routeMethods ?? allMethods).join(', '),
+              ... (allowHeadersOrRequested) && { 'access-control-allow-headers': allowHeadersOrRequested },
+              ... (credentials) && { 'access-control-allow-credentials': 'true' },
+              'access-control-max-age': (maxAge ?? -1).toString(),
             }),
           },
         })),

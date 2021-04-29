@@ -2,7 +2,6 @@ import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { from, Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import * as _ from 'lodash';
 import { Logger } from '@digita-ai/handlersjs-core';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -24,13 +23,13 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
     const canHandleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];
     if (context.request?.headers?.accept) {
-      const reqHeaders = context.request.headers.accept.split(',');
+      const reqHeaders = context.request.headers.accept.split(',').map((accept) => accept.split(';')[0]);
       if (!reqHeaders.some((contentType) => canHandleAcceptHeaders.includes(contentType.trim()))) {
         return throwError(new UnsupportedMediaTypeHttpError('Content type not supported'));
       }
     }
 
-    const filename = context.request.parameters.filename;
+    const filename = context.request.parameters?.filename;
 
     if(filename && filename.includes('../')) {
       return throwError(new ForbiddenHttpError());

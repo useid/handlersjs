@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.1.3](https://github.com/digita-ai/handlersjs/compare/v0.1.2...v0.1.3) (2021-04-29)
+
+
+### **Features**
+
+* preresponse handler improvements ([#48](https://github.com/digita-ai/handlersjs/issues/48)) ([64cb55c](https://github.com/digita-ai/handlersjs/commit/64cb55cea88f0139483143685ab2609624010644))
+
+
+
 ### [0.1.2](https://github.com/digita-ai/handlersjs/compare/v0.1.1...v0.1.2) (2021-04-26)
 
 **Note:** Version bump only for package @digita-ai/handlersjs-core

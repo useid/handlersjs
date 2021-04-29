@@ -1,5 +1,5 @@
 import { Observable, of, throwError } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerController } from '../models/http-handler-controller';
@@ -13,7 +13,7 @@ import { HttpHandlerRoute } from '../models/http-handler-route';
  */
 export class RoutedHttpRequestHandler extends HttpHandler {
 
-  private pathToRouteMap: Map<string, HttpHandlerRoute>;
+  private pathToRouteMap: Map<string, { controller: HttpHandlerController; route: HttpHandlerRoute }>;
 
   /**
    * Creates a RoutedHttpRequestHandler, super calls the HttpHandler class and expects a list of HttpHandlerControllers
@@ -28,25 +28,25 @@ export class RoutedHttpRequestHandler extends HttpHandler {
     }
 
     this.pathToRouteMap = new Map(
-      this.handlerControllerList
-        .flatMap((controller) => controller.routes).map((route) => [ route.path, route ]),
+      this.handlerControllerList.flatMap((controller) =>
+        controller.routes.map((route) => [ route.path, { controller, route } ])),
     );
   }
 
   /**
    * Passes the {HttpHandlerContext} to the handler of the {HttpHandlerRoute} matching the request's path.
    *
-   * @param {HttpHandlerContext} input - a HttpHandlerContext object containing a HttpHandlerRequest and HttpHandlerRoute
+   * @param {HttpHandlerContext} context - a HttpHandlerContext object containing a HttpHandlerRequest and HttpHandlerRoute
    */
-  handle(input: HttpHandlerContext): Observable<HttpHandlerResponse> {
-    if (!input) {
-      return throwError(new Error('input must be defined.'));
+  handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
+    if (!context) {
+      return throwError(new Error('context must be defined.'));
     }
-    if (!input.request) {
-      return throwError(new Error('input.request must be defined.'));
+    if (!context.request) {
+      return throwError(new Error('context.request must be defined.'));
     }
 
-    const request = input.request;
+    const request = context.request;
     const path = request.url.pathname;
 
     const pathSegments = path.split('?')[0].split('/').slice(1);
@@ -64,17 +64,13 @@ export class RoutedHttpRequestHandler extends HttpHandler {
 
     });
 
-    if (!match) {
-      return of({ body: '', headers: {}, status: 404 });
-    }
-
-    const matchingRoute = this.pathToRouteMap.get(match);
+    const matchingRoute = match ? this.pathToRouteMap.get(match) : undefined;
 
     if (!matchingRoute) {
       return of({ body: '', headers: {}, status: 404 });
     }
 
-    const allowedMethods = matchingRoute.operations.map((op) => op.method);
+    const allowedMethods = matchingRoute.route.operations.map((op) => op.method);
     const methodSupported = allowedMethods.includes(request.method);
 
     if (!methodSupported) {
@@ -82,15 +78,18 @@ export class RoutedHttpRequestHandler extends HttpHandler {
     }
 
     // add parameters from requestPath to the request object
-    const parameters = this.extractParameters(match.split('/').slice(1), pathSegments);
+    const parameters = this.extractParameters(matchingRoute.route.path.split('/').slice(1), pathSegments);
     const requestWithParams = Object.assign(request, { parameters });
+    const newContext = { request: requestWithParams, route: matchingRoute.route };
+    const preResponseHandler = matchingRoute.controller.preResponseHandler;
 
-    return matchingRoute.handler.handle({ request: requestWithParams, route: matchingRoute }).pipe(
+    return (preResponseHandler ? preResponseHandler.handle(newContext) : of(newContext)).pipe(
+      switchMap((preresponse) => matchingRoute.route.handler.handle(preresponse)),
       map((response) => ({
         ... response,
         headers: {
           ... response.headers,
-          Allow: allowedMethods.join(', '),
+          ... (request.method === 'OPTIONS') && { Allow: allowedMethods.join(', ') },
         },
       })),
     );

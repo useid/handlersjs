@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.1.3](https://github.com/digita-ai/handlersjs/compare/v0.1.2...v0.1.3) (2021-04-29)
+
+
+### **Features**
+
+* ignore q-factor in static asset handler ([#45](https://github.com/digita-ai/handlersjs/issues/45)) ([f4708c6](https://github.com/digita-ai/handlersjs/commit/f4708c60db3a0379fff4e151296e4e4d26767ff9))
+* preresponse handler improvements ([#48](https://github.com/digita-ai/handlersjs/issues/48)) ([64cb55c](https://github.com/digita-ai/handlersjs/commit/64cb55cea88f0139483143685ab2609624010644))
+* three cors handler changes ([#46](https://github.com/digita-ai/handlersjs/issues/46)) ([46fcbee](https://github.com/digita-ai/handlersjs/commit/46fcbee1c07a887ce6a7aab17e324a32e20c9d1a))
+
+
+
 ### [0.1.2](https://github.com/digita-ai/handlersjs/compare/v0.1.1...v0.1.2) (2021-04-26)
 
 
