@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.1.4](https://github.com/digita-ai/handlersjs/compare/v0.1.3...v0.1.4) (2021-04-29)
+
+
+### **Bug Fixes**
+
+* hotfix for componentsjs ([4704751](https://github.com/digita-ai/handlersjs/commit/4704751f8cff35e8ecefb0986987257c9c6f793b))
+
+
+
 ### [0.1.3](https://github.com/digita-ai/handlersjs/compare/v0.1.2...v0.1.3) (2021-04-29)
 
 
