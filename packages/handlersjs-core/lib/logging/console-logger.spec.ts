@@ -1,24 +1,14 @@
-import * as path from 'path';
-import { ComponentsManager } from 'componentsjs';
 import { ConsoleLogger } from './console-logger';
 import { LoggerLevel } from './logger-level';
 
 jest.mock('console');
 
-describe('ConsoleLogger', () => {
-  let service: ConsoleLogger;
-  let manager: ComponentsManager<any>;
+fdescribe('ConsoleLogger', () => {
+  let logger: ConsoleLogger;
   const spy = new Map();
 
-  beforeAll(async () => {
-    const mainModulePath = path.join(__dirname, '../../');
-    const configPath = path.join(mainModulePath, 'config/config-test.json');
-    manager = await ComponentsManager.build({ mainModulePath });
-    await manager.configRegistry.register(configPath);
-  });
-
   beforeEach(async () => {
-    service = await manager.instantiate('urn:handlersjs-core:test:ConsoleLogger');
+    logger = new ConsoleLogger(6, 6);
     spy.set('warn', jest.spyOn(console, 'warn').mockImplementation(() => undefined));
     spy.set('info', jest.spyOn(console, 'info').mockImplementation(() => undefined));
     spy.set('debug', jest.spyOn(console, 'debug').mockImplementation(() => undefined));
@@ -35,18 +25,18 @@ describe('ConsoleLogger', () => {
   });
 
   it('should be correctly instantiated', () => {
-    expect(service).toBeTruthy();
+    expect(logger).toBeTruthy();
   });
 
   describe('log', () => {
 
     it('LoggerLevel.silly should call console.log', () => {
-      service.log(LoggerLevel.silly, 'TestService', 'test message', 'data');
+      logger.log(LoggerLevel.silly, 'TestService', 'test message', 'data');
       expect(spy.get('log')).toHaveBeenCalledTimes(1);
     });
 
-    it.each([ 'info', 'debug', 'warn', 'error' ])('LoggerLevel.%s should call console.%s', (level) => {
-      service.log(LoggerLevel[level], 'TestService', 'test message', 'data');
+    it.each([ 'info', 'debug', 'warn', 'error' ])('LoggerLevel.%%s should call console.%s', (level) => {
+      logger.log(LoggerLevel[level], 'TestService', 'test message', 'data');
       expect(spy.get(level)).toHaveBeenCalledTimes(1);
     });
 
@@ -58,7 +48,7 @@ describe('ConsoleLogger', () => {
     it.each(Object.keys(params))('throws when %s is null or undefined', (keyToBeNull) => {
       const testArgs = { ...params };
       testArgs[keyToBeNull] = undefined;
-      expect(() => service.log.apply(service.log, testArgs)).toThrow(`${keyToBeNull} should be set`);
+      expect(() => logger.log(testArgs.level, testArgs.typeName, testArgs.message)).toThrow(`${keyToBeNull} should be set`);
     });
   });
 
@@ -69,12 +59,12 @@ describe('ConsoleLogger', () => {
     for (const level of levels) {
       if (level) {
         it(`should log a ${level} message`, () => {
-          const loggerSpy = jest.spyOn(service, 'log');
+          const loggerSpy = jest.spyOn(logger, 'log');
           if (level === 'error') {
-            service[level]('TestService', 'test message', 'test error', 'error');
+            logger[level]('TestService', 'test message', 'test error', 'error');
             expect(loggerSpy).toHaveBeenCalledWith(LoggerLevel.error, 'TestService', 'test message', { error: 'test error', caught: 'error' });
           } else {
-            service[level]('TestService', 'test message', 'test data');
+            logger[level]('TestService', 'test message', 'test data');
             expect(loggerSpy).toHaveBeenCalledWith(LoggerLevel[level], 'TestService', 'test message', 'test data');
           }
         });
@@ -88,7 +78,7 @@ describe('ConsoleLogger', () => {
         args.forEach((argument) => {
           it(`should throw error when ${argument} is null or undefined`, () => {
             const testArgs = args.map((arg) => arg === argument ? null : arg);
-            expect(() => service.log.apply(service[level], testArgs))
+            expect(() => logger.log.apply(logger[level], testArgs))
               .toThrow(`${argument} should be set`);
           });
         });
