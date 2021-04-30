@@ -28,11 +28,16 @@ describe('ConsoleLogger', () => {
   it('should be correctly instantiated', () => {
     expect(logger).toBeTruthy();
   });
+  const testService = 'TestService';
+  const testMessage = 'TestMessage';
+  const data = { data: 'data' };
 
   describe('log', () => {
     it.each([ ...levels, [ 'silly', 'log' ] ])('LoggerLevel.%s should call console.%s', (level, log) => {
-      logger.log(LoggerLevel[level], 'TestService', 'test message', 'data');
+      logger.log(LoggerLevel[level], testService, testMessage, data);
       expect(spy.get(log)).toHaveBeenCalledTimes(1);
+      expect(spy.get(log)).toHaveBeenCalledWith(expect.stringContaining(testService), data);
+      expect(spy.get(log)).toHaveBeenCalledWith(expect.stringContaining(testMessage), data);
     });
 
     const params = {
