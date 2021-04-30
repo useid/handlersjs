@@ -1,37 +1,10 @@
 {
-    "compileOnSave": false,
-    "include": [
-        "lib"
-    ],
-    "exclude": [
-        "dist",
-        "node_modules",
-        "**/*.spec.ts"
-    ],
-    "compilerOptions": {
-        "baseUrl": "./",
-        "outDir": "./dist",
-        "typeRoots": [
-            "node_modules/@types"
-        ],
-        "strict": true,
-        "strictNullChecks": false, // Needed to use optional parameters with componentsjs
-        "strictPropertyInitialization": false, // Needed to use optional parameters with componentsjs
-        "sourceMap": true,
-        "declaration": true,
-        "downlevelIteration": true,
-        "experimentalDecorators": true,
-        "moduleResolution": "node",
-        "esModuleInterop": true,
-        "importHelpers": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
-        "forceConsistentCasingInFileNames": true,
-        "target": "es2020",
-        "module": "commonjs",
-        "lib": [
-            "es2020",
-            "dom"
-        ]
-    }
+  "extends": "@digita-ai/typescript-config/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./lib",
+    "outDir": "./dist",
+    "rootDir": "./lib",
+    "module": "commonjs",
+    "strict": false,
+  }
 }
