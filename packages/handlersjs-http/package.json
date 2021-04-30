@@ -17,10 +17,10 @@
     "rootDir": "lib",
     "coverageThreshold": {
       "global": {
-        "branches": 60,
-        "functions": 66.22,
-        "lines": 64.54,
-        "statements": 63.91
+        "branches": 92.47,
+        "functions": 84.51,
+        "lines": 84.52,
+        "statements": 84.65
       }
     }
   },
