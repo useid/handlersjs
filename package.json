@@ -21,6 +21,11 @@
       "@digita-ai/eslint-config"
     ]
   },
+  "commitlint": {
+    "extends": [
+      "@digita-ai/commitlint-config"
+    ]
+  },
   "scripts": {
     "postinstall": "husky install",
     "release": "lerna version",
@@ -40,11 +45,10 @@
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
-    "@commitlint/config-conventional": "^11.0.0",
-    "@commitlint/config-lerna-scopes": "^11.0.0",
     "@digita-ai/jest-config": "^0.1.2",
     "@digita-ai/lerna-config": "^0.1.2",
     "@digita-ai/eslint-config": "0.1.2",
+    "@digita-ai/commitlint-config": "0.1.2",
     "@types/jest": "^26.0.22",
     "@types/node": "^14.14.41",
     "@typescript-eslint/eslint-plugin": "^4.10.0",
