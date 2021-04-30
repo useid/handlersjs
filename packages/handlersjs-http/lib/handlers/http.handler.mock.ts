@@ -21,8 +21,11 @@ export class MockHttpHandler extends HttpHandler {
    * @returns {Observable<HttpHandlerResponse>} - the mock response
    */
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
+
     if (!context) {
+
       return throwError(new Error('Context cannot be null or undefined'));
+
     }
 
     const response: HttpHandlerResponse = {
@@ -30,7 +33,9 @@ export class MockHttpHandler extends HttpHandler {
       headers: {},
       status: 200,
     };
+
     return of(response);
+
   }
 
   /**
@@ -40,6 +45,9 @@ export class MockHttpHandler extends HttpHandler {
    * @returns always `of(true)`
    */
   canHandle(context: HttpHandlerContext): Observable<boolean> {
+
     return context ? of(true) : throwError(new Error('Context cannot be null or undefined'));
+
   }
+
 }
