@@ -11,19 +11,6 @@
     "dist",
     "config"
   ],
-  "jest": {
-    "preset": "@digita-ai/jest-config",
-    "displayName": "http",
-    "rootDir": "lib",
-    "coverageThreshold": {
-      "global": {
-        "branches": 92.63,
-        "functions": 84.72,
-        "lines": 84.52,
-        "statements": 84.71
-      }
-    }
-  },
   "types": "./dist/public-api.d.ts",
   "scripts": {
     "test": "jest",
@@ -70,5 +57,18 @@
     "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/": "dist/components/",
     "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/config/": "config/",
     "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/dist/": "dist/"
+  },
+  "jest": {
+    "preset": "@digita-ai/jest-config",
+    "displayName": "http",
+    "rootDir": "lib",
+    "coverageThreshold": {
+      "global": {
+        "branches": 92.63,
+        "functions": 84.72,
+        "lines": 84.52,
+        "statements": 84.71
+      }
+    }
   }
 }
