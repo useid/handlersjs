@@ -3,7 +3,6 @@ import { map } from 'rxjs/operators';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
-import { HttpMethods } from 'lib/models/http-method';
 
 export abstract class HttpCorsOptions {
 
