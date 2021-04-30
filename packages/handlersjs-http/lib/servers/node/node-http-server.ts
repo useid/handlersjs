@@ -1,6 +1,5 @@
 import { createServer, IncomingMessage, ServerResponse, Server as NodeServer } from 'http';
 import { Subject } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { Server } from '../../util/server';
 import { NodeHttpStreams } from './node-http-streams.model';
 import { NodeHttpStreamsHandler } from './node-http-streams.handler';
