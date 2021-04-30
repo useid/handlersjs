@@ -79,7 +79,7 @@ export class HttpCorsRequestHandler extends HttpHandler {
       /* Preflight Request */
 
       const routeMethods = context.route?.operations.map((op) => op.method);
-      const allMethods = Object.values(HttpMethods);
+      const allMethods = [ 'GET', 'HEAD', 'PUT', 'POST', 'DELETE', 'PATCH' ];
 
       const initialOptions = this.passThroughOptions
         ? this.handler.handle(noCorsRequestContext)
