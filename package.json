@@ -17,7 +17,9 @@
     "version": "0.1.0"
   },
   "eslintConfig": {
-    "extends": [ "@digita-ai/eslint-config" ]
+    "extends": [
+      "@digita-ai/eslint-config"
+    ]
   },
   "scripts": {
     "postinstall": "husky install",
@@ -42,6 +44,7 @@
     "@commitlint/config-lerna-scopes": "^11.0.0",
     "@digita-ai/jest-config": "^0.1.2",
     "@digita-ai/lerna-config": "^0.1.2",
+    "@digita-ai/eslint-config": "0.1.2",
     "@types/jest": "^26.0.22",
     "@types/node": "^14.14.41",
     "@typescript-eslint/eslint-plugin": "^4.10.0",
