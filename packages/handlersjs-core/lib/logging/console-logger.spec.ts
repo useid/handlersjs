@@ -6,7 +6,8 @@ jest.mock('console');
 describe('ConsoleLogger', () => {
   let logger: ConsoleLogger;
   const spy = new Map();
-  const levels = [ 'info', 'debug', 'warn', 'error' ];
+  const levels = [ 'info', 'debug', 'warn', 'error' ].map((s) => [ s, s ]);
+
   beforeEach(async () => {
     logger = new ConsoleLogger(6, 6);
     spy.set('warn', jest.spyOn(console, 'warn').mockImplementation(() => undefined));
@@ -29,15 +30,9 @@ describe('ConsoleLogger', () => {
   });
 
   describe('log', () => {
-
-    it('LoggerLevel.silly should call console.log', () => {
-      logger.log(LoggerLevel.silly, 'TestService', 'test message', 'data');
-      expect(spy.get('log')).toHaveBeenCalledTimes(1);
-    });
-
-    it.each(levels.map((s) => [ s, s ]))('LoggerLevel.%s should call console.%s', (level) => {
+    it.each([ ...levels, [ 'silly', 'log' ] ])('LoggerLevel.%s should call console.%s', (level, log) => {
       logger.log(LoggerLevel[level], 'TestService', 'test message', 'data');
-      expect(spy.get(level)).toHaveBeenCalledTimes(1);
+      expect(spy.get(log)).toHaveBeenCalledTimes(1);
     });
 
     const params = {
