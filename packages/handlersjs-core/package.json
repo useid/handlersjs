@@ -13,7 +13,7 @@
   ],
   "types": "./dist/public-api.d.ts",
   "scripts": {
-    "test": "jest --coverage --passWithNoTests",
+    "test": "jest",
     "test:ci": "jest --silent --runInBand --passWithNoTests",
     "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json",
     "build": "rimraf ./dist && npm run build:ts && npm run build:components",
@@ -32,6 +32,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^26.0.20",
+    "@digita-ai/typescript-config": "^0.2.1",
     "componentsjs": "4.0.5",
     "componentsjs-generator": "2.1.0",
     "eslint": "^7.25.0",

@@ -6,5 +6,13 @@
     "rootDir": "./lib",
     "module": "commonjs",
     "strict": false,
-  }
+  },
+  "include": [ 
+      "lib" 
+  ],
+  "exclude": [
+      "dist",
+      "node_modules",
+      "**/*.spec.ts"
+  ]
 }
