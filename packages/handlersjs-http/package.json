@@ -13,7 +13,7 @@
   ],
   "types": "./dist/public-api.d.ts",
   "scripts": {
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "test:ci": "jest --silent --runInBand --passWithNoTests",
     "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json",
     "build": "rimraf ./dist && npm run build:ts && npm run build:components",
