@@ -45,27 +45,28 @@ export class ConsoleLogger extends Logger {
       const logMessage = `[${timestamp} ${typeName}] ${message}`;
       const logData = level > this.minimumLevelPrintData ? '' : data||'';
       const log = [ logMessage, logData ];
+
       switch (level) {
 
-      case LoggerLevel.info:
-        console.info(...log);
-        break;
+        case LoggerLevel.info:
+          console.info(...log);
+          break;
 
-      case LoggerLevel.debug:
-        console.debug(...log);
-        break;
+        case LoggerLevel.debug:
+          console.debug(...log);
+          break;
 
-      case LoggerLevel.warn:
-        console.warn(...log);
-        break;
+        case LoggerLevel.warn:
+          console.warn(...log);
+          break;
 
-      case LoggerLevel.error:
-        console.error(...log);
-        break;
+        case LoggerLevel.error:
+          console.error(...log);
+          break;
 
-      default:
-        console.log(...log);
-        break;
+        default:
+          console.log(...log);
+          break;
 
       }
 

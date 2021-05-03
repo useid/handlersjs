@@ -26,6 +26,7 @@ describe('MockHttpHandler', () => {
       await expect(handler.handle(context).toPromise()).resolves.toEqual({ body: 'some mock output', status: 200, headers: {} });
 
     });
+
     it('should throw an error when called with null or undefined', async () => {
 
       await expect(handler.handle(null).toPromise()).rejects.toThrow('Context cannot be null or undefined');

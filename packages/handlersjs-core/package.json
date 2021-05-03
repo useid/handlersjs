@@ -11,22 +11,9 @@
     "dist",
     "config"
   ],
-  "jest": {
-    "preset": "@digita-ai/jest-config",
-    "displayName": "core",
-    "rootDir": "lib",
-    "coverageThreshold": {
-      "global": {
-        "branches": 46.43,
-        "functions": 20.83,
-        "lines": 38.01,
-        "statements": 37.79
-      }
-    }
-  },
   "types": "./dist/public-api.d.ts",
   "scripts": {
-    "test": "jest --coverage --passWithNoTests",
+    "test": "jest",
     "test:ci": "jest --silent --runInBand --passWithNoTests",
     "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json",
     "build": "rimraf ./dist && npm run build:ts && npm run build:components",
@@ -45,6 +32,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^26.0.20",
+    "@digita-ai/typescript-config": "^0.2.1",
     "componentsjs": "4.0.5",
     "componentsjs-generator": "2.1.0",
     "eslint": "^7.25.0",
@@ -67,5 +55,18 @@
     "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/": "dist/components/",
     "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/config/": "config/",
     "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/dist/": "dist/"
+  },
+  "jest": {
+    "preset": "@digita-ai/jest-config",
+    "displayName": "core",
+    "rootDir": "lib",
+    "coverageThreshold": {
+      "global": {
+        "branches": 48.21,
+        "functions": 27.08,
+        "lines": 47.37,
+        "statements": 47.09
+      }
+    }
   }
 }

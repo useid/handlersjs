@@ -22,6 +22,7 @@ describe('NodeHttpServer', () => {
       handle: jest.fn(),
       safeHandle: jest.fn(),
     };
+
     handler = new NodeHttpRequestResponseHandler(nestedHttpHandler);
     handler.handle = jest.fn().mockReturnValueOnce(of());
     host = 'localhost';
@@ -75,6 +76,7 @@ describe('NodeHttpServer', () => {
         (server as any).server.emit('error', 'test error');
 
       });
+
       await expect(server.start().toPromise()).rejects.toThrow('The server ran into a problem:');
 
     });
@@ -97,6 +99,7 @@ describe('NodeHttpServer', () => {
         (server as any).server.emit('error', 'test error');
 
       });
+
       await expect(server.stop().toPromise()).rejects.toThrow('The server ran into a problem:');
 
     });

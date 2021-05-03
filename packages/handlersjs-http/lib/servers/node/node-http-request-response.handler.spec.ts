@@ -20,15 +20,19 @@ describe('NodeHttpRequestResponseHandler', () => {
       handle: jest.fn().mockReturnValueOnce(of({ body: {}, headers: {}, status: 200 })),
       safeHandle: jest.fn(),
     } as HttpHandler;
+
     handler = new NodeHttpRequestResponseHandler(nestedHttpHandler);
+
     req = new mockhttp.Request({
       url: 'http://localhost:3000/test?works=yes',
       method: 'GET',
     });
+
     res = new mockhttp.Response();
     res.write = jest.fn();
     res.writeHead = jest.fn();
     res.end = jest.fn();
+
     streamMock = {
       requestStream: req,
       responseStream: res,
@@ -126,6 +130,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await handler.handle(streamMock).toPromise();
       expect(nestedHttpHandler.handle).toHaveBeenCalledTimes(1);
+
       expect(nestedHttpHandler.handle).toHaveBeenCalledWith(expect.objectContaining({
         request: { url: new URL('http://localhost:3000/test?works=yes'), method: 'GET', headers: {} },
       }));
