@@ -18,6 +18,7 @@ describe('ConsoleLogger', () => {
   });
 
   afterEach(() => {
+
     // clear spies
     jest.clearAllMocks();
     for (const [ key, value ] of Object.entries(spy)) {
@@ -64,5 +65,4 @@ describe('ConsoleLogger', () => {
       }
     });
   });
-
 });

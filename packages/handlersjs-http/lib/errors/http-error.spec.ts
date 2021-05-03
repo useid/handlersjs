@@ -11,12 +11,17 @@ import { UnsupportedMediaTypeHttpError } from './unsupported-media-type-http-err
 
 // Only used to make typings easier in the tests
 class FixedHttpError extends HttpError {
+
   constructor(message?: string) {
+
     super(0, '', message);
+
   }
+
 }
 
 describe('An HttpError', (): void => {
+
   const errors: [string, number, typeof FixedHttpError][] = [
     [ 'BadRequestHttpError', 400, BadRequestHttpError ],
     [ 'UnauthorizedHttpError', 401, UnauthorizedHttpError ],
@@ -31,10 +36,13 @@ describe('An HttpError', (): void => {
   ];
 
   it.each(errors)('%s is valid', (name, statusCode, constructor): void => {
+
     const instance = new constructor('message');
     expect(constructor.isInstance(instance)).toBeTruthy();
     expect(instance.statusCode).toBe(statusCode);
     expect(instance.name).toBe(name);
     expect(instance.message).toBe('message');
+
   });
+
 });

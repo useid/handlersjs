@@ -1,6 +1,5 @@
 import { createServer, IncomingMessage, ServerResponse, Server as NodeServer } from 'http';
 import { Subject } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { Server } from '../../util/server';
 import { NodeHttpStreams } from './node-http-streams.model';
 import { NodeHttpStreamsHandler } from './node-http-streams.handler';
@@ -21,6 +20,7 @@ export class NodeHttpServer extends Server {
    * @constructor
    */
   constructor(protected host: string, protected port: number, private nodeHttpStreamsHandler: NodeHttpStreamsHandler){
+
     super(`http`, host, port);
 
     if (!host) {
@@ -34,6 +34,7 @@ export class NodeHttpServer extends Server {
     }
 
     this.server = createServer(this.serverHelper.bind(this));
+
   }
 
   /**
@@ -50,11 +51,13 @@ export class NodeHttpServer extends Server {
     this.server.on('listening', () => {
       subject.next(this);
       subject.complete();
+
     });
 
     this.server.listen(this.port, this.host);
 
     return subject;
+
   }
 
   /**
@@ -71,10 +74,13 @@ export class NodeHttpServer extends Server {
     this.server.on('close', () => {
       subject.next(this);
       subject.complete();
+
     });
 
     this.server.close();
+
     return subject;
+
   }
 
   /**
@@ -86,17 +92,20 @@ export class NodeHttpServer extends Server {
    * @param {ServerResponse} res - the Node.js HTTP callback's response stream
    */
   serverHelper(req: IncomingMessage, res: ServerResponse): void {
+
     if (!req) {
       throw new Error('request must be defined.');
     }
     if (!res) {
       throw new Error('response must be defined.');
     }
+
     const nodeHttpStreams: NodeHttpStreams = {
       requestStream: req,
       responseStream: res,
     };
     this.nodeHttpStreamsHandler.handle(nodeHttpStreams).subscribe();
+
   }
 
 }
