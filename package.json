@@ -21,7 +21,7 @@
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
     "@digita-ai/commitlint-config": "^0.2.0",
-    "@digita-ai/eslint-config": "^0.2.0",
+    "@digita-ai/eslint-config": "^0.2.2",
     "@digita-ai/jest-config": "^0.2.0",
     "@digita-ai/lerna-config": "^0.2.0",
     "@types/jest": "^26.0.22",
