@@ -37,51 +37,51 @@ export class TypedPipeThroughHandler<A, B, C, D, E> extends Handler<A, E> {
 
     switch (this.handlers.length) {
 
-    case 1: {
+      case 1: {
 
-      const AtoE = this.handlers[0];
+        const AtoE = this.handlers[0];
 
-      return AtoE.handle(input);
+        return AtoE.handle(input);
 
-    }
+      }
 
-    case 2: {
+      case 2: {
 
-      const BtoE = this.handlers[1];
+        const BtoE = this.handlers[1];
 
-      return this.handlers[0].handle(input).pipe(
-        switchMap((inp) => BtoE.handle(inp)),
-      );
+        return this.handlers[0].handle(input).pipe(
+          switchMap((inp) => BtoE.handle(inp)),
+        );
 
-    }
+      }
 
-    case 3: {
+      case 3: {
 
-      const BtoC = this.handlers[1];
-      const CtoE = this.handlers[2];
+        const BtoC = this.handlers[1];
+        const CtoE = this.handlers[2];
 
-      return this.handlers[0].handle(input).pipe(
-        switchMap((inp) => BtoC.handle(inp)),
-        switchMap((inp) => CtoE.handle(inp)),
-      );
+        return this.handlers[0].handle(input).pipe(
+          switchMap((inp) => BtoC.handle(inp)),
+          switchMap((inp) => CtoE.handle(inp)),
+        );
 
-    }
+      }
 
-    case 4: {
+      case 4: {
 
-      const BtoC = this.handlers[1];
-      const CtoD = this.handlers[2];
-      const DtoE = this.handlers[3];
+        const BtoC = this.handlers[1];
+        const CtoD = this.handlers[2];
+        const DtoE = this.handlers[3];
 
-      return this.handlers[0].handle(input).pipe(
-        switchMap((inp) => BtoC.handle(inp)),
-        switchMap((inp) => CtoD.handle(inp)),
-        switchMap((inp) => DtoE.handle(inp)),
-      );
+        return this.handlers[0].handle(input).pipe(
+          switchMap((inp) => BtoC.handle(inp)),
+          switchMap((inp) => CtoD.handle(inp)),
+          switchMap((inp) => DtoE.handle(inp)),
+        );
 
-    }
+      }
 
-    default: return of(undefined);
+      default: return of(undefined);
 
     }
 

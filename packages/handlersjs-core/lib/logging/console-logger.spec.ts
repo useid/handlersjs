@@ -24,11 +24,8 @@ describe('ConsoleLogger', () => {
 
     // clear spies
     jest.clearAllMocks();
-    for (const [ key, value ] of Object.entries(spy)) {
 
-      value.mockReset();
-
-    }
+    for (const [ key, value ] of Object.entries(spy)) { value.mockReset(); }
 
   });
 
@@ -37,6 +34,7 @@ describe('ConsoleLogger', () => {
     expect(logger).toBeTruthy();
 
   });
+
   const testService = 'TestService';
   const testMessage = 'TestMessage';
   const data = { data: 'data' };
@@ -57,6 +55,7 @@ describe('ConsoleLogger', () => {
       typeName: ' TestService',
       message: 'test message',
     };
+
     it.each(Object.keys(params))('throws when %s is null or undefined', (keyToBeNull) => {
 
       const testArgs = { ...params };
@@ -72,6 +71,7 @@ describe('ConsoleLogger', () => {
     it.each(levels)('should log a %s message', async(level) => {
 
       const logSpy = jest.spyOn(logger, 'log');
+
       if (level === 'error') {
 
         logger[level]('TestService', 'test message', 'test error', 'error');
