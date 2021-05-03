@@ -4,6 +4,7 @@
     "baseUrl": "./lib",
     "outDir": "./dist",
     "rootDir": "./lib",
-    "module": "commonjs"
+    "module": "commonjs",
+    "strict": false,
   }
 }
