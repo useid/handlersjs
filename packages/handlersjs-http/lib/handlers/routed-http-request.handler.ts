@@ -43,11 +43,17 @@ export class RoutedHttpRequestHandler extends HttpHandler {
    * @param {HttpHandlerContext} context - a HttpHandlerContext object containing a HttpHandlerRequest and HttpHandlerRoute
    */
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
+
     if (!context) {
+
       return throwError(new Error('context must be defined.'));
+
     }
+
     if (!context.request) {
+
       return throwError(new Error('context.request must be defined.'));
+
     }
 
     const request = context.request;
@@ -124,6 +130,7 @@ export class RoutedHttpRequestHandler extends HttpHandler {
   private extractParameters(routeSegments: string[], pathSegments: string[]): { [key: string]: string } {
 
     const parameters: { [key: string]: string } = {};
+
     routeSegments.forEach((segment, i) => {
 
       if (segment[0] === ':') {

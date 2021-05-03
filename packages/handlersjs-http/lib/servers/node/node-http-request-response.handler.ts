@@ -39,13 +39,19 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
    * @returns an {Observable<void>} for completion detection
    */
   handle(nodeHttpStreams: NodeHttpStreams): Observable<void> {
+
     const url = nodeHttpStreams.requestStream.url;
+
     if (!url) {
+
       return throwError(new Error('url of the request cannot be null or undefined.'));
 
     }
+
     const method = Object.values(HttpMethods).find((m) => m === nodeHttpStreams.requestStream.method);
+
     if (!method) {
+
       return throwError(new Error('method of the request cannot be null or undefined.'));
 
     }
@@ -65,6 +71,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
       toArray(),
       map((chunks) => Buffer.concat(chunks).toString()),
       map((body) => {
+
         const urlObject: URL = new URL(url, `http://${nodeHttpStreams.requestStream.headers.host}`);
 
         const httpHandlerRequest: HttpHandlerRequest = {

@@ -50,6 +50,7 @@ export abstract class HttpHandlerOperation {
 }
 
 export abstract class HttpHandlerRoute<C extends HttpHandlerContext = HttpHandlerContext> {
+
   constructor(
     public operations: HttpHandlerOperation[],
     public path: string,

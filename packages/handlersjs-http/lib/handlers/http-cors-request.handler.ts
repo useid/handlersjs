@@ -19,10 +19,13 @@ export abstract class HttpCorsOptions {
 
 const cleanHeaders = (headers: { [key: string]: string }) => Object.keys(headers).reduce<{ [key: string]: string }>(
   (acc, key) => {
+
     const lKey = key.toLowerCase();
+
     return acc[lKey]
       ? { ... acc, [lKey]: `${acc[lKey]},${headers[key]}` }
       : { ... acc, [lKey]: headers[key] };
+
   }, {} as { [key: string]: string },
 );
 
@@ -33,6 +36,7 @@ export class HttpCorsRequestHandler extends HttpHandler {
     private options?: HttpCorsOptions,
     private passThroughOptions: boolean = false,
   ) {
+
     super();
 
   }

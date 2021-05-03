@@ -24,13 +24,21 @@ export class NodeHttpServer extends Server {
     super(`http`, host, port);
 
     if (!host) {
+
       throw new Error('A host must be provided');
+
     }
+
     if (!port) {
+
       throw new Error('A port must be provided');
+
     }
+
     if (!nodeHttpStreamsHandler) {
+
       throw new Error('A handler must be provided');
+
     }
 
     this.server = createServer(this.serverHelper.bind(this));
@@ -42,13 +50,17 @@ export class NodeHttpServer extends Server {
    * {@inheritDoc Server.start}
    */
   start() {
+
     const subject = new Subject<this>();
 
     this.server.on(('error'), (err: unknown) => {
+
       subject.error(new Error(`The server ran into a problem: ${err}`));
+
     });
 
     this.server.on('listening', () => {
+
       subject.next(this);
       subject.complete();
 
@@ -65,13 +77,17 @@ export class NodeHttpServer extends Server {
    * {@inheritDoc Server.start}
    */
   stop() {
+
     const subject = new Subject<this>();
 
     this.server.on(('error'), (err: unknown) => {
+
       subject.error(new Error(`The server ran into a problem: ${err}`));
+
     });
 
     this.server.on('close', () => {
+
       subject.next(this);
       subject.complete();
 
@@ -94,16 +110,22 @@ export class NodeHttpServer extends Server {
   serverHelper(req: IncomingMessage, res: ServerResponse): void {
 
     if (!req) {
+
       throw new Error('request must be defined.');
+
     }
+
     if (!res) {
+
       throw new Error('response must be defined.');
+
     }
 
     const nodeHttpStreams: NodeHttpStreams = {
       requestStream: req,
       responseStream: res,
     };
+
     this.nodeHttpStreamsHandler.handle(nodeHttpStreams).subscribe();
 
   }

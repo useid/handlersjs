@@ -69,12 +69,15 @@ describe('ConsoleLogger', () => {
       typeName: ' TestService',
       message: 'test message',
     };
+
     const args = Object.keys(params);
+
     args.forEach((argument) => {
 
       it(`should throw error when ${argument} is null or undefined`, () => {
 
         const testArgs = args.map((arg) => arg === argument ? null : arg);
+
         expect(() => service.log.apply(service.log, testArgs))
           .toThrow(`${argument} should be set`);
 
@@ -95,6 +98,7 @@ describe('ConsoleLogger', () => {
         it(`should log a ${level} message`, () => {
 
           const loggerSpy = jest.spyOn(service, 'log');
+
           if (level === 'error') {
 
             service[level]('TestService', 'test message', 'test error', 'error');
@@ -114,12 +118,15 @@ describe('ConsoleLogger', () => {
           level: LoggerLevel.info,
           typeName: ' TestService',
         };
+
         const args = Object.keys(params);
+
         args.forEach((argument) => {
 
           it(`should throw error when ${argument} is null or undefined`, () => {
 
             const testArgs = args.map((arg) => arg === argument ? null : arg);
+
             expect(() => service.log.apply(service[level], testArgs))
               .toThrow(`${argument} should be set`);
 
