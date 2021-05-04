@@ -6,8 +6,8 @@ import { NodeHttpServer } from './node-http-server';
 import { NodeHttpRequestResponseHandler } from './node-http-request-response.handler';
 
 describe('NodeHttpServer', () => {
+
   let server: NodeHttpServer;
-  let badServer: NodeHttpServer;
   let handler: NodeHttpRequestResponseHandler;
   let nestedHttpHandler: HttpHandler;
   let host: string;
@@ -16,11 +16,13 @@ describe('NodeHttpServer', () => {
   let res: ServerResponse;
 
   beforeEach(() => {
+
     nestedHttpHandler = {
       canHandle: jest.fn(),
       handle: jest.fn(),
       safeHandle: jest.fn(),
     };
+
     handler = new NodeHttpRequestResponseHandler(nestedHttpHandler);
     handler.handle = jest.fn().mockReturnValueOnce(of());
     host = 'localhost';
@@ -31,66 +33,102 @@ describe('NodeHttpServer', () => {
     req.method = 'GET';
     req.headers = {};
     res = new ServerResponse(req);
+
   });
 
   it('should be correctly instantiated if all correct arguments are provided', () => {
+
     expect(server).toBeTruthy();
+
   });
 
   it('should throw error when no host was provided', () => {
+
     expect(() => new NodeHttpServer(null, port, handler)).toThrow('A host must be provided');
+
   });
 
   it('should throw error when no port was provided', () => {
+
     expect(() => new NodeHttpServer(host, null, handler)).toThrow('A port must be provided');
+
   });
 
   it('should throw error when no handler was provided', () => {
+
     expect(() => new NodeHttpServer(host, port, null)).toThrow('A handler must be provided');
+
   });
 
   describe('start', () => {
+
     it('should return server if all goes well', async () => {
+
       await expect(server.start().toPromise()).resolves.toEqual(server);
       await server.stop().toPromise();
+
     });
 
     it('should return an error when something goes wrong', async () => {
+
       (server as any).server.listen = jest.fn().mockImplementationOnce(() => {
+
         (server as any).server.emit('error', 'test error');
+
       });
+
       await expect(server.start().toPromise()).rejects.toThrow('The server ran into a problem:');
+
     });
+
   });
 
   describe('stop', () => {
+
     it('should return server if all goes well', async () => {
+
       await server.start().toPromise();
       await expect(server.stop().toPromise()).resolves.toEqual(server);
+
     });
 
     it('should return an error when something goes wrong', async () => {
+
       (server as any).server.close = jest.fn().mockImplementationOnce(() => {
+
         (server as any).server.emit('error', 'test error');
+
       });
+
       await expect(server.stop().toPromise()).rejects.toThrow('The server ran into a problem:');
+
     });
+
   });
 
   describe('serverHelper()', () => {
+
     it('should call the handle function of the nested handler', () => {
+
       server.serverHelper(req, res);
       expect(handler.handle).toHaveBeenCalledTimes(1);
+
     });
 
     it('should throw an error when request is null or undefined', () => {
+
       expect(() => server.serverHelper(null, res)).toThrow('request must be defined.');
       expect(() => server.serverHelper(undefined, res)).toThrow('request must be defined.');
+
     });
 
     it('should throw an error when response is null or undefined', () => {
+
       expect(() => server.serverHelper(req, null)).toThrow('response must be defined.');
       expect(() => server.serverHelper(req, undefined)).toThrow('response must be defined.');
+
     });
+
   });
+
 });

@@ -11,28 +11,43 @@ import { UnsupportedMediaTypeHttpError } from '../errors/unsupported-media-type-
 import { ForbiddenHttpError } from '../errors/forbidden-http-error';
 
 export class HttpHandlerStaticAssetService extends HttpHandler {
+
   constructor(protected logger: Logger, private path: string, private contentType: string) {
+
     super();
+
   }
 
   canHandle(context: HttpHandlerContext): Observable<boolean> {
+
     this.logger.debug(HttpHandlerStaticAssetService.name, 'Checking canHandle', context.request);
+
     return of(true);
+
   }
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
+
     const canHandleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];
+
     if (context.request?.headers?.accept) {
+
       const reqHeaders = context.request.headers.accept.split(',').map((accept) => accept.split(';')[0]);
+
       if (!reqHeaders.some((contentType) => canHandleAcceptHeaders.includes(contentType.trim()))) {
+
         return throwError(new UnsupportedMediaTypeHttpError('Content type not supported'));
+
       }
+
     }
 
     const filename = context.request.parameters?.filename;
 
     if(filename && filename.includes('../')) {
+
       return throwError(new ForbiddenHttpError());
+
     }
 
     const path = join(process.cwd(), this.path, filename||'');
@@ -50,5 +65,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
         })),
         catchError(() => throwError(new NotFoundHttpError('Error while trying to read file'))),
       );
+
   }
+
 }

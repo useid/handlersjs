@@ -3,9 +3,9 @@ import { map } from 'rxjs/operators';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
-import { HttpMethods } from 'lib/models/http-method';
 
 export abstract class HttpCorsOptions {
+
   constructor(
     public origins?: string[],
     public allowMethods?: string[],
@@ -14,14 +14,18 @@ export abstract class HttpCorsOptions {
     public credentials?: boolean,
     public maxAge?: number,
   ) { }
+
 }
 
 const cleanHeaders = (headers: { [key: string]: string }) => Object.keys(headers).reduce<{ [key: string]: string }>(
   (acc, key) => {
+
     const lKey = key.toLowerCase();
+
     return acc[lKey]
       ? { ... acc, [lKey]: `${acc[lKey]},${headers[key]}` }
       : { ... acc, [lKey]: headers[key] };
+
   }, {} as { [key: string]: string },
 );
 
@@ -32,11 +36,15 @@ export class HttpCorsRequestHandler extends HttpHandler {
     private options?: HttpCorsOptions,
     private passThroughOptions: boolean = false,
   ) {
+
     super();
+
   }
 
   canHandle(context: HttpHandlerContext): Observable<boolean> {
+
     return of(true);
+
   }
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
@@ -49,6 +57,7 @@ export class HttpCorsRequestHandler extends HttpHandler {
 
     const {
       ['origin']: requestedOrigin,
+      /* eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructuring for removal */
       ['access-control-request-method']: requestedMethod,
       ['access-control-request-headers']: requestedHeaders,
       ... noCorsHeaders
@@ -93,6 +102,7 @@ export class HttpCorsRequestHandler extends HttpHandler {
         map((response) => ({
           ... response,
           headers: {
+
             ... response.headers,
             ... allowOrigin && ({
               ... (allowOrigin !== '*') && { 'Vary': 'Origin' },
@@ -126,5 +136,7 @@ export class HttpCorsRequestHandler extends HttpHandler {
       );
 
     }
+
   }
+
 }
