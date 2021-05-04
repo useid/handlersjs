@@ -37,11 +37,11 @@ describe('HttpCorsRequestHandler', () => {
   let service: HttpCorsRequestHandler;
   let handler: HttpHandler;
   let context: HttpHandlerContext;
-  const mockResponseHeaders = { someHeader: 'headerSome' };
+  const mockResponseHeaders = { 'some-header': 'headerSome' };
 
   beforeEach(() => {
     handler = {
-      handle: jest.fn().mockReturnValue(of({ headers: mockResponseHeaders, status: 200 } as HttpHandlerResponse)),
+      handle: jest.fn().mockReturnValue(of({ headers: mockResponseHeaders, status: 200, body: 'handler done' } as HttpHandlerResponse)),
       safeHandle: jest.fn(),
       canHandle: jest.fn().mockReturnValue(of(true)),
     };
@@ -51,7 +51,7 @@ describe('HttpCorsRequestHandler', () => {
         method: 'GET',
         headers: {
           accEPt: 'text/plain',
-          origin: 'testing',
+          origin: 'http://test.de',
         },
       },
     };
@@ -84,6 +84,7 @@ describe('HttpCorsRequestHandler', () => {
       // Basic CORS flow
       it('should return the right headers in the response when no special options were passed to the constructor', async() => {
         const response = await service.handle(context).toPromise();
+        expect(handler.handle).toHaveBeenCalledTimes(1);
         expect(response).toEqual(expect.objectContaining({ headers: { ...mockResponseHeaders, 'Access-Control-Allow-Origin': '*' } }));
       });
 
@@ -91,9 +92,72 @@ describe('HttpCorsRequestHandler', () => {
       it('should return the right headers and status in the response when no special options were passed to the constructor', async() => {
         context.request.method = 'OPTIONS';
         const response = await service.handle(context).toPromise();
-        expect(response).toEqual(expect.objectContaining({ headers: { 'access-control-allow-methods': 'GET, HEAD, PUT, POST, DELETE, PATCH', 'access-control-allow-origin': '*', 'access-control-max-age': '-1'} }));
+        expect(handler.handle).toHaveBeenCalledTimes(0);
+        expect(response.headers).toEqual(expect.objectContaining({ 'Access-Control-Max-Age': '-1' }));
+        expect(response.headers).toEqual(expect.objectContaining({ 'Access-Control-Allow-Origin': '*' }));
+        expect(response.headers).toEqual(expect.objectContaining({ 'Access-Control-Allow-Methods': 'GET, HEAD, PUT, POST, DELETE, PATCH'  }));
         expect(response).toEqual(expect.objectContaining({ status: 204 }));
       });
+    });
+  });
+
+  describe('Preflight using nested handler', () => {
+    beforeEach(() => {
+      service = new HttpCorsRequestHandler(handler, {}, true);
+    });
+
+    it('should return a response with the body set by the nested handler', async() => {
+      context.request.method = 'OPTIONS';
+      const response = await service.handle(context).toPromise();
+      expect(handler.handle).toHaveBeenCalledTimes(1);
+      expect(response).toEqual(expect.objectContaining({ body: 'handler done' }));
+      expect(response).toEqual(expect.objectContaining({ status: 200 }));
+      expect(response.headers).toEqual(expect.objectContaining({ 'Access-Control-Max-Age': '-1' }));
+      expect(response.headers).toEqual(expect.objectContaining({ ...mockResponseHeaders }));
+      expect(response.headers).toEqual(expect.objectContaining({ 'Access-Control-Allow-Origin': '*' }));
+      expect(response.headers).toEqual(expect.objectContaining({ 'Access-Control-Allow-Methods': 'GET, HEAD, PUT, POST, DELETE, PATCH' }));
+    });
+  });
+
+  describe('Using passthrough options', () => {
+    beforeEach(() => {
+      service = new HttpCorsRequestHandler(handler, {
+        origins: [ 'http://text.com', 'http://test.de' ],
+        allowMethods: [ 'GET', 'POST' ],
+        allowHeaders: [],
+        credentials: false,
+        maxAge: 2,
+      }, true);
+    });
+
+    it('should return the right headers in the response when no special options were passed to the constructor', async() => {
+      const response = await service.handle(context).toPromise();
+      expect(response.headers).toEqual(expect.objectContaining({ 'Access-Control-Allow-Origin': 'http://test.de' }));
+      expect(response.headers).toEqual(expect.objectContaining({ 'Vary': 'Origin' }));
+      expect(response.headers).toEqual(expect.objectContaining({ ...mockResponseHeaders }));
+    });
+
+    it('should return the right headers, body and status in the response when no special options were passed to the constructor', async() => {
+      context.request.method = 'OPTIONS';
+      const response = await service.handle(context).toPromise();
+      expect(response.headers).toEqual(expect.objectContaining({ ...mockResponseHeaders }));
+      expect(response.headers).toEqual(expect.objectContaining({ 'Vary': 'Origin' }));
+      expect(response).toEqual(expect.objectContaining({ status: 200 }));
+      expect(response).toEqual(expect.objectContaining({ body: 'handler done' }));
+    });
+
+    it('should return a \'access-control-allow-credentials\' header set to \'true\'', async() => {
+      service = new HttpCorsRequestHandler(handler, {
+        origins: [ 'http://text.com', 'http://test.de' ],
+        allowMethods: [], allowHeaders: [],
+        credentials: true, maxAge: 2,
+      }, true);
+      const response = await service.handle(context).toPromise();
+      expect(response.headers).toEqual(expect.objectContaining({ 'Access-Control-Allow-Credentials': 'true' }));
+      expect(response.headers).toEqual(expect.objectContaining({ 'Vary': 'Origin' }));
+      expect(response.headers).toEqual(expect.objectContaining({ ...mockResponseHeaders }));
+      expect(response).toEqual(expect.objectContaining({ status: 200 }));
+      expect(response).toEqual(expect.objectContaining({ body: 'handler done' }));
     });
   });
 });

@@ -95,12 +95,12 @@ export class HttpCorsRequestHandler extends HttpHandler {
           headers: {
             ... response.headers,
             ... allowOrigin && ({
-              ... (allowOrigin !== '*') && { 'vary': 'origin' },
-              'access-control-allow-origin': allowOrigin,
-              'access-control-allow-methods': (allowMethods ?? routeMethods ?? allMethods).join(', '),
-              ... (allowHeadersOrRequested) && { 'access-control-allow-headers': allowHeadersOrRequested },
-              ... (credentials) && { 'access-control-allow-credentials': 'true' },
-              'access-control-max-age': (maxAge ?? -1).toString(),
+              ... (allowOrigin !== '*') && { 'Vary': 'Origin' },
+              'Access-Control-Allow-Origin': allowOrigin,
+              'Access-Control-Allow-Methods': (allowMethods ?? routeMethods ?? allMethods).join(', '),
+              ... (allowHeadersOrRequested) && { 'Access-Control-Allow-Headers': allowHeadersOrRequested },
+              ... (credentials) && { 'Access-Control-Allow-Credentials': 'true' },
+              'Access-Control-Max-Age': (maxAge ?? -1).toString(),
             }),
           },
         })),
