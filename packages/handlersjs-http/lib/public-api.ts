@@ -19,6 +19,7 @@ export * from './models/http-handler-request';
 export * from './models/http-handler-response';
 export * from './models/http-handler-route';
 export * from './models/http-handler';
+export * from './models/http-method';
 export * from './servers/node/node-http-request-response.handler';
 export * from './servers/node/node-http-server';
 export * from './servers/node/node-http-streams.handler';
