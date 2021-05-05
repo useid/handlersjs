@@ -39,10 +39,6 @@
     "ts-node": "^9.1.1",
     "typescript": "^3.8.3"
   },
-  "lerna": {
-    "extends": "@digita-ai/lerna-config",
-    "version": "0.1.0"
-  },
   "commitlint": {
     "extends": [
       "@digita-ai/commitlint-config"
