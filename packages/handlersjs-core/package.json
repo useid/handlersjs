@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/handlersjs-core",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "",
   "main": "./dist/public-api.js",
   "directories": {
@@ -31,8 +31,8 @@
   "author": "Wouter Janssens",
   "license": "ISC",
   "devDependencies": {
-    "@types/jest": "^26.0.20",
     "@digita-ai/typescript-config": "^0.2.1",
+    "@types/jest": "^26.0.20",
     "componentsjs": "4.0.5",
     "componentsjs-generator": "2.1.0",
     "eslint": "^7.25.0",

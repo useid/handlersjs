@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.1.5](https://github.com/digita-ai/handlersjs/compare/v0.1.4...v0.1.5) (2021-05-05)
+
+
+### **Features**
+
+* typescript settings extend from config repo ([#50](https://github.com/digita-ai/handlersjs/issues/50)) ([9f446ae](https://github.com/digita-ai/handlersjs/commit/9f446ae2ef8133e52539be0ccaf947c911396ae4))
+
+
+
 ### [0.1.4](https://github.com/digita-ai/handlersjs/compare/v0.1.3...v0.1.4) (2021-04-29)
 
 **Note:** Version bump only for package @digita-ai/handlersjs-core
