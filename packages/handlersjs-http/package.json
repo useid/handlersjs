@@ -13,7 +13,7 @@
   ],
   "types": "./dist/public-api.d.ts",
   "scripts": {
-    "test": "jest --passWithNoTests",
+    "test": "jest",
     "test:ci": "jest --silent --runInBand --passWithNoTests",
     "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json",
     "build": "rimraf ./dist && npm run build:ts && npm run build:components",
@@ -31,7 +31,7 @@
   "author": "Wouter Janssens",
   "license": "ISC",
   "devDependencies": {
-    "@digita-ai/typescript-config": "^0.2.1",
+    "@digita-ai/typescript-config": "^0.3.0",
     "@types/jest": "^26.0.20",
     "componentsjs": "4.0.5",
     "componentsjs-generator": "2.1.0",

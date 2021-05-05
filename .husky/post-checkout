@@ -2,14 +2,14 @@
 
 . "$(dirname $0)/_/husky.sh"
 
-CHANGED="$(git diff-tree -r --name-only --no-commit-id $1 $2)"
+# CHANGED="$(git diff-tree -r --name-only --no-commit-id $1 $2)"
 
-if [[ $3 == 1 ]]; then
+# if [[ $3 == 1 ]]; then
 
-    if (echo "$CHANGED" | grep -q "package.json") ; then
-        npm run bootstrap
-    fi
+#     if (echo "$CHANGED" | grep -q "package.json") ; then
+#         npm run bootstrap
+#     fi
 
-fi
+# fi
 
 exit 0
