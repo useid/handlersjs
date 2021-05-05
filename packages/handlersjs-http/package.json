@@ -31,7 +31,7 @@
   "author": "Wouter Janssens",
   "license": "ISC",
   "devDependencies": {
-    "@digita-ai/typescript-config": "^0.3.0",
+    "@digita-ai/typescript-config": "^0.3.2",
     "@types/jest": "^26.0.20",
     "componentsjs": "4.0.5",
     "componentsjs-generator": "2.1.0",
@@ -62,7 +62,6 @@
   "jest": {
     "preset": "@digita-ai/jest-config",
     "displayName": "http",
-    "rootDir": "lib",
     "coverageThreshold": {
       "global": {
         "branches": 66.17,
