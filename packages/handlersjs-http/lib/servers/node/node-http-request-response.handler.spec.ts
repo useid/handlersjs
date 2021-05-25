@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import * as mockhttp from 'mock-http';
 import { HttpHandler } from '../../models/http-handler';
 import { NodeHttpRequestResponseHandler } from './node-http-request-response.handler';
@@ -134,6 +134,18 @@ describe('NodeHttpRequestResponseHandler', () => {
       expect(nestedHttpHandler.handle).toHaveBeenCalledWith(expect.objectContaining({
         request: { url: new URL('http://localhost:3000/test?works=yes'), method: 'GET', headers: {} },
       }));
+
+    });
+
+    it('should catch all errors and create an error response', async () => {
+
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError(new Error('mock error')));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(500, {});
+      expect(res.write).toHaveBeenCalledWith('The server could not process the request due to an internal server error:\nmock error');
+      expect(res.end).toHaveBeenCalledTimes(1);
 
     });
 

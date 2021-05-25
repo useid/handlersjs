@@ -1,5 +1,5 @@
 import { Observable, of, Subject, throwError } from 'rxjs';
-import { map, switchMap, toArray } from 'rxjs/operators';
+import { map, switchMap, toArray, catchError } from 'rxjs/operators';
 import { HttpHandler } from '../../models/http-handler';
 import { HttpHandlerContext } from '../../models/http-handler-context';
 import { HttpHandlerRequest } from '../../models/http-handler-request';
@@ -84,6 +84,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
       }),
       switchMap((context: HttpHandlerContext) => this.httpHandler.handle(context)),
+      catchError((error) => of({ body: 'The server could not process the request due to an internal server error:\n' + error.message, headers: {}, status: 500 })),
       map((response) => {
 
         nodeHttpStreams.responseStream.writeHead(response.status, response.headers);
