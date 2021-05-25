@@ -66,10 +66,18 @@
     "coverageThreshold": {
       "global": {
         "branches": 66.17,
-        "functions": 74.39,
-        "lines": 73.72,
-        "statements": 73.97
+        "functions": 74.7,
+        "lines": 73.82,
+        "statements": 74.06
       }
-    }
+    },
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/dist/",
+      "<rootDir>/coverage/",
+      "<rootDir>/node_modules/",
+      "<rootDir>/.*\\.conf(ig)?.ts",
+      "<rootDir>/lib/public-api.ts",
+      "<rootDir>/lib/main.ts"
+    ]
   }
 }
