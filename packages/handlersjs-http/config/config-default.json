@@ -1,0 +1,48 @@
+{
+    "@context": [
+      "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/context.jsonld",
+      "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/context.jsonld"
+    ],
+    "@graph": [
+        {
+            "@id": "urn:handlersjs-http:default:NodeHttpServer",
+            "@type": "NodeHttpServer",
+            "NodeHttpServer:_port": "3000",
+            "NodeHttpServer:_host": "localhost",
+            "NodeHttpServer:_nodeHttpStreamsHandler": {
+                "@id": "urn:handlersjs-http:default:NodeHttpRequestResponseHandler",
+                "@type": "NodeHttpRequestResponseHandler",
+                "NodeHttpRequestResponseHandler:_httpHandler": {
+                    "@id": "urn:handlersjs-http:default:RoutedHttpRequestHandler",
+                    "@type": "RoutedHttpRequestHandler",
+                    "RoutedHttpRequestHandler:_handlerControllerList": [
+                        {
+                            "@id": "urn:handlersjs-http:default:HttpHandlerController",
+                            "@type": "HttpHandlerController",
+                            "HttpHandlerController:_label": "ControllerList",
+                            "HttpHandlerController:_routes": [
+                                {
+                                    "@id": "urn:dgt-id-proxy:default:MockRoute",
+                                    "@type": "HttpHandlerRoute",
+                                    "HttpHandlerRoute:_operations": [
+                                        {
+                                            "@id": "urn:dgt-id-proxy:default:GetOperation",
+                                            "@type": "HttpHandlerOperation",
+                                            "HttpHandlerOperation:_method": "GET",
+                                            "HttpHandlerOperation:_publish": false
+                                        }
+                                    ],
+                                    "HttpHandlerRoute:_handler": {
+                                      "@type": "MockHttpHandler"
+                                    },
+                                    "HttpHandlerRoute:_path": "/mock"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+
+}

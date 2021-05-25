@@ -13,6 +13,7 @@
   ],
   "types": "./dist/public-api.d.ts",
   "scripts": {
+    "start": "node ./dist/main.js",
     "test": "jest",
     "test:ci": "jest --silent --runInBand --passWithNoTests",
     "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json",
