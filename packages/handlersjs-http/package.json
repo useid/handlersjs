@@ -65,10 +65,10 @@
     "displayName": "http",
     "coverageThreshold": {
       "global": {
-        "branches": 66.17,
+        "branches": 68.53,
         "functions": 74.7,
-        "lines": 73.82,
-        "statements": 74.06
+        "lines": 74.56,
+        "statements": 74.75
       }
     },
     "coveragePathIgnorePatterns": [

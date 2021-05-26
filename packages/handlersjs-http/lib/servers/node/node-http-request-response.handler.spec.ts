@@ -137,7 +137,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     });
 
-    it('should catch all errors and create an error response', async () => {
+    it('should catch errors and create an error response', async () => {
 
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError(new Error('mock error')));
 
@@ -146,6 +146,80 @@ describe('NodeHttpRequestResponseHandler', () => {
       expect(res.writeHead).toHaveBeenCalledWith(500, {});
       expect(res.write).toHaveBeenCalledWith('The server could not process the request due to an internal server error:\nmock error');
       expect(res.end).toHaveBeenCalledTimes(1);
+
+    });
+
+    it('should catch objects with a 400 status and header and create a Bad Request error response', async () => {
+
+      // Each of these need to be tested to maintain coverage!
+
+      // Bad Request
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError({ headers: {}, status: 400 }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(400, {});
+      expect(res.write).toHaveBeenCalledWith('Bad Request');
+
+    });
+
+    it('should catch objects with a 401 status and header and create a Unauthorized error response', async () => {
+
+      // Unauthorized
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError({ headers: {}, status: 401 }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(401, {});
+      expect(res.write).toHaveBeenCalledWith('Unauthorized');
+
+    });
+
+    it('should catch objects with a 403 status and header and create a Forbidden error response', async () => {
+
+      // Forbidden
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError({ headers: {}, status: 403 }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(403, {});
+      expect(res.write).toHaveBeenCalledWith('Forbidden');
+
+    });
+
+    it('should catch objects with a 404 status and header and create a Not Found error response', async () => {
+
+      // Not Found
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError({ headers: {}, status: 404 }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(404, {});
+      expect(res.write).toHaveBeenCalledWith('Not Found');
+
+    });
+
+    it('should catch objects with a 405 status and header and create a Method Not Allowed error response', async () => {
+
+      // Method Not Allowed
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError({ headers: {}, status: 405 }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(405, {});
+      expect(res.write).toHaveBeenCalledWith('Method Not Allowed');
+
+    });
+
+    it('should catch objects with a 500 status and header and create a Internal Server Error error response', async () => {
+
+      // Internal Server Error
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError({ headers: {}, status: 500 }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(500, {});
+      expect(res.write).toHaveBeenCalledWith('Internal Server Error');
 
     });
 

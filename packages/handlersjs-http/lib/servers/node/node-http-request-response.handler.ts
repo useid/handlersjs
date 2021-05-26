@@ -84,7 +84,28 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
       }),
       switchMap((context: HttpHandlerContext) => this.httpHandler.handle(context)),
-      catchError((error) => of({ body: 'The server could not process the request due to an internal server error:\n' + error.message, headers: {}, status: 500 })),
+      catchError((error) => {
+
+        // if the error contains response and headers object, use them to create a response with a custom error message
+        if (error.status && error.headers) {
+
+          switch (error.status) {
+
+            case 400: return of({ body: 'Bad Request', headers: error.headers, status: error.status });
+            case 401: return of({ body: 'Unauthorized', headers: error.headers, status: error.status });
+            case 403: return of({ body: 'Forbidden', headers: error.headers, status: error.status });
+            case 404: return of({ body: 'Not Found', headers: error.headers, status: error.status });
+            case 405: return of({ body: 'Method Not Allowed', headers: error.headers, status: error.status });
+            case 500: return of({ body: 'Internal Server Error', headers: error.headers, status: error.status });
+
+          }
+
+        }
+
+        // Any other error will be returned as a 500 server error with the error message.
+        return of({ body: 'The server could not process the request due to an internal server error:\n' + error.message, headers: {}, status: 500 });
+
+      }),
       map((response) => {
 
         nodeHttpStreams.responseStream.writeHead(response.status, response.headers);
