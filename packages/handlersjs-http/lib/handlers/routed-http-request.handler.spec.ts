@@ -107,13 +107,17 @@ describe('RoutedHttpRequestHandler', () => {
 
     });
 
-    it('should return a 404 response when the path does not exist', async () => {
+    it('should return a 404 response when the path does not exist and no default handler exists', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
         request: { url: new URL('/nonExistantPath', 'http://example.com'), method: 'GET', headers: {} },
       };
 
-      await expect(routedHttpRequestHandler.handle(httpHandlerContext).toPromise())
+      // the default handler (2nd parameter) is not required. Passing undefined to make it clear for
+      // this test it does not exist so the error response is created.
+      const handler = new RoutedHttpRequestHandler(handlerControllerList, undefined);
+
+      await expect(handler.handle(httpHandlerContext).toPromise())
         .resolves.toEqual(expect.objectContaining({ status: 404 }));
 
     });

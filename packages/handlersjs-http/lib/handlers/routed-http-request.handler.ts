@@ -81,12 +81,6 @@ export class RoutedHttpRequestHandler extends HttpHandler {
 
     const matchingRoute = match ? this.pathToRouteMap.get(match) : undefined;
 
-    if (!matchingRoute && !this.defaultHandler) {
-
-      return of({ body: '', headers: {}, status: 404 });
-
-    }
-
     if (matchingRoute) {
 
       const allowedMethods = matchingRoute.route.operations.map((op) => op.method);
@@ -115,9 +109,13 @@ export class RoutedHttpRequestHandler extends HttpHandler {
         })),
       );
 
-    } else {
+    } else if (this.defaultHandler) {
 
       return this.defaultHandler.handle(context);
+
+    } else {
+
+      return of({ body: '', headers: {}, status: 404 });
 
     }
 
