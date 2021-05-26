@@ -299,6 +299,25 @@ describe('RoutedHttpRequestHandler', () => {
 
     });
 
+    it('should call handle of the defaultHandler when no route is matched', async () => {
+
+      const defaultHandler: HttpHandler = {
+        handle: jest.fn().mockReturnValueOnce(of({ body: 'defaultHandler mockBody', headers: {}, status:200 })),
+        canHandle: jest.fn(),
+        safeHandle: jest.fn(),
+      };
+
+      const defaultRoutedHttpRequestHandler = new RoutedHttpRequestHandler(handlerControllerList, defaultHandler);
+
+      const httpHandlerContext: HttpHandlerContext = {
+        request: { url: new URL('/pathWontMatch', 'http://example.com'), method: 'GET', headers: {} },
+      };
+
+      await expect(defaultRoutedHttpRequestHandler.handle(httpHandlerContext).toPromise()).resolves.toEqual({ body: 'defaultHandler mockBody', headers: {}, status:200 });
+      expect(defaultHandler.handle).toHaveBeenCalledTimes(1);
+
+    });
+
   });
 
   describe('canHandle', () => {
