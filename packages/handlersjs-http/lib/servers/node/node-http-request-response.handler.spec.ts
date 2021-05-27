@@ -17,7 +17,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     nestedHttpHandler = {
       canHandle: jest.fn(),
-      handle: jest.fn().mockReturnValueOnce(of({ body: {}, headers: {}, status: 200 })),
+      handle: jest.fn().mockReturnValueOnce(of({ body: 'mockBody', headers: { mockKey: 'mockValue' }, status: 200 })),
       safeHandle: jest.fn(),
     } as HttpHandler;
 
@@ -108,14 +108,14 @@ describe('NodeHttpRequestResponseHandler', () => {
     it('should write the headers to response stream', async () => {
 
       await handler.handle(streamMock).toPromise();
-      expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(200, {});
+      expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(200, { mockKey: 'mockValue', 'content-length': Buffer.byteLength('mockBody', 'utf-8').toString() });
 
     });
 
     it('should write the body to response stream', async () => {
 
       await handler.handle(streamMock).toPromise();
-      expect(streamMock.responseStream.write).toHaveBeenCalledWith({});
+      expect(streamMock.responseStream.write).toHaveBeenCalledWith('mockBody');
 
     });
 
@@ -142,9 +142,36 @@ describe('NodeHttpRequestResponseHandler', () => {
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError(new Error('mock error')));
 
       await handler.handle(streamMock).toPromise();
+      const expectedError = 'The server could not process the request due to an internal server error:\nmock error';
 
-      expect(res.writeHead).toHaveBeenCalledWith(500, {});
-      expect(res.write).toHaveBeenCalledWith('The server could not process the request due to an internal server error:\nmock error');
+      expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength(expectedError, 'utf-8').toString() });
+      expect(res.write).toHaveBeenCalledWith(expectedError);
+      expect(res.end).toHaveBeenCalledTimes(1);
+
+    });
+
+    it('should calculate the content-length of the response body as utf-8 when no charset is present', async () => {
+
+      const body = 'This is a response body with a certain length.';
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { 'content-length': '2' }, status:200 }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body, 'utf-8').toString() });
+      expect(res.write).toHaveBeenCalledWith(body);
+      expect(res.end).toHaveBeenCalledTimes(1);
+
+    });
+
+    it('should calculate the content-length of the response body with the given charset', async () => {
+
+      const body = btoa('This is a response body with a certain length.');
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { 'content-length': '2', 'content-type': 'text/html; charset=base64' }, status:200 }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body, 'base64').toString(), 'content-type': 'text/html; charset=base64' });
+      expect(res.write).toHaveBeenCalledWith(body);
       expect(res.end).toHaveBeenCalledTimes(1);
 
     });
