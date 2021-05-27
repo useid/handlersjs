@@ -39,7 +39,10 @@
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "RoutedHttpRequestHandler:_defaultHandler": {
+                        "@type": "MockHttpHandler"
+                    }
                 }
             }
         }

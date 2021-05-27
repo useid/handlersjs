@@ -107,13 +107,17 @@ describe('RoutedHttpRequestHandler', () => {
 
     });
 
-    it('should return a 404 response when the path does not exist', async () => {
+    it('should return a 404 response when the path does not exist and no default handler exists', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
         request: { url: new URL('/nonExistantPath', 'http://example.com'), method: 'GET', headers: {} },
       };
 
-      await expect(routedHttpRequestHandler.handle(httpHandlerContext).toPromise())
+      // the default handler (2nd parameter) is not required. Passing undefined to make it clear for
+      // this test it does not exist so the error response is created.
+      const handler = new RoutedHttpRequestHandler(handlerControllerList, undefined);
+
+      await expect(handler.handle(httpHandlerContext).toPromise())
         .resolves.toEqual(expect.objectContaining({ status: 404 }));
 
     });
@@ -296,6 +300,25 @@ describe('RoutedHttpRequestHandler', () => {
 
       const response = await routedHttpRequestHandler.handle(httpHandlerContext).toPromise();
       expect(response.headers).toEqual(expect.objectContaining({ Allow: 'GET, OPTIONS' }));
+
+    });
+
+    it('should call handle of the defaultHandler when no route is matched', async () => {
+
+      const defaultHandler: HttpHandler = {
+        handle: jest.fn().mockReturnValueOnce(of({ body: 'defaultHandler mockBody', headers: {}, status:200 })),
+        canHandle: jest.fn(),
+        safeHandle: jest.fn(),
+      };
+
+      const defaultRoutedHttpRequestHandler = new RoutedHttpRequestHandler(handlerControllerList, defaultHandler);
+
+      const httpHandlerContext: HttpHandlerContext = {
+        request: { url: new URL('/pathWontMatch', 'http://example.com'), method: 'GET', headers: {} },
+      };
+
+      await expect(defaultRoutedHttpRequestHandler.handle(httpHandlerContext).toPromise()).resolves.toEqual({ body: 'defaultHandler mockBody', headers: {}, status:200 });
+      expect(defaultHandler.handle).toHaveBeenCalledTimes(1);
 
     });
 
