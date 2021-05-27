@@ -176,6 +176,18 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     });
 
+    it('should not calculate content-length when response does not contain a body', async () => {
+
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ headers: { mockKey: 'mockValue' }, status:200 }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(200, { mockKey: 'mockValue' });
+      expect(res.write).toHaveBeenCalledTimes(0);
+      expect(res.end).toHaveBeenCalledTimes(1);
+
+    });
+
     it('should error if the charset is not supported', async () => {
 
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body: 'mockBody', headers: { 'content-type': 'text/html; charset=unsupported' }, status:200 }));
