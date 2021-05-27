@@ -20,7 +20,7 @@ export class RoutedHttpRequestHandler extends HttpHandler {
    *
    * @param {HttpHandlerController[]} handlerControllerList - a list of HttpHandlerController objects
    */
-  constructor(private handlerControllerList: HttpHandlerController[]) {
+  constructor(private handlerControllerList: HttpHandlerController[], private defaultHandler?: HttpHandler) {
 
     super();
 
@@ -81,37 +81,43 @@ export class RoutedHttpRequestHandler extends HttpHandler {
 
     const matchingRoute = match ? this.pathToRouteMap.get(match) : undefined;
 
-    if (!matchingRoute) {
+    if (matchingRoute) {
+
+      const allowedMethods = matchingRoute.route.operations.map((op) => op.method);
+      const methodSupported = allowedMethods.includes(request.method);
+
+      if (!methodSupported) {
+
+        return of({ body: '', headers: { Allow: allowedMethods.join(', ') }, status: 405 });
+
+      }
+
+      // add parameters from requestPath to the request object
+      const parameters = this.extractParameters(matchingRoute.route.path.split('/').slice(1), pathSegments);
+      const requestWithParams = Object.assign(request, { parameters });
+      const newContext = { request: requestWithParams, route: matchingRoute.route };
+      const preResponseHandler = matchingRoute.controller.preResponseHandler;
+
+      return (preResponseHandler ? preResponseHandler.handle(newContext) : of(newContext)).pipe(
+        switchMap((preresponse) => matchingRoute.route.handler.handle(preresponse)),
+        map((response) => ({
+          ... response,
+          headers: {
+            ... response.headers,
+            ... (request.method === 'OPTIONS') && { Allow: allowedMethods.join(', ') },
+          },
+        })),
+      );
+
+    } else if (this.defaultHandler) {
+
+      return this.defaultHandler.handle(context);
+
+    } else {
 
       return of({ body: '', headers: {}, status: 404 });
 
     }
-
-    const allowedMethods = matchingRoute.route.operations.map((op) => op.method);
-    const methodSupported = allowedMethods.includes(request.method);
-
-    if (!methodSupported) {
-
-      return of({ body: '', headers: { Allow: allowedMethods.join(', ') }, status: 405 });
-
-    }
-
-    // add parameters from requestPath to the request object
-    const parameters = this.extractParameters(matchingRoute.route.path.split('/').slice(1), pathSegments);
-    const requestWithParams = Object.assign(request, { parameters });
-    const newContext = { request: requestWithParams, route: matchingRoute.route };
-    const preResponseHandler = matchingRoute.controller.preResponseHandler;
-
-    return (preResponseHandler ? preResponseHandler.handle(newContext) : of(newContext)).pipe(
-      switchMap((preresponse) => matchingRoute.route.handler.handle(preresponse)),
-      map((response) => ({
-        ... response,
-        headers: {
-          ... response.headers,
-          ... (request.method === 'OPTIONS') && { Allow: allowedMethods.join(', ') },
-        },
-      })),
-    );
 
   }
 
