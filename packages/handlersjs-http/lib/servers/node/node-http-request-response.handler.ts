@@ -94,14 +94,6 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
         switch (error.status) {
 
-          // Provide custom errors for common status codes
-          case 400: return of({ ...error, body: 'Bad Request' });
-          case 401: return of({ ...error, body: 'Unauthorized' });
-          case 403: return of({ ...error, body: 'Forbidden' });
-          case 404: return of({ ...error, body: 'Not Found' });
-          case 405: return of({ ...error, body: 'Method Not Allowed' });
-          case 500: return of({ ...error, body: 'Internal Server Error' });
-
           // if status is undefined, check if the error has a message, otherwise return server error response without the message.
           case undefined: {
 
@@ -117,6 +109,13 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
           }
 
+          // Provide custom errors for common status codes
+          case 400: return of({ ...error, body: 'Bad Request' });
+          case 401: return of({ ...error, body: 'Unauthorized' });
+          case 403: return of({ ...error, body: 'Forbidden' });
+          case 404: return of({ ...error, body: 'Not Found' });
+          case 405: return of({ ...error, body: 'Method Not Allowed' });
+          case 500: return of({ ...error, body: 'Internal Server Error' });
           // If no cases match, return a default error message.
           default: return error.status < 600 && error.status >= 400 ?  of({ ...error, body: 'An Unexpected Error Occured' }) : of({ body: 'An Unexpected Error Occured', headers: error.headers, status: 500 });
 
