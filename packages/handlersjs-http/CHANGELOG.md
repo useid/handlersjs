@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.0](https://github.com/digita-ai/handlersjs/compare/v0.1.5...v0.2.0) (2021-05-27)
+
+
+### **Features**
+
+* better error handling ([#55](https://github.com/digita-ai/handlersjs/issues/55)) ([12f0e78](https://github.com/digita-ai/handlersjs/commit/12f0e78dc5561cc4f6cc6434830cb8528be1be6d))
+* default handler to match any route ([#56](https://github.com/digita-ai/handlersjs/issues/56)) ([b358184](https://github.com/digita-ai/handlersjs/commit/b358184d2ad16f364a3dd4f9c4456f3ced1b3cf9))
+* even better error handling ([#59](https://github.com/digita-ai/handlersjs/issues/59)) ([3a325c2](https://github.com/digita-ai/handlersjs/commit/3a325c2d231e4c3276d7fbdceab6c7d668279219))
+* set content-length of the response ([#57](https://github.com/digita-ai/handlersjs/issues/57)) ([013993f](https://github.com/digita-ai/handlersjs/commit/013993f97191ef608d43e57abf4a82dd7b41d83d))
+
+
+
 ### [0.1.5](https://github.com/digita-ai/handlersjs/compare/v0.1.4...v0.1.5) (2021-05-05)
 
 
