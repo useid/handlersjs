@@ -137,14 +137,38 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     });
 
-    it('should catch errors and create an error response', async () => {
+    it('should catch Errors and create an error response', async () => {
 
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError(new Error('mock error')));
 
       await handler.handle(streamMock).toPromise();
 
       expect(res.writeHead).toHaveBeenCalledWith(500, {});
-      expect(res.write).toHaveBeenCalledWith('The server could not process the request due to an internal server error:\nmock error');
+      expect(res.write).toHaveBeenCalledWith('The server could not process the request due to an error:\nmock error');
+      expect(res.end).toHaveBeenCalledTimes(1);
+
+    });
+
+    it('should catch objects with a status but without headers and add an empty headers object', async () => {
+
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError({ status: 404 }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(404, {});
+      expect(res.write).toHaveBeenCalledWith('Not Found');
+      expect(res.end).toHaveBeenCalledTimes(1);
+
+    });
+
+    it('should catch objects without a status, headers, or message and return an Internal Server Error response', async () => {
+
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError({ unknownKey: 'mockValue' }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(500, {});
+      expect(res.write).toHaveBeenCalledWith('Internal Server Error');
       expect(res.end).toHaveBeenCalledTimes(1);
 
     });
@@ -220,6 +244,39 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       expect(res.writeHead).toHaveBeenCalledWith(500, {});
       expect(res.write).toHaveBeenCalledWith('Internal Server Error');
+
+    });
+
+    it('should catch objects with any status that is not matched and if the status is within 400-600 keep the status in the response', async () => {
+
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError({ headers: {}, status: 409 }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(409, {});
+      expect(res.write).toHaveBeenCalledWith('An Unexpected Error Occured');
+
+    });
+
+    it('should catch objects with any status that is not matched and if the status is not within 400-599 return a 500 response', async () => {
+
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError({ headers: {}, status: 399 }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(500, {});
+      expect(res.write).toHaveBeenCalledWith('An Unexpected Error Occured');
+
+    });
+
+    it('should catch objects with any status that is not matched and if the status is not within 400-599 return a 500 response', async () => {
+
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError({ headers: {}, status: 600 }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(500, {});
+      expect(res.write).toHaveBeenCalledWith('An Unexpected Error Occured');
 
     });
 

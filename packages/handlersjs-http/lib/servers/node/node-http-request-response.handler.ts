@@ -86,24 +86,41 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
       switchMap((context: HttpHandlerContext) => this.httpHandler.handle(context)),
       catchError((error) => {
 
-        // if the error contains response and headers object, use them to create a response with a custom error message
-        if (error.status && error.headers) {
+        if (error.status && !error.headers) {
 
-          switch (error.status) {
-
-            case 400: return of({ body: 'Bad Request', headers: error.headers, status: error.status });
-            case 401: return of({ body: 'Unauthorized', headers: error.headers, status: error.status });
-            case 403: return of({ body: 'Forbidden', headers: error.headers, status: error.status });
-            case 404: return of({ body: 'Not Found', headers: error.headers, status: error.status });
-            case 405: return of({ body: 'Method Not Allowed', headers: error.headers, status: error.status });
-            case 500: return of({ body: 'Internal Server Error', headers: error.headers, status: error.status });
-
-          }
+          error.headers = {};
 
         }
 
-        // Any other error will be returned as a 500 server error with the error message.
-        return of({ body: 'The server could not process the request due to an internal server error:\n' + error.message, headers: {}, status: 500 });
+        switch (error.status) {
+
+          // Provide custom errors for common status codes
+          case 400: return of({ ...error, body: 'Bad Request' });
+          case 401: return of({ ...error, body: 'Unauthorized' });
+          case 403: return of({ ...error, body: 'Forbidden' });
+          case 404: return of({ ...error, body: 'Not Found' });
+          case 405: return of({ ...error, body: 'Method Not Allowed' });
+          case 500: return of({ ...error, body: 'Internal Server Error' });
+
+          // if status is undefined, check if the error has a message, otherwise return server error response without the message.
+          case undefined: {
+
+            if(error.message) {
+
+              return of({ body: 'The server could not process the request due to an error:\n' + error.message, headers: {}, status: 500 });
+
+            } else {
+
+              return of({ body: 'Internal Server Error', headers: {}, status: 500 });
+
+            }
+
+          }
+
+          // If no cases match, return a default error message.
+          default: return error.status < 600 && error.status >= 400 ?  of({ ...error, body: 'An Unexpected Error Occured' }) : of({ body: 'An Unexpected Error Occured', headers: error.headers, status: 500 });
+
+        }
 
       }),
       map((response) => {
