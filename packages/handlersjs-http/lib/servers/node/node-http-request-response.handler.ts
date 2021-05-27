@@ -148,7 +148,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
         }
 
-        response.headers = { ...response.headers, 'content-length': Buffer.byteLength(response.body, charsetString).toString() };
+        response.headers = response.body ? { ...response.headers, 'content-length': Buffer.byteLength(response.body, charsetString).toString() } : response.headers;
 
         return of(response);
 
@@ -157,7 +157,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
         nodeHttpStreams.responseStream.writeHead(response.status, response.headers);
 
-        if (response?.body) {
+        if (response.body) {
 
           nodeHttpStreams.responseStream.write(response.body);
 
