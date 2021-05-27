@@ -17,7 +17,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     nestedHttpHandler = {
       canHandle: jest.fn(),
-      handle: jest.fn().mockReturnValueOnce(of({ body: 'mockBody', headers: {}, status: 200 })),
+      handle: jest.fn().mockReturnValueOnce(of({ body: 'mockBody', headers: { mockKey: 'mockValue' }, status: 200 })),
       safeHandle: jest.fn(),
     } as HttpHandler;
 
@@ -108,7 +108,7 @@ describe('NodeHttpRequestResponseHandler', () => {
     it('should write the headers to response stream', async () => {
 
       await handler.handle(streamMock).toPromise();
-      expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength('mockBody', 'utf-8').toString() });
+      expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(200, { mockKey: 'mockValue', 'content-length': Buffer.byteLength('mockBody', 'utf-8').toString() });
 
     });
 

@@ -94,7 +94,18 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
           .map((part) => part.split('=')[1].toLowerCase())[0]
           ?? 'utf-8' : 'utf-8';
 
-        if (charsetString !== 'ascii' && charsetString !== 'utf8' && charsetString !== 'utf-8' && charsetString !== 'utf16le' && charsetString !== 'ucs2' && charsetString !== 'ucs-2' && charsetString !== 'base64' && charsetString !== 'latin1' && charsetString !== 'binary' && charsetString !== 'hex') {
+        if (
+          charsetString !== 'ascii'
+          && charsetString !== 'utf8'
+          && charsetString !== 'utf-8'
+          && charsetString !== 'utf16le'
+          && charsetString !== 'ucs2'
+          && charsetString !== 'ucs-2'
+          && charsetString !== 'base64'
+          && charsetString !== 'latin1'
+          && charsetString !== 'binary'
+          && charsetString !== 'hex'
+        ) {
 
           return throwError(new Error('The specified charset is not supported'));
 
