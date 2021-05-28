@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.2.1](https://github.com/digita-ai/handlersjs/compare/v0.2.0...v0.2.1) (2021-05-28)
+
+
+### **Bug Fixes**
+
+* don't calculate content length when response body is empty ([#60](https://github.com/digita-ai/handlersjs/issues/60)) ([0caf32c](https://github.com/digita-ai/handlersjs/commit/0caf32c9271889b6dbacf643ea6f07c2ff3f56a0))
+
+
+
 ## [0.2.0](https://github.com/digita-ai/handlersjs/compare/v0.1.5...v0.2.0) (2021-05-27)
 
 
