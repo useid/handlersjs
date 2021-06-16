@@ -78,9 +78,10 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
           url: urlObject,
           method,
           headers: nodeHttpStreams.requestStream.headers as { [key: string]: string },
+          ...(body && body !== '') && { body: nodeHttpStreams.requestStream.headers['content-type'] === 'application/json' ? JSON.parse(body) : body },
         };
 
-        return { request: body !== '' ? Object.assign(httpHandlerRequest, { body }) : httpHandlerRequest };
+        return { request: httpHandlerRequest };
 
       }),
       switchMap((context: HttpHandlerContext) => this.httpHandler.handle(context)),
