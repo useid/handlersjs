@@ -154,16 +154,16 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
         const body = typeof response.body === 'string' ? response.body : JSON.stringify(response.body);
         response.headers = response.body ? { ...response.headers, 'content-length': Buffer.byteLength(response.body, charsetString).toString() } : response.headers;
 
-        return of({ response, body });
+        return of({ ...response, body });
 
       }),
-      map(({ response, body }) => {
+      map((response) => {
 
         nodeHttpStreams.responseStream.writeHead(response.status, response.headers);
 
-        if (body) {
+        if (response.body) {
 
-          nodeHttpStreams.responseStream.write(body);
+          nodeHttpStreams.responseStream.write(response.body);
 
         }
 
