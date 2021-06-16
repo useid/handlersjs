@@ -74,25 +74,12 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
         const urlObject: URL = new URL(url, `http://${nodeHttpStreams.requestStream.headers.host}`);
 
-        let httpHandlerRequest: HttpHandlerRequest = {
+        const httpHandlerRequest: HttpHandlerRequest = {
           url: urlObject,
           method,
           headers: nodeHttpStreams.requestStream.headers as { [key: string]: string },
+          ...(body && body !== '') && { body: nodeHttpStreams.requestStream.headers['content-type'] === 'application/json' ? JSON.parse(body) : body },
         };
-
-        if (body !== '') {
-
-          if (httpHandlerRequest.headers['content-type'] === 'application/json') {
-
-            httpHandlerRequest = { ...httpHandlerRequest, body: JSON.parse(body) };
-
-          } else {
-
-            httpHandlerRequest = { ...httpHandlerRequest, body };
-
-          }
-
-        }
 
         return { request: httpHandlerRequest };
 
