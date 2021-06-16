@@ -19,6 +19,8 @@ export class WaterfallHandler<T, S> extends Handler<T, S> {
 
   handle(input: T, intermediateOutput: S): Observable<S> {
 
+    intermediateOutput = intermediateOutput ?? { body: null, status: 200, headers: {} } as unknown as S;
+
     return of({ input, intermediateOutput, handlers: this.handlers }).pipe(
       switchMap((data) =>
         this.getFirstToHandle(data.input, data.intermediateOutput, data.handlers).pipe(

@@ -19,6 +19,8 @@ export class SequenceHandler<T, S> extends Handler<T, S> {
 
   handle(input: T, intermediateOutput: S): Observable<S> {
 
+    intermediateOutput = intermediateOutput ?? { body: null, status: 200, headers: {} } as unknown as S;
+
     return of({ handlers: this.handlers, input, intermediateOutput }).pipe(
       switchMap((data) => from(this.safeHandleMultiple(data.handlers, data.input, data.intermediateOutput))),
     );
