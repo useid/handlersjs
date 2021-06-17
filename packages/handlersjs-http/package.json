@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/handlersjs-http",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "",
   "main": "./dist/public-api.js",
   "directories": {
@@ -47,7 +47,7 @@
     "typescript": "3.8.3"
   },
   "dependencies": {
-    "@digita-ai/handlersjs-core": "0.2.1",
+    "@digita-ai/handlersjs-core": "0.2.2",
     "rxjs": "6.3.3"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http",

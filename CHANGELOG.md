@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.2.2](https://github.com/digita-ai/handlersjs/compare/v0.2.1...v0.2.2) (2021-06-17)
+
+
+### **Features**
+
+* adjustments to work with api ([#67](https://github.com/digita-ai/handlersjs/issues/67)) ([76806d7](https://github.com/digita-ai/handlersjs/commit/76806d7abb4ddaf6fe68ae58f47b1260cfd0650c))
+* parse request body if application json ([#66](https://github.com/digita-ai/handlersjs/issues/66)) ([61ec945](https://github.com/digita-ai/handlersjs/commit/61ec94547e1ba2c9105a25e5484ae0bced13ee24))
+
+
+
 ### [0.2.1](https://github.com/digita-ai/handlersjs/compare/v0.2.0...v0.2.1) (2021-05-28)
 
 
