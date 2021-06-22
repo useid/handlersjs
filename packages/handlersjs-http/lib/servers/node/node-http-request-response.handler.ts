@@ -153,10 +153,20 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
         // to use Buffer.byteLength and to eventually write the body to the response.
         // Functions will result in 'undefined' which is desired behavior
         const body = typeof response.body === 'string' ? response.body : JSON.stringify(response.body);
-        response.headers = (response.body && body && typeof response.body !== 'string') ? { ...response.headers, 'content-type': 'application/json' } : response.headers;
-        response.headers = (response.body && body && typeof body === 'string') ? { ...response.headers, 'content-length': Buffer.byteLength(body, charsetString).toString() } : response.headers;
 
-        return of({ ...response, body });
+        const extraHeaders = {
+          ... (response.body && body && typeof response.body !== 'string') && { 'content-type': 'application/json' },
+          ... (response.body && body && typeof body === 'string') && { 'content-length': Buffer.byteLength(body, charsetString).toString() },
+        };
+
+        return of({
+          ...response,
+          body,
+          headers: {
+            ...response.headers,
+            ...extraHeaders,
+          },
+        });
 
       }),
       map((response) => {
