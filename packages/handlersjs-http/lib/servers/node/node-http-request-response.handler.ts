@@ -30,6 +30,21 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
   }
 
+  private parseBody(body: string, contentType: string): string | { [key: string]: string } {
+
+    switch (contentType) {
+
+      case 'application/json':
+        return JSON.parse(body);
+      case 'application/x-www-form-urlencoded':
+        return JSON.parse(`{"${decodeURIComponent(body).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`);
+      default:
+        return body;
+
+    }
+
+  }
+
   /**
    * Reads the requestStream of its NodeHttpStreams pair into a HttpHandlerRequest,
    * creates a HttpHandlerContext from it, passes it through the {HttpHandler},
@@ -78,7 +93,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
           url: urlObject,
           method,
           headers: nodeHttpStreams.requestStream.headers as { [key: string]: string },
-          ...(body && body !== '') && { body: nodeHttpStreams.requestStream.headers['content-type'] === 'application/json' ? JSON.parse(body) : body },
+          ... (body && body !== '') && { body: this.parseBody(body, nodeHttpStreams.requestStream.headers['content-type']) },
         };
 
         return { request: httpHandlerRequest };
