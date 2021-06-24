@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.2.3](https://github.com/digita-ai/handlersjs/compare/v0.2.2...v0.2.3) (2021-06-24)
+
+
+### **Features**
+
+* add support for multiple routes with the same path and improve body parsing ([#68](https://github.com/digita-ai/handlersjs/issues/68)) ([679d62d](https://github.com/digita-ai/handlersjs/commit/679d62dde59a9eedec8bef1826cd9a1064076f8d))
+
+
+
 ### [0.2.2](https://github.com/digita-ai/handlersjs/compare/v0.2.1...v0.2.2) (2021-06-17)
 
 
