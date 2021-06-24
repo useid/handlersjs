@@ -66,6 +66,16 @@
         "lines": 46.82,
         "statements": 46.55
       }
-    }
+    },
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/dist/",
+      "<rootDir>/node_modules/",
+      "<rootDir>/.*\\.conf(ig)?.ts",
+      "<rootDir>/lib/index.ts",
+      "<rootDir>/lib/app.ts",
+      "<rootDir>/lib/public-api.ts",
+      "<rootDir>/.*\\.d.ts",
+      "<rootDir>/coverage/"
+    ]
   }
 }

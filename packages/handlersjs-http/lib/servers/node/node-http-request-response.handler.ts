@@ -30,6 +30,21 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
   }
 
+  private parseBody(body: string, contentType: string): string | { [key: string]: string } {
+
+    switch (contentType) {
+
+      case 'application/json':
+        return JSON.parse(body);
+      case 'application/x-www-form-urlencoded':
+        return JSON.parse(`{"${decodeURIComponent(body).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`);
+      default:
+        return body;
+
+    }
+
+  }
+
   /**
    * Reads the requestStream of its NodeHttpStreams pair into a HttpHandlerRequest,
    * creates a HttpHandlerContext from it, passes it through the {HttpHandler},
@@ -78,7 +93,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
           url: urlObject,
           method,
           headers: nodeHttpStreams.requestStream.headers as { [key: string]: string },
-          ...(body && body !== '') && { body: nodeHttpStreams.requestStream.headers['content-type'] === 'application/json' ? JSON.parse(body) : body },
+          ... (body && body !== '') && { body: this.parseBody(body, nodeHttpStreams.requestStream.headers['content-type']) },
         };
 
         return { request: httpHandlerRequest };
@@ -152,11 +167,21 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
         // If the body is not a string, for example an object, stringify it. This is needed
         // to use Buffer.byteLength and to eventually write the body to the response.
         // Functions will result in 'undefined' which is desired behavior
-        const body = typeof response.body === 'string' ? response.body : JSON.stringify(response.body);
-        response.headers = (response.body && body && typeof response.body !== 'string') ? { ...response.headers, 'content-type': 'application/json' } : response.headers;
-        response.headers = response.body ? { ...response.headers, 'content-length': Buffer.byteLength(response.body, charsetString).toString() } : response.headers;
+        const body: string = response.body ? typeof response.body === 'string' ? response.body : JSON.stringify(response.body) : undefined;
 
-        return of({ ...response, body });
+        const extraHeaders = {
+          ... (body && typeof response.body !== 'string') && { 'content-type': 'application/json' },
+          ... (body) && { 'content-length': Buffer.byteLength(body, charsetString).toString() },
+        };
+
+        return of({
+          ...response,
+          body,
+          headers: {
+            ...response.headers,
+            ...extraHeaders,
+          },
+        });
 
       }),
       map((response) => {
