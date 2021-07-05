@@ -30,7 +30,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
   }
 
-  private parseBody(body: string, contentType: string): string | { [key: string]: string } {
+  private parseBody(body: string, contentType?: string): string | { [key: string]: string } {
 
     switch (contentType) {
 
@@ -143,8 +143,8 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
         const contentTypeHeader = response.headers['content-type'];
 
         const charsetString = contentTypeHeader ? contentTypeHeader.split(';')
-          .filter((part) => part.includes('charset='))
-          .map((part) => part.split('=')[1].toLowerCase())[0]
+          .filter((part: string | string[]) => part.includes('charset='))
+          .map((part: string) => part.split('=')[1].toLowerCase())[0]
           ?? 'utf-8' : 'utf-8';
 
         if (

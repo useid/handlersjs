@@ -36,7 +36,7 @@ export class WaterfallHandler<T, S> extends Handler<T, S> {
     input: T,
     intermediateOutput: S,
     handlers: Handler<T, S>[],
-  ): Observable<Handler<T, S>> {
+  ): Observable<Handler<T, S> | undefined> {
 
     if (!this.handlers) {
 
