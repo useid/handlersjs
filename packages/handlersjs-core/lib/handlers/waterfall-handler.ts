@@ -1,4 +1,4 @@
-import { from, Observable, of } from 'rxjs';
+import { from, Observable, of, throwError } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
 import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { Handler } from './handler';
@@ -36,7 +36,7 @@ export class WaterfallHandler<T, S> extends Handler<T, S> {
     input: T,
     intermediateOutput: S,
     handlers: Handler<T, S>[],
-  ): Observable<Handler<T, S> | undefined> {
+  ): Observable<Handler<T, S>> {
 
     if (!this.handlers) {
 
@@ -49,6 +49,7 @@ export class WaterfallHandler<T, S> extends Handler<T, S> {
         handler.canHandle(input, intermediateOutput).pipe(map((canHandle) => ({ canHandle, handler })))),
       first((result) => result.canHandle, null),
       map((canHandle) => canHandle?.handler),
+      switchMap((handler) => handler ? of(handler) : throwError(new Error('Handler cannot be undefined.'))),
     );
 
   }
