@@ -1,9 +1,9 @@
 import { from, Observable, of } from 'rxjs';
-import { map, mapTo, switchMap } from 'rxjs/operators';
+import { mapTo } from 'rxjs/operators';
 import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { Handler } from './handler';
 
-export class PassthroughHandler<T, S> extends Handler<T, S> {
+export class PassThroughHandler<T, S> extends Handler<T, S> {
 
   constructor(public handler: Handler<T, S>) {
 
