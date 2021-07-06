@@ -1,4 +1,4 @@
-import { from, Observable, of } from 'rxjs';
+import { from, Observable, of, throwError } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
 import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { Handler } from './handler';
@@ -9,21 +9,21 @@ export class PassThroughHandler<T, S> extends Handler<T, S> {
 
     super();
 
+    if (!handler) { throw new HandlerArgumentError('Argument handler should be set.', handler); }
+
   }
 
   canHandle(input: T, intermediateOutput: S): Observable<boolean> {
 
-    return of(true);
+    return input && intermediateOutput ? of(true) : of(false);
 
   }
 
   handle(input: T, intermediateOutput: S): Observable<S> {
 
-    if (!this.handler) {
+    if (!input) { return throwError(new HandlerArgumentError('Argument input should be set.', input)); }
 
-      throw new HandlerArgumentError('Argument this.handler should be set.', this.handler);
-
-    }
+    if (!intermediateOutput) { return throwError(new HandlerArgumentError('Argument intermediateOutput should be set.', intermediateOutput)); }
 
     return from(this.handler.handle(input, intermediateOutput)).pipe(
       mapTo(intermediateOutput),

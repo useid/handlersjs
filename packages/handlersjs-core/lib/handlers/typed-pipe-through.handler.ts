@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import { NEVER, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { Handler } from './handler';
@@ -80,8 +80,6 @@ export class TypedPipeThroughHandler<A, B, C, D, E> extends Handler<A, E> {
         );
 
       }
-
-      default: return of(undefined);
 
     }
 
