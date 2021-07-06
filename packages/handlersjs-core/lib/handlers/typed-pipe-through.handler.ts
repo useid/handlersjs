@@ -81,8 +81,6 @@ export class TypedPipeThroughHandler<A, B, C, D, E> extends Handler<A, E> {
 
       }
 
-      default: return of();
-
     }
 
   }
