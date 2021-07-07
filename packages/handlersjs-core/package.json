@@ -61,10 +61,10 @@
     "displayName": "core",
     "coverageThreshold": {
       "global": {
-        "branches": 63.38,
-        "functions": 43.75,
-        "lines": 63.95,
-        "statements": 64.25
+        "branches": 89.41,
+        "functions": 83.67,
+        "lines": 88.51,
+        "statements": 89.25
       }
     },
     "coveragePathIgnorePatterns": [

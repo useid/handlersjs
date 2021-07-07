@@ -21,9 +21,9 @@ export class PassThroughHandler<T, S> extends Handler<T, S> {
 
   handle(input: T, intermediateOutput: S): Observable<S> {
 
-    if (!input) { return throwError(new HandlerArgumentError('Argument input should be set.', input)); }
+    if (!input) { return throwError(new Error('Argument input should be set.')); }
 
-    if (!intermediateOutput) { return throwError(new HandlerArgumentError('Argument intermediateOutput should be set.', intermediateOutput)); }
+    if (!intermediateOutput) { return throwError(new Error('Argument intermediateOutput should be set.')); }
 
     return from(this.handler.handle(input, intermediateOutput)).pipe(
       mapTo(intermediateOutput),

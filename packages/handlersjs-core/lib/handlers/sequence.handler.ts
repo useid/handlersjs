@@ -9,7 +9,7 @@ export class SequenceHandler<T, S> extends Handler<T, S> {
 
     super();
 
-    if (!this.handlers) { throw new HandlerArgumentError('Argument handlers should be set.', this.handlers); }
+    if (!handlers) { throw new HandlerArgumentError('Argument handlers should be set.', handlers); }
 
   }
 
@@ -21,7 +21,7 @@ export class SequenceHandler<T, S> extends Handler<T, S> {
 
   handle(input: T, intermediateOutput?: S): Observable<S> {
 
-    if (!input) { return throwError(new HandlerArgumentError('Argument input should be set.', input)); }
+    if (!input) { return throwError(new Error('Argument input should be set.')); }
 
     intermediateOutput = intermediateOutput ?? { body: null, status: 200, headers: {} } as unknown as S;
 

@@ -9,10 +9,9 @@ export abstract class Handler<T = void, S = void> {
   safeHandle(input: T, intermediateOutput: S): Observable<S> {
 
     return of({ input, intermediateOutput }).pipe(
-      switchMap((data) =>
-        this.canHandle(data.input, data.intermediateOutput).pipe(
-          map((canHandleResult) => ({ ...data, canHandleResult })),
-        )),
+      switchMap((data) => this.canHandle(data.input, data.intermediateOutput).pipe(
+        map((canHandleResult) => ({ ...data, canHandleResult })),
+      )),
       switchMap((data) =>
         (data.canHandleResult ? this.handle(data.input, data.intermediateOutput) : of(data.intermediateOutput)).pipe(
           map((handleResult) => ({ ...data, handleResult })),
