@@ -1,3 +1,4 @@
+import { of } from 'rxjs';
 import { Handler } from './handler';
 import { SequenceHandler } from './sequence.handler';
 
@@ -41,12 +42,12 @@ describe('SequenceHandler', () => {
 
     });
 
-    it('should return false if intermediateOutput was not provided', async () => {
+    // it('should return false if intermediateOutput was not provided', async () => {
 
-      await expect(handler.canHandle(input, null).toPromise()).resolves.toEqual(false);
-      await expect(handler.canHandle(input, undefined).toPromise()).resolves.toEqual(false);
+    //   await expect(handler.canHandle(input, null).toPromise()).resolves.toEqual(false);
+    //   await expect(handler.canHandle(input, undefined).toPromise()).resolves.toEqual(false);
 
-    });
+    // });
 
     it('should return false if no arguments were provided', async () => {
 
@@ -61,15 +62,25 @@ describe('SequenceHandler', () => {
 
     it('should throw an error if no input was provided', async () => {
 
-      await expect(() => handler.handle(null, intermediateOutput).toPromise()).rejects.toThrow('Argument input should be set.');
-      await expect(() => handler.handle(undefined, intermediateOutput).toPromise()).rejects.toThrow('Argument input should be set.');
+      await expect(handler.handle(null, intermediateOutput).toPromise()).rejects.toThrow('Argument input should be set.');
+      await expect(handler.handle(undefined, intermediateOutput).toPromise()).rejects.toThrow('Argument input should be set.');
 
     });
 
-    it('should throw an error if no intermediateOutput was provided', async () => {
+    it('should set intermediateOutput as an unknown empty request object if none was provided', async () => {
 
-      await expect(() => handler.handle(input, null).toPromise()).rejects.toThrow('Argument intermediateOutput should be set.');
-      await expect(() => handler.handle(input, undefined).toPromise()).rejects.toThrow('Argument intermediateOutput should be set.');
+      await expect(handler.handle(input).toPromise()).resolves.toEqual({ body: null, status: 200, headers: {} });
+
+    });
+
+    it('should call the handlers safeHandle', async () => {
+
+      const nestedHandler = { handle: jest.fn(), canHandle: jest.fn(), safeHandle: jest.fn().mockReturnValue(of()) };
+      const newHandler = new SequenceHandler<unknown, unknown>([ nestedHandler ]);
+
+      await newHandler.handle(input, intermediateOutput).toPromise();
+
+      expect(nestedHandler.safeHandle).toHaveBeenCalledTimes(1);
 
     });
 

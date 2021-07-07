@@ -11,21 +11,17 @@ export class PipeThroughHandler<T, S> extends Handler<T, S> {
 
     super();
 
-    if (!this.handlers) {
-
-      throw new HandlerArgumentError('Argument this.handlers should be set.', this.handlers);
-
-    }
+    if (!this.handlers) { throw new HandlerArgumentError('Argument this.handlers should be set.', this.handlers); }
 
   }
 
   canHandle(input: any): Observable<boolean> {
 
-    return of(true);
+    return input ? of(true) : of(false);
 
   }
 
-  handle(input: any): Observable<any> {
+  handle(input: any): Observable<S> {
 
     let tempInp = of(input);
 

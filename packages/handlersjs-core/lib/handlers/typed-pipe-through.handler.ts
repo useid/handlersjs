@@ -1,4 +1,4 @@
-import { NEVER, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { Handler } from './handler';

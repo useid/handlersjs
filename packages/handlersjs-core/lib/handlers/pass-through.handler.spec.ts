@@ -1,15 +1,8 @@
+import { of } from 'rxjs';
 import { Handler } from './handler';
 import { PassThroughHandler } from './pass-through.handler';
 
 describe('PassThroughHandler', () => {
-
-  const mockHandler: Handler<unknown, unknown> = {
-    handle: jest.fn(),
-    canHandle: jest.fn(),
-    safeHandle: jest.fn(),
-  };
-
-  const handler = new PassThroughHandler(mockHandler);
 
   const input = {
     msg: 'input',
@@ -18,6 +11,14 @@ describe('PassThroughHandler', () => {
   const intermediateOutput = {
     msg: 'output',
   };
+
+  const mockHandler: Handler<unknown, unknown> = {
+    handle: jest.fn().mockReturnValue(of(intermediateOutput)),
+    canHandle: jest.fn(),
+    safeHandle: jest.fn(),
+  };
+
+  const handler = new PassThroughHandler(mockHandler);
 
   it('should be correctly instantiated', () => {
 
@@ -78,11 +79,11 @@ describe('PassThroughHandler', () => {
 
     });
 
-    // it('should handle the input and intermediateOutput', async () => {
+    it('should handle the input and intermediateOutput', async () => {
 
-    //   console.log(await handler.handle(input, intermediateOutput).toPromise());
+      await expect(handler.handle(input, intermediateOutput).toPromise()).resolves.toEqual({ msg: 'output' });
 
-    // });
+    });
 
   });
 

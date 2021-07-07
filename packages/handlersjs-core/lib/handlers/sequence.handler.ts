@@ -13,17 +13,15 @@ export class SequenceHandler<T, S> extends Handler<T, S> {
 
   }
 
-  canHandle(input: T, intermediateOutput: S): Observable<boolean> {
+  canHandle(input: T, intermediateOutput?: S): Observable<boolean> {
 
-    return input && intermediateOutput ? of(true): of(false);
+    return input ? of(true): of(false);
 
   }
 
-  handle(input: T, intermediateOutput: S): Observable<S> {
+  handle(input: T, intermediateOutput?: S): Observable<S> {
 
     if (!input) { return throwError(new HandlerArgumentError('Argument input should be set.', input)); }
-
-    if (!intermediateOutput) { return throwError(new HandlerArgumentError('Argument intermediateOutput should be set.', intermediateOutput)); }
 
     intermediateOutput = intermediateOutput ?? { body: null, status: 200, headers: {} } as unknown as S;
 
