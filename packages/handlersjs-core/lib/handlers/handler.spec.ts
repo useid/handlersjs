@@ -34,13 +34,23 @@ describe('Handler', () => {
     intermediateOutput: 'output',
   };
 
-  it('should call canHandle and handle', async () => {
+  it('should call canHandle and handle if canHandleResult is true', async () => {
 
     mockedHandlerObject.handle = jest.fn().mockReturnValue(of());
     mockedHandlerObject.canHandle = jest.fn().mockReturnValue(of(true));
     await mockedHandlerObject.safeHandle(mockInput, mockIntermediateOutput).toPromise();
     expect(mockedHandlerObject.canHandle).toHaveBeenCalledTimes(1);
     expect(mockedHandlerObject.handle).toHaveBeenCalledTimes(1);
+
+  });
+
+  it('should not call handle if canHandleResult is false', async () => {
+
+    mockedHandlerObject.handle = jest.fn().mockReturnValue(of());
+    mockedHandlerObject.canHandle = jest.fn().mockReturnValue(of(false));
+    await mockedHandlerObject.safeHandle(mockInput, null).toPromise();
+    expect(mockedHandlerObject.canHandle).toHaveBeenCalledTimes(1);
+    expect(mockedHandlerObject.handle).toHaveBeenCalledTimes(0);
 
   });
 
