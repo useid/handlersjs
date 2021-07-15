@@ -9,3 +9,8 @@ export * from './handlers/pipe-through.handler';
 export * from './logging/console-logger';
 export * from './logging/logger-level';
 export * from './logging/logger';
+export * from './storage/key-value-store';
+export * from './storage/memory-store';
+export * from './storage/timed-key-value-store';
+export * from './storage/timed-typed-key-value-store';
+export * from './storage/typed-key-value-store';
