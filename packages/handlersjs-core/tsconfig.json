@@ -16,5 +16,9 @@
       "dist",
       "node_modules",
       "**/*.spec.ts"
-  ]
+  ],
+  "typedocOptions": {
+    "entryPoints": ["lib/public-api.ts"],
+    "out": "docs"
+  }
 }
