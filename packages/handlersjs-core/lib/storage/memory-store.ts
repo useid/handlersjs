@@ -29,11 +29,6 @@ interface TimedValue<V> {
   timestamp: number;
 }
 
-interface KeyValPair<M> {
-  key: keyof M;
-  timestamp: M[keyof M];
-}
-
 /**
  * A {@link KeyValueStore} which uses a JavaScript Map for internal storage.
  * Warning: Uses a Map object, which internally uses `Object.is` for key equality,
