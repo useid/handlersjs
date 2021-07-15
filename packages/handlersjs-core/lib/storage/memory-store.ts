@@ -29,6 +29,11 @@ interface TimedValue<V> {
   timestamp: number;
 }
 
+interface KeyValPair<M> {
+  key: keyof M;
+  timestamp: M[keyof M];
+}
+
 /**
  * A {@link KeyValueStore} which uses a JavaScript Map for internal storage.
  * Warning: Uses a Map object, which internally uses `Object.is` for key equality,
@@ -38,9 +43,9 @@ export class MemoryStore<M> implements TimedTypedKeyValueStore<M> {
 
   private readonly data: Map<keyof M, TimedValue<M[keyof M]>>;
 
-  constructor() {
+  constructor(initialData?: [keyof M, M[keyof M]][]) {
 
-    this.data = new Map();
+    this.data = new Map(initialData?.map(([ key, value ]) => [ key, { value, timestamp: Date.now() } ]));
 
   }
 
