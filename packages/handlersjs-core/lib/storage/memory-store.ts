@@ -22,56 +22,75 @@
  * SOFTWARE.
  */
 
-import type { KeyValueStore } from './key-value-store';
+import { TimedTypedKeyValueStore } from './timed-typed-key-value-store';
+
+interface TimedValue<V> {
+  value: V;
+  timestamp: number;
+}
 
 /**
  * A {@link KeyValueStore} which uses a JavaScript Map for internal storage.
  * Warning: Uses a Map object, which internally uses `Object.is` for key equality,
  * so object keys have to be the same objects.
  */
-export class MemoryStore<K, V> implements KeyValueStore<K, V> {
+export class MemoryStore<M> implements TimedTypedKeyValueStore<M> {
 
-  private readonly data: Map<K, V>;
+  private readonly data: Map<keyof M, TimedValue<M[keyof M]>>;
 
   constructor() {
 
-    this.data = new Map<K, V>();
+    this.data = new Map();
 
   }
 
-  async get(key: K): Promise<V | undefined> {
+  async get<T extends keyof M>(key: T): Promise<M[T] | undefined> {
 
-    return this.data.get(key);
+    return this.data.has(key) ? this.data.get(key)?.value as M[T] : undefined;
 
   }
 
-  async has(key: K): Promise<boolean> {
+  async has<T extends keyof M>(key: T): Promise<boolean> {
 
     return this.data.has(key);
 
   }
 
-  async set(key: K, value: V): Promise<this> {
+  async set<T extends keyof M>(key: T, value: M[T]): Promise<this> {
 
-    this.data.set(key, value);
+    this.data.set(key, { value, timestamp: Date.now() });
 
     return this;
 
   }
 
-  async delete(key: K): Promise<boolean> {
+  async delete<T extends keyof M>(key: T): Promise<boolean> {
 
     return this.data.delete(key);
 
   }
 
-  async* entries(): AsyncIterableIterator<[K, V]> {
+  async* entries(): AsyncIterableIterator<[keyof M, M[keyof M]]> {
 
-    for (const entry of this.data.entries()) {
+    for (const [ key, value ] of this.data.entries()) {
 
-      yield entry;
+      yield [ key, value.value ];
 
     }
+
+  }
+
+  async latestUpdate<T extends keyof M>(key: T): Promise<number | undefined> {
+
+    return this.data.get(key)?.timestamp;
+
+  }
+
+  async hasUpdate <T extends keyof M>(key: T, time: number): Promise<boolean | undefined> {
+
+    const timedValue = this.data.get(key);
+
+    return timedValue !== undefined ? timedValue.timestamp < time : undefined;
 
   }
 

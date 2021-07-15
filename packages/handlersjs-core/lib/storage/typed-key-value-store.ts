@@ -39,6 +39,6 @@ export interface TypedKeyValueStore<M> extends KeyValueStore<keyof M, M[keyof M]
   /**
    * An iterable of entries in the storage.
    */
-  entries: <T extends keyof M>() => AsyncIterableIterator<[T, M[T]]>;
+  entries: () => AsyncIterableIterator<[keyof M, M[keyof M]]>;
 
 }
