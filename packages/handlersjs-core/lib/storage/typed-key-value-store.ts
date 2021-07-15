@@ -1,5 +1,4 @@
 import { KeyValueStore } from './key-value-store';
-import { MemoryStore } from './memory-store';
 
 export interface TypedKeyValueStore<M> extends KeyValueStore<keyof M, M[keyof M]> {
 
