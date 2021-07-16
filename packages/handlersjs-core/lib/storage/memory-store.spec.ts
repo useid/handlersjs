@@ -18,111 +18,123 @@ describe('MemoryStore', () => {
 
   });
 
-  it('should not iterate over keys pairs when it is empty', async () => {
+  describe('constructor', () => {
 
-    const elements = [];
-    for await(const entry of memoryStore.entries()) elements.push(entry);
+    it('can be initialized with values', async () => {
 
-    expect(elements.length).toBe(0);
+      const initialData: [keyof TestInterface, TestInterface[keyof TestInterface]][] = [
+        [ 'key1', 4 ],
+        [ 'key2', '123' ],
+        [ 'key4', [ '', '', '321' ] ],
+      ];
 
-  });
+      memoryStore = new MemoryStore(initialData);
 
-  it('should not have keys that were not added', async () => {
+      expect(await memoryStore.get('key1')).toEqual(4);
+      expect(await memoryStore.get('key2')).toEqual('123');
+      expect(await memoryStore.get('key4')).toEqual([ '', '', '321' ]);
 
-    expect(await memoryStore.has('key1')).toBeFalsy();
-    expect(await memoryStore.get('key1')).toBeUndefined();
-    expect(await memoryStore.latestUpdate('key1')).toBeUndefined();
-    expect(await memoryStore.hasUpdate('key1', Date.now())).toBeUndefined();
-
-  });
-
-  it('should get a value that has been set', async () => {
-
-    await memoryStore.set('key1', 5);
-
-    expect(await memoryStore.get('key1')).toEqual(5);
-
-    await memoryStore.set('key2', 'test');
-    await memoryStore.set('key3', true);
-    await memoryStore.set('key4', [ '123', '321' ]);
-
-    expect(await memoryStore.get('key2')).toEqual('test');
-    expect(await memoryStore.get('key3')).toEqual(true);
-    expect(await memoryStore.get('key4')).toEqual([ '123', '321' ]);
+    });
 
   });
 
-  it('should not contain a deleted key', async () => {
+  describe('set(), has() & get()', () => {
 
-    await memoryStore.set('key2', 'test');
+    it('should not have keys that were not added', async () => {
 
-    await memoryStore.delete('key2');
+      expect(await memoryStore.has('key1')).toBe(false);
+      expect(await memoryStore.get('key1')).toBeUndefined();
+      expect(await memoryStore.latestUpdate('key1')).toBeUndefined();
+      expect(await memoryStore.hasUpdate('key1', Date.now())).toBeUndefined();
 
-    expect(await memoryStore.has('key2')).toBeFalsy();
-    expect(await memoryStore.get('key2')).toBeUndefined();
+    });
 
-  });
+    it('should get a value that has been set', async () => {
 
-  it('should iterate over added key-value pairs', async () => {
+      await memoryStore.set('key1', 5);
+      await memoryStore.set('key2', 'test');
 
-    const keyValuePairs: TestInterface = {
-      key1: 1,
-      key2: 'fdg',
-      key3: false,
-      key4: [],
-    };
+      expect(await memoryStore.get('key1')).toEqual(5);
+      expect(await memoryStore.get('key2')).toEqual('test');
 
-    await memoryStore.set('key1', keyValuePairs.key1);
-    await memoryStore.set('key3', keyValuePairs.key3);
-    await memoryStore.set('key4', keyValuePairs.key4);
+    });
 
-    let amount = 0;
+    it('can overwrite an existing key', async () => {
 
-    for await (const [ key, value ] of memoryStore.entries()) {
+      await memoryStore.set('key1', 5);
+      await memoryStore.set('key1', 8);
+      expect(await memoryStore.get('key1')).toEqual(8);
 
-      amount++;
-      expect(value).toEqual(keyValuePairs[key]);
-
-    }
-
-    expect(amount).toBe(3);
+    });
 
   });
 
-  it('should know when the item was updated', async () => {
+  describe('delete()', () => {
 
-    const beforeSetTime = Date.now();
-    await memoryStore.set('key1', 8);
-    const setTime = await memoryStore.latestUpdate('key1');
-    const afterSetTime = Date.now();
+    it('should not contain a deleted key', async () => {
 
-    expect(beforeSetTime <= setTime && setTime <= afterSetTime).toBe(true);
-    expect(await memoryStore.hasUpdate('key1', beforeSetTime - 1)).toBe(false);
-    expect(await memoryStore.hasUpdate('key1', afterSetTime + 1)).toBe(true);
+      await memoryStore.set('key2', 'test');
 
-  });
+      await memoryStore.delete('key2');
 
-  it('can overwrite an existing key', async () => {
+      expect(await memoryStore.has('key2')).toBe(false);
+      expect(await memoryStore.get('key2')).toBeUndefined();
 
-    await memoryStore.set('key1', 5);
-    await memoryStore.set('key1', 8);
-    expect(await memoryStore.get('key1')).toEqual(8);
+    });
 
   });
 
-  it('can be initialized with values', async () => {
+  describe('entries()', () => {
 
-    const initialData: [keyof TestInterface, TestInterface[keyof TestInterface]][] = [
-      [ 'key1', 4 ],
-      [ 'key2', '123' ],
-      [ 'key4', [ '', '', '321' ] ],
-    ];
+    it('should not iterate over keys pairs when it is empty', async () => {
 
-    memoryStore = new MemoryStore(initialData);
+      memoryStore.entries().next().then((result) => {
 
-    expect(await memoryStore.get('key1')).toEqual(4);
-    expect(await memoryStore.get('key2')).toEqual('123');
-    expect(await memoryStore.get('key4')).toEqual([ '', '', '321' ]);
+        expect(result.done).toBe(true);
+
+      });
+
+    });
+
+    it('should iterate over added key-value pairs', async () => {
+
+      const allValues: [keyof TestInterface, TestInterface[keyof TestInterface]][] = [
+        [ 'key1', 4 ],
+        [ 'key2', '123' ],
+        [ 'key4', [ '', '', '321' ] ],
+      ];
+
+      const allValuesMap: Map<keyof TestInterface, TestInterface[keyof TestInterface]> = new Map(allValues);
+
+      allValuesMap.forEach((value, key) => memoryStore.set(key, value));
+
+      for await (const [ key, value ] of memoryStore.entries()) {
+
+        expect(value).toEqual(allValuesMap.get(key));
+        allValuesMap.delete(key);
+
+      }
+
+      expect(allValuesMap.size).toBe(0);
+
+    });
+
+  });
+
+  describe('latestUpdate() & hasUpdate()', () => {
+
+    it('should know when the item was updated', async () => {
+
+      const beforeSetTime = Date.now();
+      await memoryStore.set('key1', 8);
+      const setTime = await memoryStore.latestUpdate('key1');
+      const afterSetTime = Date.now();
+
+      expect(beforeSetTime <= setTime && setTime <= afterSetTime).toBe(true);
+      expect(await memoryStore.hasUpdate('key1', beforeSetTime - 1)).toBe(false);
+      expect(await memoryStore.hasUpdate('key1', afterSetTime + 1)).toBe(true);
+
+    });
 
   });
 

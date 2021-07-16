@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-import { TimedTypedKeyValueStore } from './timed-typed-key-value-store';
+import { TimedTypedKeyValueStore } from './models/timed-typed-key-value-store';
 
 interface TimedValue<V> {
   value: V;
@@ -31,8 +31,6 @@ interface TimedValue<V> {
 
 /**
  * A {@link KeyValueStore} which uses a JavaScript Map for internal storage.
- * Warning: Uses a Map object, which internally uses `Object.is` for key equality,
- * so object keys have to be the same objects.
  */
 export class MemoryStore<M> implements TimedTypedKeyValueStore<M> {
 
@@ -90,7 +88,7 @@ export class MemoryStore<M> implements TimedTypedKeyValueStore<M> {
 
     const timedValue = this.data.get(key);
 
-    return timedValue !== undefined ? timedValue.timestamp < time : undefined;
+    return timedValue ? timedValue.timestamp < time : undefined;
 
   }
 
