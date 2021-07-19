@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 
 export class SyncService<T> {
 
-  latest_sync: Date | undefined = undefined;
+  latestSync: Date | undefined = undefined;
 
   constructor(
     private readonly storage: string,
@@ -25,14 +25,17 @@ export class SyncService<T> {
 
     }
 
+    const modifiedCompare = this.latestSync;
+    this.latestSync = new Date();
+
     peers.forEach((host) => {
 
-      const options = this.latest_sync ? {
-        headers: { 'If-Modified-Since': '' },
+      const options = modifiedCompare ? {
+        headers: { 'If-Modified-Since': modifiedCompare.toUTCString() },
       } : undefined;
 
       fetch(host, options)
-        .then((res) => res.json())
+        .then((res) => res.status === 200 ? res.json() : Promise.reject())
         .then((res) => {
 
           const fetchedStorages: T[] = res;
@@ -42,7 +45,7 @@ export class SyncService<T> {
 
     });
 
-    this.latest_sync = new Date();
+    this.latestSync = new Date();
 
     return this;
 
