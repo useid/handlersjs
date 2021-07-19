@@ -88,7 +88,7 @@ export class MemoryStore<M> implements TimedTypedKeyValueStore<M> {
 
     const timedValue = this.data.get(key);
 
-    return timedValue ? timedValue.timestamp < time : undefined;
+    return timedValue ? timedValue.timestamp > time : undefined;
 
   }
 
