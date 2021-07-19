@@ -34,6 +34,7 @@
   "devDependencies": {
     "@digita-ai/typescript-config": "^0.3.2",
     "@types/jest": "^26.0.20",
+    "@types/node-fetch": "^2.5.11",
     "componentsjs": "^4.4.0",
     "componentsjs-generator": "^2.5.0",
     "eslint": "^7.25.0",
@@ -48,6 +49,7 @@
   },
   "dependencies": {
     "@digita-ai/handlersjs-core": "0.2.3",
+    "node-fetch": "^2.6.1",
     "rxjs": "6.3.3"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http",

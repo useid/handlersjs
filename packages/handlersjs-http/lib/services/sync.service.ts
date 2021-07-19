@@ -1,5 +1,5 @@
-import http from 'http';
 import { KeyValueStore } from '@digita-ai/handlersjs-core';
+import fetch from 'node-fetch';
 
 export class SyncService<T> {
 
@@ -27,32 +27,18 @@ export class SyncService<T> {
 
     peers.forEach((host) => {
 
-      http.get(
-        {
-          host,
-          headers: {
-            'If-Modified-Since': this.latest_sync?.toUTCString(),
-          },
-        }, (result) => {
+      const options = this.latest_sync ? {
+        headers: { 'If-Modified-Since': '' },
+      } : undefined;
 
-          const data: Buffer[] = [];
-          result.on('data', (chunk) => data.push(chunk));
+      fetch(host, options)
+        .then((res) => res.json())
+        .then((res) => {
 
-          result.on('end', () => {
+          const fetchedStorages: T[] = res;
+          fetchedStorages.forEach((val) => storage.add(val));
 
-            const buffer = Buffer.concat(data);
-            const fetchedStorages: T[] = JSON.parse(buffer.toString());
-            fetchedStorages.forEach((val) => storage.add(val));
-
-          });
-
-        }
-      ).on('error', (err) => {
-
-        // todo remove from storages?
-        throw err;
-
-      });
+        });
 
     });
 
