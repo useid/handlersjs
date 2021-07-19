@@ -54,9 +54,21 @@ describe('MemoryStore', () => {
 
     });
 
+    it('can not get a value that has not been set', async () => {
+
+      await expect(memoryStore.get('key1')).resolves.toBeUndefined();
+
+    });
+
   });
 
   describe('set()', () => {
+
+    it('can set a key', async () => {
+
+      await memoryStore.set('key1', 5);
+
+    });
 
     it('can overwrite an existing key', async () => {
 
@@ -147,7 +159,7 @@ describe('MemoryStore', () => {
 
   });
 
-  describe('latestUpdate() & hasUpdate()', () => {
+  describe('latestUpdate()', () => {
 
     it('should know when the item was updated', async () => {
 
@@ -157,6 +169,19 @@ describe('MemoryStore', () => {
       const afterSetTime = Date.now() + 1;
 
       expect(beforeSetTime < setTime && setTime < afterSetTime).toBe(true);
+
+    });
+
+  });
+
+  describe('hasUpdate()', () => {
+
+    it('should tell you if there was an update', async () => {
+
+      const beforeSetTime = Date.now() - 1;
+      await memoryStore.set('key1', 8);
+      const afterSetTime = Date.now() + 1;
+
       expect(await memoryStore.hasUpdate('key1', beforeSetTime)).toBe(true);
       expect(await memoryStore.hasUpdate('key1', afterSetTime)).toBe(false);
 
