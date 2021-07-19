@@ -33,14 +33,14 @@ export interface KeyValueStore<K, V> {
    * Returns the value stored for the given identifier.
    * `undefined` if no value is stored.
    *
-   * @param identifier - Identifier to get the value for.
+   * @param key - Identifier to get the value for.
    */
   get: (key: K) => Promise<V | undefined>;
 
   /**
    * Checks if there is a value stored for the given key.
    *
-   * @param identifier - Identifier to check.
+   * @param key - Identifier to check.
    */
   has: (key: K) => Promise<boolean>;
 

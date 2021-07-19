@@ -24,6 +24,9 @@
 
 import { TimedTypedKeyValueStore } from './models/timed-typed-key-value-store';
 
+/**
+ * Datastructure that links a value to a timestamp
+ */
 interface TimedValue<V> {
   value: V;
   timestamp: number;
