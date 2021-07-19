@@ -28,68 +28,76 @@ describe('Scheduler', () => {
 
   });
 
-  it('will schedule the task when started', async () => {
+  describe('start()', () => {
 
-    // scheduler.start().subscribe(async () => expect(await isRunning()).toBe(false));
+    it('will schedule the task when started', async () => {
 
-    await scheduler.start().toPromise();
-    expect(await isRunning()).toBe(true);
+      // scheduler.start().subscribe(async () => expect(await isRunning()).toBe(false));
 
-  });
+      await scheduler.start().toPromise();
+      expect(await isRunning()).toBe(true);
 
-  it('should stop correctly', async() => {
+    });
 
-    // only works like this for now
-    scheduler.start().toPromise().then(
-      () => scheduler.stop().toPromise().then(
-        () => async () => {
+    it('can not start when it was already running', async() => {
 
-          expect(await isRunning()).toBe(false);
+      await scheduler.start().toPromise();
+      await expect(scheduler.start().toPromise()).rejects.toThrow('Scheduler was already running');
 
-        }
-      )
-    );
-
-    // await scheduler.start().toPromise();
-    // await scheduler.stop().toPromise();
-
-    // expect(await isRunning()).toBe(false);
+    });
 
   });
 
-  it('can restart after being stopped', async () => {
+  describe('stop()', () => {
 
-    // only works like this for now
-    scheduler.start().toPromise().then(
-      () => scheduler.stop().toPromise().then(
-        () => scheduler.start().toPromise().then(
-          async () => {
+    it('should stop correctly', async() => {
 
-            expect(await isRunning()).toBe(true);
+      // only works like this for now
+      scheduler.start().toPromise().then(
+        () => scheduler.stop().toPromise().then(
+          () => async () => {
+
+            expect(await isRunning()).toBe(false);
 
           }
         )
-      )
-    );
+      );
 
-    // await scheduler.start().toPromise();
-    // await scheduler.stop().toPromise();
-    // await scheduler.start().toPromise();
+      // await scheduler.start().toPromise();
+      // await scheduler.stop().toPromise();
 
-    // expect(await isRunning()).toBe(true);
+      // expect(await isRunning()).toBe(false);
 
-  });
+    });
 
-  it('can not stop when it wasn\'t running', async() => {
+    it('can restart after being stopped', async () => {
 
-    await expect(scheduler.stop().toPromise()).rejects.toThrow('Scheduler wasn\'t running');
+      // only works like this for now
+      scheduler.start().toPromise().then(
+        () => scheduler.stop().toPromise().then(
+          () => scheduler.start().toPromise().then(
+            async () => {
 
-  });
+              expect(await isRunning()).toBe(true);
 
-  it('can not start when it was already running', async() => {
+            }
+          )
+        )
+      );
 
-    await scheduler.start().toPromise();
-    await expect(scheduler.start().toPromise()).rejects.toThrow('Scheduler was already running');
+      // await scheduler.start().toPromise();
+      // await scheduler.stop().toPromise();
+      // await scheduler.start().toPromise();
+
+      // expect(await isRunning()).toBe(true);
+
+    });
+
+    it('can not stop when it wasn\'t running', async() => {
+
+      await expect(scheduler.stop().toPromise()).rejects.toThrow('Scheduler wasn\'t running');
+
+    });
 
   });
 
