@@ -67,6 +67,7 @@ describe('MemoryStore', () => {
     it('can set a key', async () => {
 
       await memoryStore.set('key1', 5);
+      await expect(memoryStore.get('key1')).resolves.toEqual(5);
 
     });
 
@@ -92,6 +93,17 @@ describe('MemoryStore', () => {
 
     });
 
+    it('should have keys that were added', async () => {
+
+      await memoryStore.set('key1', 5);
+      await expect(memoryStore.has('key1')).resolves.toBe(true);
+      // implies ->
+      await expect(memoryStore.get('key1')).resolves.toBeDefined();
+      await expect(memoryStore.latestUpdate('key1')).resolves.toBeDefined();
+      await expect(memoryStore.hasUpdate('key1', Date.now())).resolves.toBeDefined();
+
+    });
+
   });
 
   describe('delete()', () => {
@@ -99,8 +111,8 @@ describe('MemoryStore', () => {
     it('should not contain a deleted key', async () => {
 
       await memoryStore.set('key2', 'test');
-
-      await memoryStore.delete('key2');
+      await expect(memoryStore.get('key2')).resolves.toEqual('test');
+      await expect(memoryStore.delete('key2')).resolves.toBe(true);
 
       await expect(memoryStore.has('key2')).resolves.toBe(false);
       await expect(memoryStore.get('key2')).resolves.toBeUndefined();
@@ -110,13 +122,21 @@ describe('MemoryStore', () => {
     it('can add an item again after deletion', async () => {
 
       await memoryStore.set('key2', 'test');
-
-      await memoryStore.delete('key2');
+      await expect(memoryStore.get('key2')).resolves.toEqual('test');
+      await expect(memoryStore.delete('key2')).resolves.toBe(true);
 
       await memoryStore.set('key2', 'test2');
 
       await expect(memoryStore.has('key2')).resolves.toBe(true);
       await expect(memoryStore.get('key2')).resolves.toEqual('test2');
+
+    });
+
+    it('can not delete a value twice', async () => {
+
+      await memoryStore.set('key2', 'test');
+      await expect(memoryStore.delete('key2')).resolves.toBe(true);
+      await expect(memoryStore.delete('key2')).resolves.toBe(false);
 
     });
 
