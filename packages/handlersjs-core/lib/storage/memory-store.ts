@@ -34,11 +34,17 @@ interface TimedValue<V> {
 
 /**
  * A {@link KeyValueStore} which uses a JavaScript Map for internal storage.
+ *
+ * @inheritdoc
  */
 export class MemoryStore<M> implements TimedTypedKeyValueStore<M> {
 
   private readonly data: Map<keyof M, TimedValue<M[keyof M]>>;
 
+  /**
+   *
+   * @param initialData data to initialize the memorystore with
+   */
   constructor(initialData?: [keyof M, M[keyof M]][]) {
 
     this.data = new Map(initialData?.map(([ key, value ]) => [ key, { value, timestamp: Date.now() } ]));

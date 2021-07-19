@@ -34,6 +34,8 @@ export interface KeyValueStore<K, V> {
    * `undefined` if no value is stored.
    *
    * @param key - Identifier to get the value for.
+   *
+   * @returns the value identified by the given key
    */
   get: (key: K) => Promise<V | undefined>;
 
@@ -41,6 +43,8 @@ export interface KeyValueStore<K, V> {
    * Checks if there is a value stored for the given key.
    *
    * @param key - Identifier to check.
+   *
+   * @returns whether the key is in the store
    */
   has: (key: K) => Promise<boolean>;
 
@@ -65,6 +69,8 @@ export interface KeyValueStore<K, V> {
 
   /**
    * An iterable of entries in the storage.
+   *
+   * @returns the asynchronous iterator
    */
   entries: () => AsyncIterableIterator<[K, V]>;
 

@@ -15,6 +15,7 @@ export interface TimedKeyValueStore<K, V> extends KeyValueStore<K, V> {
    * Checks whether a value has had an update since the given timestamp.
    *
    * @param key - Key to check.
+   * @param time - Time to compare to.
    *
    * @returns A boolean indicating if there was an update, or undefined if the key wasn't set
    */

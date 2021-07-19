@@ -6,14 +6,18 @@ export interface TypedKeyValueStore<M> extends KeyValueStore<keyof M, M[keyof M]
    * Returns the value stored for the given identifier.
    * `undefined` if no value is stored.
    *
-   * @param identifier - Identifier to get the value for.
+   * @param key - Key to get the value for.
+   *
+   * @returns the value identified by the given key
    */
   get: <T extends keyof M>(key: T) => Promise<M[T] | undefined>;
 
   /**
    * Checks if there is a value stored for the given key.
    *
-   * @param identifier - Identifier to check.
+   * @param key - Key to check.
+   *
+   * @returns whether the key is in the store
    */
   has: <T extends keyof M>(key: T) => Promise<boolean>;
 
@@ -38,6 +42,8 @@ export interface TypedKeyValueStore<M> extends KeyValueStore<keyof M, M[keyof M]
 
   /**
    * An iterable of entries in the storage.
+   *
+   * @returns the asynchronous iterator
    */
   entries: () => AsyncIterableIterator<[keyof M, M[keyof M]]>;
 
