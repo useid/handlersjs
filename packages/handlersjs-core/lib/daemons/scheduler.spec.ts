@@ -2,19 +2,26 @@ import { Scheduler } from './scheduler';
 
 describe('Scheduler', () => {
 
-  let scheduler: Scheduler;
   const task = jest.fn();
 
-  // checks if the scheduler is running
-  const isRunning = async () => {
+  const expectIsRunning = async () => {
 
     task.mockClear();
     await new Promise((r) => setTimeout(r, 20)); // sleep 20ms
     const callAmount = task.mock.calls.length;
-
-    return callAmount >= 3 && callAmount <= 4;
+    expect(callAmount >= 3 && callAmount <= 4).toBe(true);
 
   };
+
+  const expectIsNotRunning = async () => {
+
+    task.mockClear();
+    await new Promise((r) => setTimeout(r, 20)); // sleep 20ms
+    expect(task).not.toHaveBeenCalled();
+
+  };
+
+  let scheduler: Scheduler;
 
   beforeEach(() => {
 
@@ -24,7 +31,7 @@ describe('Scheduler', () => {
 
   it('does not run the task on initialize', async () => {
 
-    expect(await isRunning()).toBe(false);
+    await expectIsNotRunning();
 
   });
 
@@ -35,7 +42,7 @@ describe('Scheduler', () => {
       // scheduler.start().subscribe(async () => expect(await isRunning()).toBe(false));
 
       await scheduler.start().toPromise();
-      expect(await isRunning()).toBe(true);
+      await expectIsRunning();
 
     });
 
@@ -57,7 +64,7 @@ describe('Scheduler', () => {
         () => scheduler.stop().toPromise().then(
           () => async () => {
 
-            expect(await isRunning()).toBe(false);
+            await expectIsNotRunning();
 
           }
         )
@@ -78,7 +85,7 @@ describe('Scheduler', () => {
           () => scheduler.start().toPromise().then(
             async () => {
 
-              expect(await isRunning()).toBe(true);
+              await expectIsRunning();
 
             }
           )
