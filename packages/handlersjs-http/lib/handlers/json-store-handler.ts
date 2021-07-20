@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscriber } from 'rxjs';
 import { TimedTypedKeyValueStore } from '@digita-ai/handlersjs-core';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from 'models/http-handler-context';
@@ -22,17 +22,66 @@ export class JsonStoreHandler<M> extends HttpHandler {
 
   }
 
+  private tryProvideData(subscriber: Subscriber<HttpHandlerResponse>) {
+
+    this.store.get(this.data).then((storedData) => {
+
+      if (storedData) {
+
+        // OK
+        subscriber.next({ body: JSON.stringify(storedData), headers: {}, status: 200 });
+
+      } else {
+
+        // not found
+        subscriber.next({ body: '', headers: {}, status: 404 });
+
+      }
+
+      subscriber.complete();
+
+    });
+
+  }
+
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
-    const modifiedSince = context.request.headers['If-Modified-Since'];
+    if (context.request.method === 'GET') {
 
-    if (!modifiedSince || this.store.hasUpdate(this.data, new Date(modifiedSince).getTime())) {
+      return new Observable((subscriber) => {
 
-      return of({ body: JSON.stringify(this.store.get(this.data)), headers: {}, status: 200 });
+        const modifiedSince = context.request.headers['If-Modified-Since'];
+
+        if (modifiedSince) {
+
+          this.store.hasUpdate(this.data, new Date(modifiedSince).getTime()).then((hasUpdate) => {
+
+            if (hasUpdate === false) {
+
+              // not modified
+              subscriber.next({ body: '', headers: {}, status: 304 });
+              subscriber.complete();
+
+            } else {
+
+              this.tryProvideData(subscriber);
+
+            }
+
+          });
+
+        } else {
+
+          this.tryProvideData(subscriber);
+
+        }
+
+      });
 
     } else {
 
-      return of({ body: '', headers: {}, status: 304 });
+      // method not allowed
+      return of({ body: '', headers: {}, status: 405 });
 
     }
 
