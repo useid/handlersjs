@@ -6,8 +6,8 @@ export class Scheduler extends Daemon {
   private currentTimeout: NodeJS.Timeout | undefined;
 
   constructor(
-    protected readonly interval: number,
-    protected readonly task: (() => void)
+    private readonly interval: number,
+    private readonly task: (() => void)
   ) {
 
     super();
@@ -18,13 +18,13 @@ export class Scheduler extends Daemon {
 
     const subject = new Subject<this>();
 
-    if (this.currentTimeout !== undefined) {
+    if (this.currentTimeout) {
 
       subject.error(new Error('Scheduler was already running'));
 
     } else {
 
-      this.currentTimeout = setInterval(() => this.task(), this.interval);
+      this.currentTimeout = setInterval(this.task, this.interval);
 
       subject.next(this);
       subject.complete();
@@ -39,7 +39,7 @@ export class Scheduler extends Daemon {
 
     const subject = new Subject<this>();
 
-    if (this.currentTimeout !== undefined) {
+    if (this.currentTimeout) {
 
       clearInterval(this.currentTimeout);
       this.currentTimeout = undefined;
