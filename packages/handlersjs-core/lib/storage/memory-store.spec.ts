@@ -28,9 +28,9 @@ describe('MemoryStore', () => {
 
     memoryStore = new MemoryStore(initialData);
 
-    expect(await memoryStore.get('key1')).toEqual(4);
-    expect(await memoryStore.get('key2')).toEqual('123');
-    expect(await memoryStore.get('key4')).toEqual([ '', '', '321' ]);
+    await expect(memoryStore.get('key1')).resolves.toEqual(4);
+    await expect(memoryStore.get('key2')).resolves.toEqual('123');
+    await expect(memoryStore.get('key4')).resolves.toEqual([ '', '', '321' ]);
 
   });
 
@@ -38,7 +38,7 @@ describe('MemoryStore', () => {
 
     memoryStore = new MemoryStore();
 
-    expect(await memoryStore.has('key1')).toEqual(false);
+    await expect(memoryStore.has('key1')).resolves.toEqual(false);
 
   });
 
@@ -49,8 +49,8 @@ describe('MemoryStore', () => {
       await memoryStore.set('key1', 5);
       await memoryStore.set('key2', 'test');
 
-      expect(await memoryStore.get('key1')).toEqual(5);
-      expect(await memoryStore.get('key2')).toEqual('test');
+      await expect(memoryStore.get('key1')).resolves.toEqual(5);
+      await expect(memoryStore.get('key2')).resolves.toEqual('test');
 
     });
 
@@ -67,6 +67,7 @@ describe('MemoryStore', () => {
     it('can set a key', async () => {
 
       await memoryStore.set('key1', 5);
+      await expect(memoryStore.get('key1')).resolves.toEqual(5);
 
     });
 
@@ -74,7 +75,7 @@ describe('MemoryStore', () => {
 
       await memoryStore.set('key1', 5);
       await memoryStore.set('key1', 8);
-      expect(await memoryStore.get('key1')).toEqual(8);
+      await expect(memoryStore.get('key1')).resolves.toEqual(8);
 
     });
 
@@ -84,11 +85,22 @@ describe('MemoryStore', () => {
 
     it('should not have keys that were not added', async () => {
 
-      expect(await memoryStore.has('key1')).toBe(false);
+      await expect(memoryStore.has('key1')).resolves.toBe(false);
       // implies ->
-      expect(await memoryStore.get('key1')).toBeUndefined();
-      expect(await memoryStore.latestUpdate('key1')).toBeUndefined();
-      expect(await memoryStore.hasUpdate('key1', Date.now())).toBeUndefined();
+      await expect(memoryStore.get('key1')).resolves.toBeUndefined();
+      await expect(memoryStore.latestUpdate('key1')).resolves.toBeUndefined();
+      await expect(memoryStore.hasUpdate('key1', Date.now())).resolves.toBeUndefined();
+
+    });
+
+    it('should have keys that were added', async () => {
+
+      await memoryStore.set('key1', 5);
+      await expect(memoryStore.has('key1')).resolves.toBe(true);
+      // implies ->
+      await expect(memoryStore.get('key1')).resolves.toBeDefined();
+      await expect(memoryStore.latestUpdate('key1')).resolves.toBeDefined();
+      await expect(memoryStore.hasUpdate('key1', Date.now())).resolves.toBeDefined();
 
     });
 
@@ -99,24 +111,32 @@ describe('MemoryStore', () => {
     it('should not contain a deleted key', async () => {
 
       await memoryStore.set('key2', 'test');
+      await expect(memoryStore.get('key2')).resolves.toEqual('test');
+      await expect(memoryStore.delete('key2')).resolves.toBe(true);
 
-      await memoryStore.delete('key2');
-
-      expect(await memoryStore.has('key2')).toBe(false);
-      expect(await memoryStore.get('key2')).toBeUndefined();
+      await expect(memoryStore.has('key2')).resolves.toBe(false);
+      await expect(memoryStore.get('key2')).resolves.toBeUndefined();
 
     });
 
     it('can add an item again after deletion', async () => {
 
       await memoryStore.set('key2', 'test');
-
-      await memoryStore.delete('key2');
+      await expect(memoryStore.get('key2')).resolves.toEqual('test');
+      await expect(memoryStore.delete('key2')).resolves.toBe(true);
 
       await memoryStore.set('key2', 'test2');
 
-      expect(await memoryStore.has('key2')).toBe(true);
-      expect(await memoryStore.get('key2')).toEqual('test2');
+      await expect(memoryStore.has('key2')).resolves.toBe(true);
+      await expect(memoryStore.get('key2')).resolves.toEqual('test2');
+
+    });
+
+    it('can not delete a value twice', async () => {
+
+      await memoryStore.set('key2', 'test');
+      await expect(memoryStore.delete('key2')).resolves.toBe(true);
+      await expect(memoryStore.delete('key2')).resolves.toBe(false);
 
     });
 
@@ -182,8 +202,8 @@ describe('MemoryStore', () => {
       await memoryStore.set('key1', 8);
       const afterSetTime = Date.now() + 1;
 
-      expect(await memoryStore.hasUpdate('key1', beforeSetTime)).toBe(true);
-      expect(await memoryStore.hasUpdate('key1', afterSetTime)).toBe(false);
+      await expect(memoryStore.hasUpdate('key1', beforeSetTime)).resolves.toBe(true);
+      await expect(memoryStore.hasUpdate('key1', afterSetTime)).resolves.toBe(false);
 
     });
 
