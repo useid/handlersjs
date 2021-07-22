@@ -5,11 +5,14 @@ import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from 'models/http-handler-context';
 import { HttpHandlerResponse } from 'models/http-handler-response';
 
-/**
- * A HTTP handler that returns the contents of the storage data as a stringified JSON response
- */
 export class JsonStoreHandler<M> extends HttpHandler {
 
+  /**
+   * Creates a HTTP handler that returns the contents of the storage data as a stringified JSON response
+   *
+   * @param data the key for accessing the data in a given store
+   * @param store the store that contains the data
+   */
   constructor(
     private readonly data: keyof M,
     private readonly store: TimedTypedKeyValueStore<M>,
