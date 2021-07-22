@@ -5,6 +5,12 @@ export class Scheduler extends Daemon {
 
   private currentTimeout: NodeJS.Timeout | undefined;
 
+  /**
+   * A scheduler is a daemon that, when started, executes a given task on-repeat
+   *
+   * @param interval the interval inbetween tasks
+   * @param task the task to execute
+   */
   constructor(
     private readonly interval: number,
     private readonly task: (() => void)
@@ -14,6 +20,11 @@ export class Scheduler extends Daemon {
 
   }
 
+  /**
+   * Starts the scheduler
+   *
+   * @returns itself
+   */
   start(): Observable<Daemon> {
 
     const subject = new Subject<this>();
@@ -35,6 +46,11 @@ export class Scheduler extends Daemon {
 
   }
 
+  /**
+   * Stops the scheduler
+   *
+   * @returns itself
+   */
   stop(): Observable<Daemon> {
 
     const subject = new Subject<this>();
