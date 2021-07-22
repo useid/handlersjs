@@ -1,49 +1,49 @@
-import { KeyValueStore } from '@digita-ai/handlersjs-core';
+import { MemoryStore } from '@digita-ai/handlersjs-core';
 import fetch from 'node-fetch';
 
-export class SyncService<T> {
+type StorageKeys = 'storage' | 'Storage' | 'store' | 'Store';
+type PeersKeys = 'peers' | 'Peers' | 'hosts' | 'Hosts';
+
+export class SyncService<T, M> {
 
   latestSync: Date | undefined = undefined;
 
   constructor(
-    private readonly storage: string,
-    private readonly peers: string,
-    private readonly storageStore: KeyValueStore<string, Set<T>>,
-    private readonly peersStore: KeyValueStore<string, Set<string>>,
+    private readonly storage: StorageKeys & keyof M,
+    private readonly peers: PeersKeys & keyof M,
+    private readonly store: MemoryStore<
+    { [storageKey in (StorageKeys & keyof M)]: Set<T>; } &
+    { [peersKey in (PeersKeys & keyof M)]: Set<string>; } &
+    M
+    >,
   ) {
 
   }
 
-  async sync(): Promise<SyncService<T>> {
+  async sync(): Promise<this> {
 
-    const peers = await this.peersStore.get(this.peers);
-    const storage = await this.storageStore.get(this.storage);
+    const storage: Set<T> | undefined = await this.store.get(this.storage);
+    const peers: Set<string> | undefined = await this.store.get(this.peers);
 
-    if (!peers || !storage) {
-
-      throw new Error('Invalid storage identifiers');
-
-    }
-
-    const modifiedCompare = this.latestSync;
+    const modifiedSince = this.latestSync;
     this.latestSync = new Date();
 
-    peers.forEach((host) => {
+    const options = modifiedSince ? {
+      headers: { 'If-Modified-Since': modifiedSince.toUTCString() },
+    } : undefined;
 
-      const options = modifiedCompare ? {
-        headers: { 'If-Modified-Since': modifiedCompare.toUTCString() },
-      } : undefined;
+    await Promise.all((peers ? [ ... peers ]: []).map(async (host) => {
 
-      fetch(host, options)
-        .then((res) => res.status === 200 ? res.json() : Promise.reject())
-        .then((res) => {
+      const httpResponse = await fetch(host, options);
 
-          const fetchedStorages: T[] = res;
-          fetchedStorages.forEach((val) => storage.add(val));
+      if (httpResponse.status === 200) {
 
-        });
+        const fetchedStorages: T[] = await httpResponse.json();
+        fetchedStorages.forEach((val) => storage?.add(val));
 
-    });
+      }
+
+    }));
 
     this.latestSync = new Date();
 
