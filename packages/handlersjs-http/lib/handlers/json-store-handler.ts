@@ -5,6 +5,9 @@ import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from 'models/http-handler-context';
 import { HttpHandlerResponse } from 'models/http-handler-response';
 
+/**
+ * A HTTP handler that returns the contents of the storage data as a stringified JSON response
+ */
 export class JsonStoreHandler<M> extends HttpHandler {
 
   constructor(
@@ -23,6 +26,11 @@ export class JsonStoreHandler<M> extends HttpHandler {
 
   }
 
+  /**
+   * Attempts to fetch the data from the storage
+   *
+   * @returns the stringified storage data as a HTTP response, or a Not Found HTTP response
+   */
   private tryProvideData(): Observable<HttpHandlerResponse> {
 
     return from(this.store.get(this.data)).pipe(map((data) => data ?
@@ -31,6 +39,12 @@ export class JsonStoreHandler<M> extends HttpHandler {
 
   }
 
+  /**
+   * Handles an incoming http request to fetch the storage data
+   *
+   * @param context
+   * @returns an HTTP response
+   */
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
     if (context.request.method === 'GET') {
@@ -42,7 +56,7 @@ export class JsonStoreHandler<M> extends HttpHandler {
         return from(this.store.hasUpdate(this.data, new Date(modifiedSince).getTime())).pipe(
           switchMap((hasUpdate) => hasUpdate ?
             this.tryProvideData() :
-            of({ body: '', headers: {}, status: 304 }))
+            of({ body: '', headers: {}, status: 304 })) // not modified
         );
 
       } else {
