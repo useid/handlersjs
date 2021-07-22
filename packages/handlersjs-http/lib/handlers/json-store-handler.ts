@@ -1,5 +1,6 @@
-import { Observable, of, Subscriber } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { TimedTypedKeyValueStore } from '@digita-ai/handlersjs-core';
+import { map, switchMap } from 'rxjs/operators';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from 'models/http-handler-context';
 import { HttpHandlerResponse } from 'models/http-handler-response';
@@ -22,25 +23,11 @@ export class JsonStoreHandler<M> extends HttpHandler {
 
   }
 
-  private tryProvideData(subscriber: Subscriber<HttpHandlerResponse>) {
+  private tryProvideData(): Observable<HttpHandlerResponse> {
 
-    this.store.get(this.data).then((storedData) => {
-
-      if (storedData) {
-
-        // OK
-        subscriber.next({ body: JSON.stringify(storedData), headers: {}, status: 200 });
-
-      } else {
-
-        // not found
-        subscriber.next({ body: '', headers: {}, status: 404 });
-
-      }
-
-      subscriber.complete();
-
-    });
+    return from(this.store.get(this.data)).pipe(map((data) => data ?
+      { body: JSON.stringify(data), headers: {}, status: 200 } : // OK
+      { body: '', headers: {}, status: 404 })); // not found
 
   }
 
@@ -48,35 +35,21 @@ export class JsonStoreHandler<M> extends HttpHandler {
 
     if (context.request.method === 'GET') {
 
-      return new Observable((subscriber) => {
+      const modifiedSince = context.request.headers['If-Modified-Since'];
 
-        const modifiedSince = context.request.headers['If-Modified-Since'];
+      if (modifiedSince) {
 
-        if (modifiedSince) {
+        return from(this.store.hasUpdate(this.data, new Date(modifiedSince).getTime())).pipe(
+          switchMap((hasUpdate) => hasUpdate ?
+            this.tryProvideData() :
+            of({ body: '', headers: {}, status: 304 }))
+        );
 
-          this.store.hasUpdate(this.data, new Date(modifiedSince).getTime()).then((hasUpdate) => {
+      } else {
 
-            if (hasUpdate === false) {
+        return this.tryProvideData();
 
-              // not modified
-              subscriber.next({ body: '', headers: {}, status: 304 });
-              subscriber.complete();
-
-            } else {
-
-              this.tryProvideData(subscriber);
-
-            }
-
-          });
-
-        } else {
-
-          this.tryProvideData(subscriber);
-
-        }
-
-      });
+      }
 
     } else {
 
