@@ -10,3 +10,8 @@ export * from './logging/console-logger';
 export * from './logging/logger-level';
 export * from './logging/logger';
 export * from './models/daemon';
+export * from './storage/models/key-value-store';
+export * from './storage/models/timed-key-value-store';
+export * from './storage/models/timed-typed-key-value-store';
+export * from './storage/models/typed-key-value-store';
+export * from './storage/memory-store';
