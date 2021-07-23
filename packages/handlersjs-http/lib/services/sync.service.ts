@@ -8,6 +8,12 @@ export class SyncService<T, M> {
 
   latestSync: Date | undefined = undefined;
 
+  /**
+   *
+   * @param storage key in which the storage is located
+   * @param peers key in which the peers are located
+   * @param store the given store, used by storage and peers
+   */
   constructor(
     private readonly storage: StorageKeys & keyof M,
     private readonly peers: PeersKeys & keyof M,
@@ -20,6 +26,11 @@ export class SyncService<T, M> {
 
   }
 
+  /**
+   * Synchronizes the storage value of the store with other peers in the network
+   *
+   * @returns itself
+   */
   async sync(): Promise<this> {
 
     const storage: Set<T> | undefined = await this.store.get(this.storage);
