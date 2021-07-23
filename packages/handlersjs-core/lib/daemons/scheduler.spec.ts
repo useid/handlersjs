@@ -1,4 +1,5 @@
 import { Scheduler } from './scheduler';
+jest.useFakeTimers();
 
 describe('Scheduler', () => {
 
@@ -7,7 +8,7 @@ describe('Scheduler', () => {
   const expectIsRunning = async () => {
 
     task.mockClear();
-    await new Promise((r) => setTimeout(r, 20)); // sleep 20ms
+    jest.advanceTimersByTime(20);
     const callAmount = task.mock.calls.length;
     expect(callAmount >= 3 && callAmount <= 4).toBe(true);
 
@@ -16,7 +17,7 @@ describe('Scheduler', () => {
   const expectIsNotRunning = async () => {
 
     task.mockClear();
-    await new Promise((r) => setTimeout(r, 20)); // sleep 20ms
+    jest.advanceTimersByTime(20);
     expect(task).not.toHaveBeenCalled();
 
   };
