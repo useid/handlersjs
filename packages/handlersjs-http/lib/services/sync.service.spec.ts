@@ -3,7 +3,7 @@ jest.mock('node-fetch');
 import { MemoryStore } from '@digita-ai/handlersjs-core';
 import fetch from 'node-fetch';
 import { SyncService } from './sync.service';
-const { Response, Request } = jest.requireActual('node-fetch');
+const { Response } = jest.requireActual('node-fetch');
 
 describe('SyncService', () => {
 
