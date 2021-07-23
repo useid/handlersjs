@@ -1,4 +1,4 @@
-import { MemoryStore } from '@digita-ai/handlersjs-core';
+import { TimedTypedKeyValueStore } from '@digita-ai/handlersjs-core';
 import fetch from 'node-fetch';
 
 type StorageKeys = 'storage' | 'Storage' | 'store' | 'Store';
@@ -17,7 +17,7 @@ export class SyncService<T, M> {
   constructor(
     private readonly storage: StorageKeys & keyof M,
     private readonly peers: PeersKeys & keyof M,
-    private readonly store: MemoryStore<
+    private readonly store: TimedTypedKeyValueStore<
     { [storageKey in (StorageKeys & keyof M)]: Set<T>; } &
     { [peersKey in (PeersKeys & keyof M)]: Set<string>; } &
     M
