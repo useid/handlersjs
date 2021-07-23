@@ -144,12 +144,21 @@ describe('SyncService', () => {
         await syncService.sync();
         const firstSync = new Date(latestModifiedSince).getTime();
 
-        await new Promise((r) => setTimeout(r, 1200)); // sleep
+        const nextSync = firstSync + 5200;
+        const nextDate = new Date(nextSync);
+
+        const mockDate = jest
+          .spyOn(global, 'Date')
+          .mockImplementation(() => nextDate as unknown as string);
+        // https://stackoverflow.com/questions/28504545/how-to-mock-a-constructor-like-new-date
+
         await syncService.sync();
         await syncService.sync();
         const secondSync = new Date(latestModifiedSince).getTime();
 
-        expect(firstSync < secondSync).toBe(true);
+        expect(secondSync).toBe(nextSync);
+
+        mockDate.mockRestore();
 
       });
 
