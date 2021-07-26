@@ -14,14 +14,14 @@ describe('SyncService', () => {
 
   const peers = new Set([ 'peer1.com', 'peer2.com' ]);
 
-  interface M {
-    storage: Set<number>;
+  type M = {
+    storage: Set<number>; } & {
     peers: Set<string>;
-    otherkeys: unknown;
-  }
+    [key: string]: any;
+  };
 
   let store: MemoryStore<M>;
-  let syncService: SyncService<number, M>;
+  let syncService: SyncService<number, 'storage', 'peers', M>;
   let fetchMock: jest.MockedFunction<typeof fetch>;
 
   // saves the latest "modified since" header from mocked requests
@@ -43,11 +43,12 @@ describe('SyncService', () => {
     });
 
     store = new MemoryStore<M>([
-      [ 'storage', new Set() ],
-      [ 'peers', new Set(peers) ],
+      [ 'storage', new Set<number>() ],
+      [ 'peers', new Set<string>(peers) ],
+      [ 'other', 'something else' ],
     ]);
 
-    syncService = new SyncService('storage', 'peers', store);
+    syncService = new SyncService<number, 'storage', 'peers', M>('storage', 'peers', store);
 
   });
 

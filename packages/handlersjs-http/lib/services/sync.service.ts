@@ -1,10 +1,9 @@
 import { TimedTypedKeyValueStore } from '@digita-ai/handlersjs-core';
 import fetch from 'node-fetch';
 
-type StorageKeys = 'storage' | 'Storage' | 'store' | 'Store';
-type PeersKeys = 'peers' | 'Peers' | 'hosts' | 'Hosts';
-
-export class SyncService<T, M> {
+export class SyncService<T, S extends string, P extends string, M extends {
+  [s in S]: Set<T> } & { [p in P]: Set<string> },
+> {
 
   latestSync: Date | undefined = undefined;
 
@@ -15,13 +14,9 @@ export class SyncService<T, M> {
    * @param store the given store, used by storage and peers
    */
   constructor(
-    private readonly storage: StorageKeys & keyof M,
-    private readonly peers: PeersKeys & keyof M,
-    private readonly store: TimedTypedKeyValueStore<
-    { [storageKey in (StorageKeys & keyof M)]: Set<T>; } &
-    { [peersKey in (PeersKeys & keyof M)]: Set<string>; } &
-    M
-    >,
+    private readonly storage: S,
+    private readonly peers: P,
+    private readonly store: TimedTypedKeyValueStore<M>,
   ) {
 
   }
