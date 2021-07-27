@@ -46,22 +46,15 @@ describe('JsonStoreHandler', () => {
 
     });
 
-    it('can not use a wrong HTTP method', async () => {
+    it.each(Object.values(HttpMethods))('Should handle a %s request correctly',
+      async (method) => {
 
-      Object.values(HttpMethods).forEach(async (method) => {
+        requestContext.request.method = method;
+        const response: HttpHandlerResponse = await jsonStoreHandler.handle(requestContext).toPromise();
 
-        if (method !== 'GET') {
-
-          requestContext.request.method = method;
-          const response: HttpHandlerResponse = await jsonStoreHandler.handle(requestContext).toPromise();
-
-          expect(response.status).toEqual(405);
-
-        }
+        expect(response.status).toEqual(method === 'GET' ? 200 : 405);
 
       });
-
-    });
 
     it('returns "not found" if the data is not available', async () => {
 
