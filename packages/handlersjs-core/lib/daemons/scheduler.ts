@@ -1,4 +1,4 @@
-import { Observable, Subject } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { Daemon } from '../models/daemon';
 
 export class Scheduler extends Daemon {
@@ -14,11 +14,8 @@ export class Scheduler extends Daemon {
   constructor(
     private readonly interval: number,
     private readonly task: (() => void)
-  ) {
 
-    super();
-
-  }
+  ) { super(); }
 
   /**
    * Starts the scheduler
@@ -27,22 +24,17 @@ export class Scheduler extends Daemon {
    */
   start(): Observable<Daemon> {
 
-    const subject = new Subject<this>();
-
     if (this.currentTimeout) {
 
-      subject.error(new Error('Scheduler was already running'));
+      return throwError(new Error('Scheduler was already running'));
 
     } else {
 
       this.currentTimeout = setInterval(this.task, this.interval);
 
-      subject.next(this);
-      subject.complete();
+      return of(this);
 
     }
-
-    return subject;
 
   }
 
@@ -53,22 +45,18 @@ export class Scheduler extends Daemon {
    */
   stop(): Observable<Daemon> {
 
-    const subject = new Subject<this>();
-
     if (this.currentTimeout) {
 
       clearInterval(this.currentTimeout);
       this.currentTimeout = undefined;
-      subject.next(this);
-      subject.complete();
+
+      return of(this);
 
     } else {
 
-      subject.error(new Error('Scheduler wasn\'t running'));
+      return throwError(new Error("Scheduler wasn't running"));
 
     }
-
-    return subject;
 
   }
 

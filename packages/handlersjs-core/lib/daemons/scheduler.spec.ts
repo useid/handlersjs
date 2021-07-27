@@ -9,8 +9,7 @@ describe('Scheduler', () => {
 
     task.mockClear();
     jest.advanceTimersByTime(20);
-    const callAmount = task.mock.calls.length;
-    expect(callAmount >= 3 && callAmount <= 4).toBe(true);
+    expect(task).toBeCalledTimes(4);
 
   };
 
@@ -27,6 +26,13 @@ describe('Scheduler', () => {
   beforeEach(() => {
 
     scheduler = new Scheduler(5, task);
+
+  });
+
+  afterEach(async () => {
+
+    // always stop the scheduler, ignore if an error "Scheduler wasn't running" is thrown
+    await scheduler.stop().toPromise().catch((e) => undefined);
 
   });
 
@@ -60,48 +66,24 @@ describe('Scheduler', () => {
 
     it('should stop correctly', async() => {
 
-      // only works like this for now
-      scheduler.start().toPromise().then(
-        () => scheduler.stop().toPromise().then(
-          () => async () => {
+      await scheduler.start().toPromise();
+      await scheduler.stop().toPromise();
 
-            await expectIsNotRunning();
-
-          }
-        )
-      );
-
-      // await scheduler.start().toPromise();
-      // await scheduler.stop().toPromise();
-
-      // expect(await isRunning()).toBe(false);
+      await expectIsNotRunning();
 
     });
 
     it('can restart after being stopped', async () => {
 
-      // only works like this for now
-      scheduler.start().toPromise().then(
-        () => scheduler.stop().toPromise().then(
-          () => scheduler.start().toPromise().then(
-            async () => {
+      await scheduler.start().toPromise();
+      await scheduler.stop().toPromise();
+      await scheduler.start().toPromise();
 
-              await expectIsRunning();
-
-            }
-          )
-        )
-      );
-
-      // await scheduler.start().toPromise();
-      // await scheduler.stop().toPromise();
-      // await scheduler.start().toPromise();
-
-      // expect(await isRunning()).toBe(true);
+      await expectIsRunning();
 
     });
 
-    it('can not stop when it wasn\'t running', async() => {
+    it('can not stop when it wasn\'t running', async () => {
 
       await expect(scheduler.stop().toPromise()).rejects.toThrow('Scheduler wasn\'t running');
 
