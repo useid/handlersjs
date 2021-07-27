@@ -38,20 +38,17 @@ export class SyncService<T, S extends string, P extends string, M extends {
       headers: { 'If-Modified-Since': modifiedSince.toUTCString() },
     } : undefined;
 
-    await Promise.all((peers ? [ ... peers ]: []).map(async (host) => {
+    const fetchedValues: T[][] = await Promise.all((peers ? [ ... peers ] : []).map(async (host) => {
 
       const httpResponse = await fetch(host, options);
 
-      if (httpResponse.status === 200) {
-
-        const fetchedStorages: T[] = await httpResponse.json();
-        fetchedStorages.forEach((val) => storage?.add(val));
-
-      }
+      return httpResponse.status === 200 ? await httpResponse.json() : [];
 
     }));
 
-    this.latestSync = new Date();
+    fetchedValues
+      .reduce((flat, toFlatten) => flat.concat(toFlatten), [])
+      .forEach((val) => storage?.add(val));
 
     return this;
 

@@ -1,8 +1,9 @@
-jest.mock('node-fetch');
-
 import { MemoryStore } from '@digita-ai/handlersjs-core';
 import fetch from 'node-fetch';
 import { SyncService } from './sync.service';
+
+jest.mock('node-fetch');
+
 const { Response } = jest.requireActual('node-fetch');
 
 describe('SyncService', () => {
@@ -26,31 +27,6 @@ describe('SyncService', () => {
 
   // saves the latest "modified since" header from mocked requests
   let latestModifiedSince: string | undefined;
-
-  beforeEach(() => {
-
-    jest.resetAllMocks();
-
-    fetchMock = (fetch as jest.MockedFunction<typeof fetch>);
-    latestModifiedSince = undefined;
-
-    fetchMock.mockImplementation(async (url, options) => {
-
-      latestModifiedSince = options?.headers['If-Modified-Since'];
-
-      return new Response('[]', { status: 200, headers });
-
-    });
-
-    store = new MemoryStore<M>([
-      [ 'storage', new Set<number>() ],
-      [ 'peers', new Set<string>(peers) ],
-      [ 'other', 'something else' ],
-    ]);
-
-    syncService = new SyncService<number, 'storage', 'peers', M>('storage', 'peers', store);
-
-  });
 
   interface peerResponseMock {
     peer: string;
@@ -82,6 +58,31 @@ describe('SyncService', () => {
 
   };
 
+  beforeEach(() => {
+
+    jest.resetAllMocks();
+
+    fetchMock = (fetch as jest.MockedFunction<typeof fetch>);
+    latestModifiedSince = undefined;
+
+    fetchMock.mockImplementation(async (url, options) => {
+
+      latestModifiedSince = options?.headers['If-Modified-Since'];
+
+      return new Response('[]', { status: 200, headers });
+
+    });
+
+    store = new MemoryStore<M>([
+      [ 'storage', new Set<number>() ],
+      [ 'peers', new Set<string>(peers) ],
+      [ 'other', 'something else' ],
+    ]);
+
+    syncService = new SyncService<number, 'storage', 'peers', M>('storage', 'peers', store);
+
+  });
+
   describe('sync()', () => {
 
     it('resolves when there are no peers', async () => {
@@ -106,13 +107,6 @@ describe('SyncService', () => {
     });
 
     describe('If-Modified-Since behavior', () => {
-
-      it('doesn\'t have the If-Modified-Since header on the first request', async () => {
-
-        await syncService.sync();
-        expect(latestModifiedSince).toBeUndefined();
-
-      });
 
       it('has the If-Modified-Since header from the second request and onwards', async () => {
 
