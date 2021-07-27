@@ -46,7 +46,7 @@ export class JsonStoreHandler<M> extends HttpHandler {
    */
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
-    if (context.request.method !== 'GET') {
+    if (!(context?.request?.method === 'GET')) {
 
       // method not allowed
       return of({ body: '', headers: {}, status: 405 });
