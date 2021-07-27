@@ -7,10 +7,11 @@ describe('JsonStoreHandler', () => {
 
   interface StoreInterface {
     data: string[];
+    anotherstring: number;
   }
 
   const inputData = [ 'abc', 'defghij', '123' ];
-  const inputData2 = [ ... inputData, '456' ];
+  const inputData2 = [ ... inputData, '456' ]; // another list of data that may be used to update the store
 
   let jsonStoreHandler: JsonStoreHandler<StoreInterface>;
   let memoryStore: MemoryStore<StoreInterface>;
@@ -64,19 +65,19 @@ describe('JsonStoreHandler', () => {
 
     it('can GET updated data', async () => {
 
-      let response: HttpHandlerResponse = await jsonStoreHandler.handle(requestContext).toPromise();
-      let resultData: string[] = JSON.parse(response.body);
+      const response: HttpHandlerResponse = await jsonStoreHandler.handle(requestContext).toPromise();
+      const resultData: string[] = JSON.parse(response.body);
 
       expect(resultData).toEqual(inputData);
       expect(response.status).toEqual(200);
 
       // update the data
       await memoryStore.set('data', inputData2);
-      response = await jsonStoreHandler.handle(requestContext).toPromise();
-      resultData = JSON.parse(response.body);
+      const response2 = await jsonStoreHandler.handle(requestContext).toPromise();
+      const resultData2 = JSON.parse(response2.body);
 
-      expect(resultData).toEqual(inputData2);
-      expect(response.status).toEqual(200);
+      expect(resultData2).toEqual(inputData2);
+      expect(response2.status).toEqual(200);
 
     });
 
@@ -87,7 +88,7 @@ describe('JsonStoreHandler', () => {
         const nextHour = new Date();
         nextHour.setTime(nextHour.getTime() + 60*60*1000);
 
-        requestContext.request.headers['If-Modified-Since'] = nextHour.toUTCString();
+        requestContext.request.headers['if-modified-since'] = nextHour.toUTCString();
         const response: HttpHandlerResponse = await jsonStoreHandler.handle(requestContext).toPromise();
 
         expect(response.status).toEqual(304); // not modified
@@ -97,30 +98,13 @@ describe('JsonStoreHandler', () => {
 
       it('returns the data if it was updated', async () => {
 
-        requestContext.request.headers['If-Modified-Since'] = new Date(1970).toUTCString();
+        requestContext.request.headers['if-modified-since'] = new Date(1970).toUTCString();
         const response: HttpHandlerResponse = await jsonStoreHandler.handle(requestContext).toPromise();
 
         expect(response.status).toEqual(200);
 
         const resultData: string[] = JSON.parse(response.body);
         expect(resultData).toEqual(inputData);
-
-      });
-
-      it('can GET updated data with the if-modified-since parameter', async () => {
-
-        const fiveSecondsAgo = new Date();
-        fiveSecondsAgo.setTime(fiveSecondsAgo.getTime() - 5000);
-
-        await memoryStore.set('data', inputData2);
-
-        requestContext.request.headers['If-Modified-Since'] = fiveSecondsAgo.toUTCString();
-        const response = await jsonStoreHandler.handle(requestContext).toPromise();
-
-        expect(response.status).toEqual(200);
-
-        const resultData: string[] = JSON.parse(response.body);
-        expect(resultData).toEqual(inputData2);
 
       });
 

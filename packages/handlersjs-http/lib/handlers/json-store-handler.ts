@@ -17,11 +17,7 @@ export class JsonStoreHandler<M> extends HttpHandler {
     private readonly data: keyof M,
     private readonly store: TimedTypedKeyValueStore<M>,
 
-  ) {
-
-    super();
-
-  }
+  ) { super(); }
 
   canHandle(context: HttpHandlerContext): Observable<boolean> {
 
@@ -50,28 +46,26 @@ export class JsonStoreHandler<M> extends HttpHandler {
    */
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
-    if (context.request.method === 'GET') {
-
-      const modifiedSince = context.request.headers['If-Modified-Since'];
-
-      if (modifiedSince) {
-
-        return from(this.store.hasUpdate(this.data, new Date(modifiedSince).getTime())).pipe(
-          switchMap((hasUpdate) => hasUpdate ?
-            this.tryProvideData() :
-            of({ body: '', headers: {}, status: 304 })) // not modified
-        );
-
-      } else {
-
-        return this.tryProvideData();
-
-      }
-
-    } else {
+    if (context.request.method !== 'GET') {
 
       // method not allowed
       return of({ body: '', headers: {}, status: 405 });
+
+    }
+
+    const modifiedSince = context.request.headers['if-modified-since'];
+
+    if (modifiedSince) {
+
+      return from(this.store.hasUpdate(this.data, new Date(modifiedSince).getTime())).pipe(
+        switchMap((hasUpdate) => hasUpdate ?
+          this.tryProvideData() :
+          of({ body: '', headers: {}, status: 304 })) // not modified
+      );
+
+    } else {
+
+      return this.tryProvideData();
 
     }
 
