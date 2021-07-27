@@ -161,7 +161,7 @@ describe('SyncService', () => {
 
     describe('Storage behavior', () => {
 
-      it('doesn\t update store if everything is up to date', async () => {
+      it("doesn't update store if everything is up to date", async () => {
 
         mockWithStorages(
           { peer: 'peer1.com', httpStatus: 200, storages: [ 1, 2, 3 ] },
