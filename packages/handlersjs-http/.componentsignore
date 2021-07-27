@@ -5,5 +5,5 @@
   "HttpHandlerOperationSecurityType",
   "HttpHandlerResponse",
   "Logger",
-  "SyncService"
+  "TimedTypedKeyValueStore"
 ]
