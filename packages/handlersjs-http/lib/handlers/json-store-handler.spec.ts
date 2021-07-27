@@ -1,6 +1,7 @@
 import { MemoryStore } from '@digita-ai/handlersjs-core';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
+import { HttpMethods } from '../models/http-method';
 import { JsonStoreHandler } from './json-store-handler';
 
 describe('JsonStoreHandler', () => {
@@ -47,10 +48,18 @@ describe('JsonStoreHandler', () => {
 
     it('can not use a wrong HTTP method', async () => {
 
-      requestContext.request.method = 'POST';
-      const response: HttpHandlerResponse = await jsonStoreHandler.handle(requestContext).toPromise();
+      Object.values(HttpMethods).forEach(async (method) => {
 
-      expect(response.status).toEqual(405);
+        if (method !== 'GET') {
+
+          requestContext.request.method = method;
+          const response: HttpHandlerResponse = await jsonStoreHandler.handle(requestContext).toPromise();
+
+          expect(response.status).toEqual(405);
+
+        }
+
+      });
 
     });
 
