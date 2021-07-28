@@ -16,7 +16,6 @@ export class JsonStoreHandler<M> extends HttpHandler {
   constructor(
     private readonly data: keyof M,
     private readonly store: TimedTypedKeyValueStore<M>,
-
   ) { super(); }
 
   canHandle(context: HttpHandlerContext): Observable<boolean> {
@@ -32,9 +31,9 @@ export class JsonStoreHandler<M> extends HttpHandler {
    */
   private tryProvideData(): Observable<HttpHandlerResponse> {
 
-    return from(this.store.get(this.data)).pipe(map((data) => data ?
-      { body: JSON.stringify(data), headers: {}, status: 200 } : // OK
-      { body: '', headers: {}, status: 404 })); // not found
+    return from(this.store.get(this.data)).pipe(map((data) => data
+      ? { body: JSON.stringify(data), headers: {}, status: 200 } // OK
+      : { body: '', headers: {}, status: 404 })); // not found
 
   }
 
@@ -46,7 +45,7 @@ export class JsonStoreHandler<M> extends HttpHandler {
    */
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
-    if (!(context?.request?.method === 'GET')) {
+    if (context?.request?.method !== 'GET') {
 
       // method not allowed
       return of({ body: '', headers: {}, status: 405 });
@@ -58,9 +57,9 @@ export class JsonStoreHandler<M> extends HttpHandler {
     if (modifiedSince) {
 
       return from(this.store.hasUpdate(this.data, new Date(modifiedSince).getTime())).pipe(
-        switchMap((hasUpdate) => hasUpdate ?
-          this.tryProvideData() :
-          of({ body: '', headers: {}, status: 304 })) // not modified
+        switchMap((hasUpdate) => hasUpdate
+          ? this.tryProvideData()
+          : of({ body: '', headers: {}, status: 304 })) // not modified
       );
 
     } else {
