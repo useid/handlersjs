@@ -48,7 +48,7 @@ export class JsonStoreHandler<M> extends HttpHandler {
     if (context?.request?.method !== 'GET') {
 
       // method not allowed
-      return of({ body: '', headers: {}, status: 405 });
+      return of({ body: '', headers: { allow: 'GET' }, status: 405 });
 
     }
 
