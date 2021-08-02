@@ -6,7 +6,7 @@ import { Scheduler } from './scheduler';
 export class ObjectScheduler<N extends string, T extends { [n in N]: () => unknown }> extends Scheduler {
 
   /**
-   * A scheduler is a daemon that, when started, executes a given task on-repeat, given an object and a method name
+   * An object-scheduler is a daemon that, when started, executes a given task on-repeat, defined by an object and a method name
    *
    * @param interval the interval inbetween tasks
    * @param object an object containing the task
