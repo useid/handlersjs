@@ -66,7 +66,7 @@ export class MemoryStore<M> implements TimedTypedKeyValueStore<M> {
 
   async set<T extends keyof M>(key: T, value: M[T]): Promise<this> {
 
-    this.data.set(key, { value, timestamp: Date.now() });
+    this.data.set(key, { value: clone(value), timestamp: Date.now() });
 
     return this;
 
