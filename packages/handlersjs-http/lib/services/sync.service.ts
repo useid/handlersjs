@@ -46,9 +46,7 @@ export class SyncService<T, S extends string, P extends string, M extends {
 
     }));
 
-    fetchedValues
-      .reduce((flat, toFlatten) => flat.concat(toFlatten), [])
-      .forEach((val) => storage?.add(val));
+    await this.store.set(this.storage, new Set([ ...storage ?? [], ...fetchedValues.flat() ]) as M[S]);
 
     return this;
 
