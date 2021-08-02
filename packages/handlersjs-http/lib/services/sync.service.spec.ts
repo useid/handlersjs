@@ -1,5 +1,6 @@
 import { MemoryStore } from '@digita-ai/handlersjs-core';
 import fetch from 'node-fetch';
+import { advanceBy as advanceDateBy, clear as clearDateMock } from 'jest-date-mock';
 import { SyncService } from './sync.service';
 
 jest.mock('node-fetch');
@@ -24,10 +25,6 @@ describe('SyncService', () => {
   let store: MemoryStore<M>;
   let syncService: SyncService<number, 'storage', 'peers', M>;
   let fetchMock: jest.MockedFunction<typeof fetch>;
-
-  // saves the latest "modified since" header from mocked requests
-  let latestModifiedSince: string | undefined;
-
   interface peerResponseMock {
     peer: string;
     httpStatus: number;
@@ -38,8 +35,6 @@ describe('SyncService', () => {
   const mockWithStorages = (... responseMocks: peerResponseMock[]) => {
 
     fetchMock.mockImplementation(async (url, options) => {
-
-      latestModifiedSince = options?.headers['If-Modified-Since'];
 
       for (const mockInfo of responseMocks) {
 
@@ -60,18 +55,12 @@ describe('SyncService', () => {
 
   beforeEach(() => {
 
+    clearDateMock();
     jest.resetAllMocks();
 
     fetchMock = (fetch as jest.MockedFunction<typeof fetch>);
-    latestModifiedSince = undefined;
 
-    fetchMock.mockImplementation(async (url, options) => {
-
-      latestModifiedSince = options?.headers['If-Modified-Since'];
-
-      return new Response('[]', { status: 200, headers });
-
-    });
+    fetchMock.mockImplementation(async (url, options) => new Response('[]', { status: 200, headers }));
 
     store = new MemoryStore<M>([
       [ 'storage', new Set<number>() ],
@@ -82,6 +71,14 @@ describe('SyncService', () => {
     syncService = new SyncService<number, 'storage', 'peers', M>('storage', 'peers', store);
 
   });
+
+  const latestModifiedSinceHeader = () => {
+
+    const calls = fetchMock.mock.calls;
+
+    return calls.length === 0 ? undefined : calls[calls.length - 1][1]?.headers['If-Modified-Since'];
+
+  };
 
   describe('sync()', () => {
 
@@ -111,23 +108,22 @@ describe('SyncService', () => {
       it('has the If-Modified-Since header from the second request and onwards', async () => {
 
         await syncService.sync();
-        expect(latestModifiedSince).toBeUndefined();
+        expect(latestModifiedSinceHeader()).toBeUndefined();
         await syncService.sync();
-        expect(latestModifiedSince).toBeDefined();
+        expect(latestModifiedSinceHeader()).toBeDefined();
         await syncService.sync();
-        expect(latestModifiedSince).toBeDefined();
+        expect(latestModifiedSinceHeader()).toBeDefined();
 
       });
 
       it('has the correct modifiedSince header', async () => {
 
-        let beforeFirstSync = Date.now();
-        beforeFirstSync -= beforeFirstSync % 1000; // If-Modified-Since header value rounds down to the second
+        const beforeFirstSync = Math.floor(Date.now() / 1000); // If-Modified-Since header value rounds down to the second
         await syncService.sync();
-        const afterFirstSync = Date.now();
+        const afterFirstSync = Math.floor(Date.now() / 1000);
 
         await syncService.sync();
-        const firstSync = new Date(latestModifiedSince).getTime();
+        const firstSync = new Date(latestModifiedSinceHeader()).getTime() / 1000;
 
         expect(beforeFirstSync <= firstSync && firstSync <= afterFirstSync).toBe(true);
 
@@ -137,23 +133,16 @@ describe('SyncService', () => {
 
         await syncService.sync();
         await syncService.sync();
-        const firstSync = new Date(latestModifiedSince).getTime();
+        const firstSync = new Date(latestModifiedSinceHeader()).getTime();
 
-        const nextSync = firstSync + 5200;
-        const nextDate = new Date(nextSync);
-
-        const mockDate = jest
-          .spyOn(global, 'Date')
-          .mockImplementation(() => nextDate as unknown as string);
-        // https://stackoverflow.com/questions/28504545/how-to-mock-a-constructor-like-new-date
+        const nextSync = firstSync + 10000;
+        advanceDateBy(10000);
 
         await syncService.sync();
         await syncService.sync();
-        const secondSync = new Date(latestModifiedSince).getTime();
+        const secondSync = new Date(latestModifiedSinceHeader()).getTime();
 
-        expect(secondSync).toBe(nextSync);
-
-        mockDate.mockRestore();
+        expect(secondSync > nextSync - 1000 && secondSync < nextSync + 1000).toBe(true);
 
       });
 
