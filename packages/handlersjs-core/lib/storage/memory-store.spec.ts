@@ -91,6 +91,16 @@ describe('MemoryStore', () => {
 
     });
 
+    it('can not mutate a value in-store after setting it', async () => {
+
+      const set = new Set([ 'abc', 'def' ]);
+      await memoryStore.set('key5', set);
+      set.add('123');
+
+      expect(memoryStore.get('key5')).resolves.toEqual(new Set([ 'abc', 'def' ]));
+
+    });
+
   });
 
   describe('has()', () => {
