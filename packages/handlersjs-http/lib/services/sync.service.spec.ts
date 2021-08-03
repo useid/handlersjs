@@ -242,6 +242,7 @@ describe('SyncService', () => {
 
         const peersSet = await store.get('peers');
         peersSet.add('peer3.com');
+        await store.set('peers', peersSet);
 
         await syncService.sync();
         await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 4, 5, 50, 51, 52 ]));
