@@ -31,12 +31,11 @@ export class SyncService<T, S extends string, P extends string, M extends {
     const storage: Set<T> | undefined = await this.store.get(this.storage);
     const peers: Set<string> | undefined = await this.store.get(this.peers);
 
-    const modifiedSince = this.latestSync;
-    this.latestSync = new Date();
-
-    const options = modifiedSince ? {
-      headers: { 'If-Modified-Since': modifiedSince.toUTCString() },
+    const options = this.latestSync ? {
+      headers: { 'If-Modified-Since': this.latestSync.toUTCString() },
     } : undefined;
+
+    this.latestSync = new Date();
 
     const fetchedValues: T[][] = await Promise.all((peers ? [ ... peers ] : []).map(async (host) => {
 
