@@ -3,7 +3,7 @@ import { Scheduler } from './scheduler';
 /**
  * Scheduler that takes an object & method name instead of a task, created for ComponentJs compatibility
  */
-export class ObjectScheduler<N extends string, T extends { [n in N]: () => unknown }> extends Scheduler {
+export class ObjectScheduler<N extends string, T extends { [n in N]: () => void }> extends Scheduler {
 
   /**
    * An object-scheduler is a daemon that, when started, executes a given task on-repeat, defined by an object and a method name
