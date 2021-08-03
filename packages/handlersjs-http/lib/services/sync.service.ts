@@ -47,13 +47,13 @@ export class SyncService<T, S extends string, P extends string, M extends {
 
   }
 
-  canHandle(input: void, intermediateOutput?: never): Observable<boolean> {
+  canHandle(input: void): Observable<boolean> {
 
     return of(true);
 
   }
 
-  handle(input: void, intermediateOutput?: never): Observable<void> {
+  handle(input: void): Observable<void> {
 
     return from(this.sync());
 
