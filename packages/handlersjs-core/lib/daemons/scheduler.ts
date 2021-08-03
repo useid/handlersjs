@@ -1,4 +1,5 @@
 import { Observable, of, throwError } from 'rxjs';
+import { Handler } from '../handlers/handler';
 import { Daemon } from '../models/daemon';
 
 export class Scheduler extends Daemon {
@@ -13,8 +14,7 @@ export class Scheduler extends Daemon {
    */
   constructor(
     private readonly interval: number,
-    private readonly task: (() => void)
-
+    private readonly task: Handler<void, void>
   ) { super(); }
 
   /**
@@ -30,7 +30,7 @@ export class Scheduler extends Daemon {
 
     } else {
 
-      this.currentTimeout = setInterval(this.task, this.interval);
+      this.currentTimeout = setInterval(() => this.task.handle(), this.interval);
 
       return of(this);
 

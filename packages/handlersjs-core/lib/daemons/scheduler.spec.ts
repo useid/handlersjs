@@ -1,9 +1,27 @@
+import { Observable, of } from 'rxjs';
+import { Handler } from '../handlers/handler';
 import { Scheduler } from './scheduler';
 jest.useFakeTimers();
 
 describe('Scheduler', () => {
 
   const task = jest.fn();
+  class TestHandler extends Handler<void, void> {
+
+    canHandle(input: void, intermediateOutput?: void): Observable<boolean> {
+
+      return of(true);
+
+    }
+    handle(input: void, intermediateOutput?: void): Observable<void> {
+
+      task();
+
+      return of();
+
+    }
+
+  }
 
   const expectIsRunning = async () => {
 
@@ -25,7 +43,7 @@ describe('Scheduler', () => {
 
   beforeEach(() => {
 
-    scheduler = new Scheduler(5, task);
+    scheduler = new Scheduler(5, new TestHandler());
 
   });
 
