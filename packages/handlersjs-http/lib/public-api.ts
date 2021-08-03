@@ -25,3 +25,4 @@ export * from './servers/node/node-http-server';
 export * from './servers/node/node-http-streams.handler';
 export * from './servers/node/node-http-streams.model';
 export * from './util/server';
+export * from './services/sync.service';

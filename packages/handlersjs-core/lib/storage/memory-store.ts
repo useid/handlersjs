@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+import clone from 'clone';
 import { TimedTypedKeyValueStore } from './models/timed-typed-key-value-store';
 
 /**
@@ -53,7 +54,7 @@ export class MemoryStore<M> implements TimedTypedKeyValueStore<M> {
 
   async get<T extends keyof M>(key: T): Promise<M[T] | undefined> {
 
-    return this.data.has(key) ? this.data.get(key)?.value as M[T] : undefined;
+    return this.data.has(key) ? clone(this.data.get(key)?.value as M[T]) : undefined;
 
   }
 
@@ -65,7 +66,7 @@ export class MemoryStore<M> implements TimedTypedKeyValueStore<M> {
 
   async set<T extends keyof M>(key: T, value: M[T]): Promise<this> {
 
-    this.data.set(key, { value, timestamp: Date.now() });
+    this.data.set(key, { value: clone(value), timestamp: Date.now() });
 
     return this;
 
@@ -81,7 +82,7 @@ export class MemoryStore<M> implements TimedTypedKeyValueStore<M> {
 
     for (const [ key, value ] of this.data.entries()) {
 
-      yield [ key, value.value ];
+      yield [ key, clone(value.value) ];
 
     }
 

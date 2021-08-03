@@ -34,11 +34,13 @@
   "devDependencies": {
     "@digita-ai/typescript-config": "^0.3.2",
     "@types/jest": "^26.0.20",
+    "@types/node-fetch": "^2.5.11",
     "componentsjs": "^4.4.0",
     "componentsjs-generator": "^2.5.0",
     "eslint": "^7.25.0",
     "jest": "^26.6.3",
     "jest-coverage-thresholds-bumper": "^0.0.3",
+    "jest-date-mock": "^1.0.8",
     "jest-mock-extended": "^1.0.13",
     "lint-staged": "^10.5.4",
     "mock-http": "^1.1.0",
@@ -48,6 +50,7 @@
   },
   "dependencies": {
     "@digita-ai/handlersjs-core": "0.2.3",
+    "node-fetch": "^2.6.1",
     "rxjs": "6.3.3"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http",
@@ -65,10 +68,10 @@
     "displayName": "http",
     "coverageThreshold": {
       "global": {
-        "branches": 72.83,
-        "functions": 84.44,
-        "lines": 86.23,
-        "statements": 86.15
+        "branches": 74.5,
+        "functions": 85.86,
+        "lines": 87.5,
+        "statements": 87.39
       }
     },
     "coveragePathIgnorePatterns": [

@@ -32,6 +32,7 @@
   "license": "ISC",
   "devDependencies": {
     "@digita-ai/typescript-config": "^0.3.2",
+    "@types/clone": "^2.1.1",
     "@types/jest": "^26.0.20",
     "componentsjs": "^4.4.0",
     "componentsjs-generator": "^2.5.0",
@@ -44,6 +45,7 @@
     "typescript": "3.8.3"
   },
   "dependencies": {
+    "clone": "^2.1.2",
     "rxjs": "6.3.3"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core",
