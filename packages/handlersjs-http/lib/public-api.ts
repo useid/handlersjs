@@ -26,3 +26,4 @@ export * from './servers/node/node-http-streams.handler';
 export * from './servers/node/node-http-streams.model';
 export * from './util/daemon';
 export * from './util/server';
+export * from './services/sync.service';
