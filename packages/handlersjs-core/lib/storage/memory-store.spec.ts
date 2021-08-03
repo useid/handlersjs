@@ -8,6 +8,7 @@ describe('MemoryStore', () => {
     key2: string;
     key3: boolean;
     key4: string[];
+    key5: Set<string>;
   }
 
   let memoryStore: MemoryStore<TestInterface>;
@@ -60,6 +61,17 @@ describe('MemoryStore', () => {
 
     });
 
+    it('can not mutate a value without setting it explicitly', async () => {
+
+      await memoryStore.set('key5', new Set([ 'abc', 'def' ]));
+
+      const set = await memoryStore.get('key5');
+      set.add('123');
+
+      expect(memoryStore.get('key5')).resolves.toEqual(new Set([ 'abc', 'def' ]));
+
+    });
+
   });
 
   describe('set()', () => {
@@ -76,6 +88,16 @@ describe('MemoryStore', () => {
       await memoryStore.set('key1', 5);
       await memoryStore.set('key1', 8);
       await expect(memoryStore.get('key1')).resolves.toEqual(8);
+
+    });
+
+    it('can not mutate a value in-store after setting it', async () => {
+
+      const set = new Set([ 'abc', 'def' ]);
+      await memoryStore.set('key5', set);
+      set.add('123');
+
+      expect(memoryStore.get('key5')).resolves.toEqual(new Set([ 'abc', 'def' ]));
 
     });
 
@@ -151,6 +173,17 @@ describe('MemoryStore', () => {
         expect(result.done).toBe(true);
 
       });
+
+    });
+
+    it('can not mutate a value obtained from entries()', async () => {
+
+      await memoryStore.set('key5', new Set([ 'abc', 'def' ]));
+
+      const set = (await memoryStore.entries().next()).value[1] as Set<string>;
+      set.add('123');
+
+      expect(memoryStore.get('key5')).resolves.toEqual(new Set([ 'abc', 'def' ]));
 
     });
 
