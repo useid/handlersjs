@@ -1,4 +1,4 @@
-import { Daemon } from './daemon';
+import { Daemon } from '@digita-ai/handlersjs-core';
 
 /**
  * A {Daemon} process listening on a given `scheme``://``host``:``port` location
