@@ -12,11 +12,13 @@ export class SyncService<T, S extends string, P extends string, M extends {
    * @param storage key in which the storage is located
    * @param peers key in which the peers are located
    * @param store the given store, used by storage and peers
+   * @param endpoint an optional endpoint suffix
    */
   constructor(
     private readonly storage: S,
     private readonly peers: P,
     private readonly store: TimedTypedKeyValueStore<M>,
+    private readonly endpoint?: string
   ) { super(); }
 
   /**
@@ -37,7 +39,7 @@ export class SyncService<T, S extends string, P extends string, M extends {
 
     const fetchedValues: T[][] = await Promise.all((peers ? [ ... peers ] : []).map(async (host) => {
 
-      const httpResponse = await fetch(host, options);
+      const httpResponse = await fetch(`${host}${this.endpoint ? '/' + this.endpoint : ''}`, options);
 
       return httpResponse.status === 200 ? await httpResponse.json() : [];
 
