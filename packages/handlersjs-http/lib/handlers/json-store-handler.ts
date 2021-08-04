@@ -2,10 +2,10 @@ import { from, Observable, of } from 'rxjs';
 import { TimedTypedKeyValueStore } from '@digita-ai/handlersjs-core';
 import { map, switchMap } from 'rxjs/operators';
 import { HttpHandler } from '../models/http-handler';
-import { HttpHandlerContext } from 'models/http-handler-context';
-import { HttpHandlerResponse } from 'models/http-handler-response';
+import { HttpHandlerContext } from '../models/http-handler-context';
+import { HttpHandlerResponse } from '../models/http-handler-response';
 
-export class JsonStoreHandler<M> extends HttpHandler {
+export class JsonStoreHandler<T extends string, M extends { [t in T]: unknown }> extends HttpHandler {
 
   /**
    * Creates a HTTP handler that returns the contents of the storage data as a stringified JSON response
@@ -14,7 +14,7 @@ export class JsonStoreHandler<M> extends HttpHandler {
    * @param store the store that contains the data
    */
   constructor(
-    private readonly data: keyof M,
+    private readonly data: T,
     private readonly store: TimedTypedKeyValueStore<M>,
   ) { super(); }
 
