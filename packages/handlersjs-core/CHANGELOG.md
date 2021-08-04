@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.0](https://github.com/digita-ai/handlersjs/compare/v0.2.3...v0.3.0) (2021-08-04)
+
+
+### **Bug Fixes**
+
+* immutable values memorystore ([#91](https://github.com/digita-ai/handlersjs/issues/91)) ([556206a](https://github.com/digita-ai/handlersjs/commit/556206ab6f03484da65e97e904c275722c2c6bbb))
+
+
+### **Features**
+
+* scheduler daemon ([#82](https://github.com/digita-ai/handlersjs/issues/82)) ([5063010](https://github.com/digita-ai/handlersjs/commit/5063010e2c822aa3de200499894045d84b48df69))
+* storage ([#79](https://github.com/digita-ai/handlersjs/issues/79)) ([72a9b08](https://github.com/digita-ai/handlersjs/commit/72a9b08dc1cfb83df8b9e58df3dc5258736b8136))
+
+
+
 ### [0.2.3](https://github.com/digita-ai/handlersjs/compare/v0.2.2...v0.2.3) (2021-06-24)
 
 
