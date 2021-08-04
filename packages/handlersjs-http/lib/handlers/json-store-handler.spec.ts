@@ -14,7 +14,7 @@ describe('JsonStoreHandler', () => {
   const inputData = [ 'abc', 'defghij', '123' ];
   const inputData2 = [ ... inputData, '456' ]; // another list of data that may be used to update the store
 
-  let jsonStoreHandler: JsonStoreHandler<StoreInterface>;
+  let jsonStoreHandler: JsonStoreHandler<'data', StoreInterface>;
   let memoryStore: MemoryStore<StoreInterface>;
   let requestContext: HttpHandlerContext;
 
