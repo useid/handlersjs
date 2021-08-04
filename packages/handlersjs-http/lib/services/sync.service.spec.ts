@@ -253,6 +253,7 @@ describe('SyncService', () => {
 
         const peersSet = await store.get('peers');
         peersSet.add('peer3.com');
+        await store.set('peers', peersSet);
 
         mockWithStorages(
           { peer: 'peer1.com', httpStatus: 200, storages: [ 1, 2, 3 ] },
@@ -262,6 +263,43 @@ describe('SyncService', () => {
 
         await syncService.handle().toPromise();
         await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3 ]));
+
+      });
+
+    });
+
+    describe('endpoint behavior', () => {
+
+      it('can fetch resources from peers with a suffix', async () => {
+
+        syncService = new SyncService<number, 'storage', 'peers', M>('storage', 'peers', store, 'endpoint');
+
+        mockWithStorages(
+          { peer: 'peer1.com/endpoint', httpStatus: 200, storages: [ 1, 2, 3 ] },
+          { peer: 'peer2.com/endpoint', httpStatus: 200, storages: [ 1, 4, 5 ] },
+        );
+
+        await syncService.handle().toPromise();
+
+        await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 4, 5 ]));
+
+      });
+
+      it('doesn\t fetch from peers with wrong or unexistent suffix', async () => {
+
+        syncService = new SyncService<number, 'storage', 'peers', M>('storage', 'peers', store, 'endpoint');
+
+        mockWithStorages(
+          { peer: 'peer1.com/endpoint/endpoint2', httpStatus: 200, storages: [ 1, 2, 3 ] },
+          { peer: 'peer1.com/endpoint2/endpoint', httpStatus: 200, storages: [ 1, 4, 5 ] },
+          { peer: 'peer1.com', httpStatus: 200, storages: [ 5, 6, 7 ] },
+          { peer: 'peer2.com/endpoint', httpStatus: 200, storages: [ 7, 8, 9 ] },
+          { peer: 'peer2.com/endpoint2', httpStatus: 200, storages: [ 8, 9, 10 ] },
+        );
+
+        await syncService.handle().toPromise();
+
+        await expect(store.get('storage')).resolves.toEqual(new Set([ 7, 8, 9 ]));
 
       });
 
