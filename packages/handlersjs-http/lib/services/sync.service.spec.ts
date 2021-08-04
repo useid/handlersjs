@@ -80,25 +80,25 @@ describe('SyncService', () => {
 
   };
 
-  describe('sync()', () => {
+  describe('handle()', () => {
 
     it('resolves when there are no peers', async () => {
 
       await store.set('peers', new Set());
-      await expect(syncService.sync()).resolves.toBe(syncService);
+      await expect(syncService.handle().toPromise()).resolves.toBeUndefined();
 
     });
 
     it('resolves when peers are undefined', async () => {
 
       await store.delete('peers');
-      await expect(syncService.sync()).resolves.toBe(syncService);
+      await expect(syncService.handle().toPromise()).resolves.toBeUndefined();
 
     });
 
     it('sends a request to all peers in the store', async () => {
 
-      await syncService.sync();
+      await syncService.handle().toPromise();
       fetchMock.mock.calls.forEach((call) => expect(peers.has(call[0].toString())).toBe(true));
 
     });
@@ -107,11 +107,11 @@ describe('SyncService', () => {
 
       it('has the If-Modified-Since header from the second request and onwards', async () => {
 
-        await syncService.sync();
+        await syncService.handle().toPromise();
         expect(latestModifiedSinceHeader()).toBeUndefined();
-        await syncService.sync();
+        await syncService.handle().toPromise();
         expect(latestModifiedSinceHeader()).toBeDefined();
-        await syncService.sync();
+        await syncService.handle().toPromise();
         expect(latestModifiedSinceHeader()).toBeDefined();
 
       });
@@ -119,10 +119,10 @@ describe('SyncService', () => {
       it('has the correct modifiedSince header', async () => {
 
         const beforeFirstSync = Math.floor(Date.now() / 1000); // If-Modified-Since header value rounds down to the second
-        await syncService.sync();
+        await syncService.handle().toPromise();
         const afterFirstSync = Math.floor(Date.now() / 1000);
 
-        await syncService.sync();
+        await syncService.handle().toPromise();
         const firstSync = new Date(latestModifiedSinceHeader()).getTime() / 1000;
 
         expect(beforeFirstSync <= firstSync && firstSync <= afterFirstSync).toBe(true);
@@ -131,15 +131,15 @@ describe('SyncService', () => {
 
       it('updates the If-Modified-Since header correctly', async () => {
 
-        await syncService.sync();
-        await syncService.sync();
+        await syncService.handle().toPromise();
+        await syncService.handle().toPromise();
         const firstSync = new Date(latestModifiedSinceHeader()).getTime();
 
         const nextSync = firstSync + 10000;
         advanceDateBy(10000);
 
-        await syncService.sync();
-        await syncService.sync();
+        await syncService.handle().toPromise();
+        await syncService.handle().toPromise();
         const secondSync = new Date(latestModifiedSinceHeader()).getTime();
 
         expect(secondSync > nextSync - 1000 && secondSync < nextSync + 1000).toBe(true);
@@ -157,7 +157,7 @@ describe('SyncService', () => {
           { peer: 'peer2.com', httpStatus: 200, storages: [ 1, 4, 5 ] },
         );
 
-        await syncService.sync();
+        await syncService.handle().toPromise();
         await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 4, 5 ]));
 
         mockWithStorages(
@@ -165,7 +165,7 @@ describe('SyncService', () => {
           { peer: 'peer2.com', httpStatus: 304 },
         );
 
-        await syncService.sync();
+        await syncService.handle().toPromise();
         await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 4, 5 ]));
 
       });
@@ -176,14 +176,14 @@ describe('SyncService', () => {
           { peer: 'peer1.com', httpStatus: 200, storages: [ 1, 2, 3 ] },
         );
 
-        await syncService.sync();
+        await syncService.handle().toPromise();
         await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3 ]));
 
         mockWithStorages(
           { peer: 'peer2.com', httpStatus: 200, storages: [ 13, 14, 15 ] },
         );
 
-        await syncService.sync();
+        await syncService.handle().toPromise();
         await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 13, 14, 15 ]));
 
       });
@@ -195,7 +195,7 @@ describe('SyncService', () => {
           { peer: 'peer2.com', httpStatus: 200, storages: [ 1, 4, 5 ] },
         );
 
-        await syncService.sync();
+        await syncService.handle().toPromise();
 
         await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 4, 5 ]));
 
@@ -208,21 +208,21 @@ describe('SyncService', () => {
           { peer: 'peer2.com', httpStatus: 200, storages: [ 1, 4, 5 ] },
         );
 
-        await syncService.sync();
+        await syncService.handle().toPromise();
         await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 4, 5 ]));
 
         mockWithStorages(
           { peer: 'peer2.com', httpStatus: 200, storages: [ 13, 14, 15 ] },
         );
 
-        await syncService.sync();
+        await syncService.handle().toPromise();
         await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 4, 5, 13, 14, 15 ]));
 
         mockWithStorages(
           { peer: 'peer1.com', httpStatus: 200, storages: [ 11, 12, 13 ] },
         );
 
-        await syncService.sync();
+        await syncService.handle().toPromise();
         await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 4, 5, 11, 12, 13, 14, 15 ]));
 
       });
@@ -234,7 +234,7 @@ describe('SyncService', () => {
           { peer: 'peer2.com', httpStatus: 200, storages: [ 1, 4, 5 ] },
         );
 
-        await syncService.sync();
+        await syncService.handle().toPromise();
 
         mockWithStorages(
           { peer: 'peer3.com', httpStatus: 200, storages: [ 50, 51, 52 ] }
@@ -244,7 +244,7 @@ describe('SyncService', () => {
         peersSet.add('peer3.com');
         await store.set('peers', peersSet);
 
-        await syncService.sync();
+        await syncService.handle().toPromise();
         await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 4, 5, 50, 51, 52 ]));
 
       });
@@ -260,10 +260,20 @@ describe('SyncService', () => {
           { peer: 'peer3.com', httpStatus: 400, storages: [ 7, 8, 9 ] },
         );
 
-        await syncService.sync();
+        await syncService.handle().toPromise();
         await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3 ]));
 
       });
+
+    });
+
+  });
+
+  describe('canHandle()', () => {
+
+    it('should return true', async () => {
+
+      await expect(syncService.canHandle().toPromise()).resolves.toBe(true);
 
     });
 

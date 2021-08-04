@@ -1,9 +1,9 @@
-import { TimedTypedKeyValueStore } from '@digita-ai/handlersjs-core';
+import { Handler, TimedTypedKeyValueStore } from '@digita-ai/handlersjs-core';
 import fetch from 'node-fetch';
+import { from, Observable, of } from 'rxjs';
 
 export class SyncService<T, S extends string, P extends string, M extends {
-  [s in S]: Set<T> } & { [p in P]: Set<string> },
-> {
+  [s in S]: Set<T> } & { [p in P]: Set<string> }> extends Handler<void, void> {
 
   latestSync: Date | undefined = undefined;
 
@@ -17,16 +17,14 @@ export class SyncService<T, S extends string, P extends string, M extends {
     private readonly storage: S,
     private readonly peers: P,
     private readonly store: TimedTypedKeyValueStore<M>,
-  ) {
-
-  }
+  ) { super(); }
 
   /**
    * Synchronizes the storage value of the store with other peers in the network
    *
    * @returns itself
    */
-  async sync(): Promise<this> {
+  private async sync(): Promise<void> {
 
     const storage: Set<T> | undefined = await this.store.get(this.storage);
     const peers: Set<string> | undefined = await this.store.get(this.peers);
@@ -47,7 +45,17 @@ export class SyncService<T, S extends string, P extends string, M extends {
 
     await this.store.set(this.storage, new Set([ ...storage ?? [], ...fetchedValues.flat() ]) as M[S]);
 
-    return this;
+  }
+
+  canHandle(input: void): Observable<boolean> {
+
+    return of(true);
+
+  }
+
+  handle(input: void): Observable<void> {
+
+    return from(this.sync());
 
   }
 
