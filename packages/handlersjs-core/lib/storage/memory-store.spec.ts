@@ -43,6 +43,18 @@ describe('MemoryStore', () => {
 
   });
 
+  it('can not be mutated by modifying initialdata afterwards', async () => {
+
+    const list: string[] = [ 'abc', 'def' ];
+
+    memoryStore = new MemoryStore([ [ 'key4', list ] ]);
+
+    list.push('123');
+
+    await expect(memoryStore.get('key4')).resolves.toEqual([ 'abc', 'def' ]);
+
+  });
+
   describe('get()', () => {
 
     it('should get a value that has been set', async () => {

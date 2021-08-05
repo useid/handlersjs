@@ -48,7 +48,7 @@ export class MemoryStore<M> implements TimedTypedKeyValueStore<M> {
    */
   constructor(initialData?: [keyof M, M[keyof M]][]) {
 
-    this.data = new Map(initialData?.map(([ key, value ]) => [ key, { value, timestamp: Date.now() } ]));
+    this.data = new Map(initialData?.map(([ key, value ]) => [ key, { value: clone(value), timestamp: Date.now() } ]));
 
   }
 
