@@ -44,7 +44,7 @@ export class MemoryStore<M> implements TimedTypedKeyValueStore<M> {
 
   /**
    *
-   * @param initialData data to initialize the memorystore with
+   * @param initialData data to initialize the memorystore with @range {json}
    */
   constructor(initialData?: [keyof M, M[keyof M]][]) {
 
