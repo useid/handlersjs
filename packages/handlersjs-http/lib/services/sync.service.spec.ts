@@ -14,11 +14,11 @@ describe('SyncService', () => {
     Accept: '*/*',
   });
 
-  const peers = new Set([ 'peer1.com', 'peer2.com' ]);
+  const peers = [ 'peer1.com', 'peer2.com' ];
 
   type M = {
-    storage: Set<number>; } & {
-    peers: Set<string>;
+    storage: number[]; } & {
+    peers: string[];
     [key: string]: any;
   };
 
@@ -63,14 +63,21 @@ describe('SyncService', () => {
     fetchMock.mockImplementation(async (url, options) => new Response('[]', { status: 200, headers }));
 
     store = new MemoryStore<M>([
-      [ 'storage', new Set<number>() ],
-      [ 'peers', new Set<string>(peers) ],
+      [ 'storage', [] ],
+      [ 'peers', peers ],
       [ 'other', 'something else' ],
     ]);
 
     syncService = new SyncService<number, 'storage', 'peers', M>('storage', 'peers', store);
 
   });
+
+  const expectStorageEquals = async (expectedStorage: number[]) => {
+
+    const contents: number[] = await store.get('storage');
+    expect(contents.sort()).toEqual(contents.sort());
+
+  };
 
   const latestModifiedSinceHeader = () => {
 
@@ -84,7 +91,7 @@ describe('SyncService', () => {
 
     it('resolves when there are no peers', async () => {
 
-      await store.set('peers', new Set());
+      await store.set('peers', []);
       await expect(syncService.handle().toPromise()).resolves.toBeUndefined();
 
     });
@@ -99,7 +106,7 @@ describe('SyncService', () => {
     it('sends a request to all peers in the store', async () => {
 
       await syncService.handle().toPromise();
-      fetchMock.mock.calls.forEach((call) => expect(peers.has(call[0].toString())).toBe(true));
+      fetchMock.mock.calls.forEach((call) => expect(peers.indexOf(call[0].toString())).not.toBe(-1));
 
     });
 
@@ -158,7 +165,7 @@ describe('SyncService', () => {
         );
 
         await syncService.handle().toPromise();
-        await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 4, 5 ]));
+        expectStorageEquals([ 1, 2, 3, 4, 5 ]);
 
         mockWithStorages(
           { peer: 'peer2.com', httpStatus: 304 },
@@ -166,7 +173,7 @@ describe('SyncService', () => {
         );
 
         await syncService.handle().toPromise();
-        await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 4, 5 ]));
+        expectStorageEquals([ 1, 2, 3, 4, 5 ]);
 
       });
 
@@ -177,14 +184,14 @@ describe('SyncService', () => {
         );
 
         await syncService.handle().toPromise();
-        await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3 ]));
+        expectStorageEquals([ 1, 2, 3 ]);
 
         mockWithStorages(
           { peer: 'peer2.com', httpStatus: 200, storages: [ 13, 14, 15 ] },
         );
 
         await syncService.handle().toPromise();
-        await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 13, 14, 15 ]));
+        expectStorageEquals([ 1, 2, 3, 13, 14, 15 ]);
 
       });
 
@@ -197,7 +204,7 @@ describe('SyncService', () => {
 
         await syncService.handle().toPromise();
 
-        await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 4, 5 ]));
+        expectStorageEquals([ 1, 2, 3, 4, 5 ]);
 
       });
 
@@ -209,21 +216,21 @@ describe('SyncService', () => {
         );
 
         await syncService.handle().toPromise();
-        await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 4, 5 ]));
+        expectStorageEquals([ 1, 2, 3, 4, 5 ]);
 
         mockWithStorages(
           { peer: 'peer2.com', httpStatus: 200, storages: [ 13, 14, 15 ] },
         );
 
         await syncService.handle().toPromise();
-        await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 4, 5, 13, 14, 15 ]));
+        expectStorageEquals([ 1, 2, 3, 4, 5, 13, 14, 15 ]);
 
         mockWithStorages(
           { peer: 'peer1.com', httpStatus: 200, storages: [ 11, 12, 13 ] },
         );
 
         await syncService.handle().toPromise();
-        await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 4, 5, 11, 12, 13, 14, 15 ]));
+        expectStorageEquals([ 1, 2, 3, 4, 5, 11, 12, 13, 14, 15 ]);
 
       });
 
@@ -240,20 +247,20 @@ describe('SyncService', () => {
           { peer: 'peer3.com', httpStatus: 200, storages: [ 50, 51, 52 ] }
         );
 
-        const peersSet = await store.get('peers');
-        peersSet.add('peer3.com');
-        await store.set('peers', peersSet);
+        const peersList = await store.get('peers');
+        peersList.push('peer3.com');
+        await store.set('peers', peersList);
 
         await syncService.handle().toPromise();
-        await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 4, 5, 50, 51, 52 ]));
+        expectStorageEquals([ 1, 2, 3, 4, 5, 50, 51, 52 ]);
 
       });
 
       it('only updates the store if httpStatus is 200', async () => {
 
-        const peersSet = await store.get('peers');
-        peersSet.add('peer3.com');
-        await store.set('peers', peersSet);
+        const peersList = await store.get('peers');
+        peersList.push('peer3.com');
+        await store.set('peers', peersList);
 
         mockWithStorages(
           { peer: 'peer1.com', httpStatus: 200, storages: [ 1, 2, 3 ] },
@@ -262,7 +269,7 @@ describe('SyncService', () => {
         );
 
         await syncService.handle().toPromise();
-        await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3 ]));
+        expectStorageEquals([ 1, 2, 3 ]);
 
       });
 
@@ -281,7 +288,7 @@ describe('SyncService', () => {
 
         await syncService.handle().toPromise();
 
-        await expect(store.get('storage')).resolves.toEqual(new Set([ 1, 2, 3, 4, 5 ]));
+        expectStorageEquals([ 1, 2, 3, 4, 5 ]);
 
       });
 
@@ -299,7 +306,7 @@ describe('SyncService', () => {
 
         await syncService.handle().toPromise();
 
-        await expect(store.get('storage')).resolves.toEqual(new Set([ 7, 8, 9 ]));
+        expectStorageEquals([ 7, 8, 9 ]);
 
       });
 
