@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.3.2](https://github.com/digita-ai/handlersjs/compare/v0.3.1...v0.3.2) (2021-08-05)
+
+
+### **Features**
+
+* add typescope contexts and component param range ([#97](https://github.com/digita-ai/handlersjs/issues/97)) ([eca9289](https://github.com/digita-ai/handlersjs/commit/eca9289081374cb43dd6a8cfa25a55a769039e79))
+
+
+### **Bug Fixes**
+
+* initialdata immutable memorystore ([#99](https://github.com/digita-ai/handlersjs/issues/99)) ([c9d5a0c](https://github.com/digita-ai/handlersjs/commit/c9d5a0c106712ec6a3bfdc2f868ce873f2be0f15))
+
+
+
 ### [0.3.1](https://github.com/digita-ai/handlersjs/compare/v0.3.0...v0.3.1) (2021-08-04)
 
 **Note:** Version bump only for package @digita-ai/handlersjs-core
