@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.3.1](https://github.com/digita-ai/handlersjs/compare/v0.3.0...v0.3.1) (2021-08-04)
+
+
+### **Features**
+
+* export json-store-handler ([#96](https://github.com/digita-ai/handlersjs/issues/96)) ([64a1b3e](https://github.com/digita-ai/handlersjs/commit/64a1b3e1987646052424178deb01d1a6d2f8cd37))
+
+
+
 ## [0.3.0](https://github.com/digita-ai/handlersjs/compare/v0.2.3...v0.3.0) (2021-08-04)
 
 
