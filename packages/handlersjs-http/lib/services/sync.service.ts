@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import { from, Observable, of } from 'rxjs';
 
 export class SyncService<T, S extends string, P extends string, M extends {
-  [s in S]: Set<T> } & { [p in P]: Set<string> }> extends Handler<void, void> {
+  [s in S]: T[] } & { [p in P]: string[] }> extends Handler<void, void> {
 
   latestSync: Date | undefined = undefined;
 
@@ -28,8 +28,8 @@ export class SyncService<T, S extends string, P extends string, M extends {
    */
   private async sync(): Promise<void> {
 
-    const storage: Set<T> | undefined = await this.store.get(this.storage);
-    const peers: Set<string> | undefined = await this.store.get(this.peers);
+    const storage: T[] = await this.store.get(this.storage) ?? [];
+    const peers: string[] = await this.store.get(this.peers) ?? [];
 
     const options = this.latestSync ? {
       headers: { 'If-Modified-Since': this.latestSync.toUTCString() },
@@ -37,7 +37,7 @@ export class SyncService<T, S extends string, P extends string, M extends {
 
     this.latestSync = new Date();
 
-    const fetchedValues: T[][] = await Promise.all((peers ? [ ... peers ] : []).map(async (host) => {
+    const fetchedValues: T[][] = await Promise.all(([ ... peers ]).map(async (host) => {
 
       const httpResponse = await fetch(`${host}${this.endpoint ? '/' + this.endpoint : ''}`, options);
 
@@ -45,7 +45,7 @@ export class SyncService<T, S extends string, P extends string, M extends {
 
     }));
 
-    await this.store.set(this.storage, new Set([ ...storage ?? [], ...fetchedValues.flat() ]) as M[S]);
+    await this.store.set(this.storage, [ ... new Set([ ...storage, ...fetchedValues.flat() ]) ] as M[S]);
 
   }
 
