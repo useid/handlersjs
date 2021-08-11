@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.3.3](https://github.com/digita-ai/handlersjs/compare/v0.3.2...v0.3.3) (2021-08-11)
+
+
+### **Bug Fixes**
+
+* unhandled promise syncservice ([#103](https://github.com/digita-ai/handlersjs/issues/103)) ([eec9fe2](https://github.com/digita-ai/handlersjs/commit/eec9fe253d53a25aa5ba4cafda1dfb08668cb6c4))
+
+
+
 ### [0.3.2](https://github.com/digita-ai/handlersjs/compare/v0.3.1...v0.3.2) (2021-08-05)
 
 
