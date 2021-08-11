@@ -39,9 +39,17 @@ export class SyncService<T, S extends string, P extends string, M extends {
 
     const fetchedValues: T[][] = await Promise.all(([ ... peers ]).map(async (host) => {
 
-      const httpResponse = await fetch(`${host}${this.endpoint ? '/' + this.endpoint : ''}`, options);
+      try {
 
-      return httpResponse.status === 200 ? await httpResponse.json() : [];
+        const httpResponse = await fetch(`${host}${this.endpoint ? '/' + this.endpoint : ''}`, options);
+
+        return httpResponse.status === 200 ? await httpResponse.json() : [];
+
+      } catch (error) {
+
+        return [];
+
+      }
 
     }));
 
