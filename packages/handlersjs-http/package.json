@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/handlersjs-http",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "",
   "main": "./dist/public-api.js",
   "directories": {
@@ -34,8 +34,8 @@
   "devDependencies": {
     "@digita-ai/typescript-config": "^0.3.2",
     "@types/jest": "^26.0.20",
-    "@types/node-fetch": "^2.5.11",
     "@types/n3": "1.10.0",
+    "@types/node-fetch": "^2.5.11",
     "componentsjs": "^4.5.0",
     "componentsjs-generator": "^2.6.0",
     "eslint": "^7.25.0",
@@ -50,7 +50,7 @@
     "typescript": "3.8.3"
   },
   "dependencies": {
-    "@digita-ai/handlersjs-core": "0.3.3",
+    "@digita-ai/handlersjs-core": "0.3.4",
     "node-fetch": "^2.6.1",
     "rxjs": "6.3.3"
   },
