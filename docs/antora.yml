@@ -1,5 +1,5 @@
 name: handlersjs
 title: Handlers JS
-version: 0.3.4
+version: 0.3.5
 nav:
-- modules/ROOT/nav.adoc
+  - modules/ROOT/nav.adoc
