@@ -12,6 +12,7 @@ describe('NodeHttpRequestResponseHandler', () => {
   let streamMock: NodeHttpStreams;
   let req: IncomingMessage;
   let res: ServerResponse;
+  const buffer = Buffer.from('bodyString');
 
   beforeEach(async () => {
 
@@ -26,6 +27,8 @@ describe('NodeHttpRequestResponseHandler', () => {
     req = new mockhttp.Request({
       url: 'http://localhost:3000/test?works=yes',
       method: 'GET',
+      buffer,
+
     });
 
     res = new mockhttp.Response();
@@ -98,6 +101,22 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     });
 
+    it('should set the body in the request if found in the request stream', async () => {
+
+      await handler.handle(streamMock).toPromise();
+      expect(nestedHttpHandler.handle).toHaveBeenCalledTimes(1);
+
+      expect(nestedHttpHandler.handle).toHaveBeenCalledWith({
+        'request': {
+          'method': 'GET',
+          'headers': {},
+          'url': new URL('http://localhost:3000/test?works=yes'),
+          'body': 'bodyString',
+        },
+      });
+
+    });
+
     it('should call the nested handlers handle method', async () => {
 
       await handler.handle(streamMock).toPromise();
@@ -131,9 +150,7 @@ describe('NodeHttpRequestResponseHandler', () => {
       await handler.handle(streamMock).toPromise();
       expect(nestedHttpHandler.handle).toHaveBeenCalledTimes(1);
 
-      expect(nestedHttpHandler.handle).toHaveBeenCalledWith(expect.objectContaining({
-        request: { url: new URL('http://localhost:3000/test?works=yes'), method: 'GET', headers: {} },
-      }));
+      expect(nestedHttpHandler.handle).toHaveBeenCalledWith({ request: { url: new URL('http://localhost:3000/test?works=yes'), method: 'GET', headers: {}, body: 'bodyString' } });
 
     });
 
@@ -193,6 +210,28 @@ describe('NodeHttpRequestResponseHandler', () => {
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body: 'mockBody', headers: { 'content-type': 'text/html; charset=unsupported' }, status:200 }));
 
       await expect(handler.handle(streamMock).toPromise()).rejects.toThrow('The specified charset is not supported');
+
+    });
+
+    it('should set the charset to utf-8 if no content-type header is specified', async () => {
+
+      const body = 'This is a response body with a certain length.';
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { 'content-type': 'text/html;' }, status:200 }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body, 'utf-8').toString(), 'content-type': 'text/html;' });
+
+    });
+
+    it('should return a undefined body if the body type is not string', async () => {
+
+      const body = 1234;
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { 'content-type': 'text/html;' }, status:200 }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body.toString(), 'utf-8').toString(), 'content-type': 'application/json' });
 
     });
 
@@ -310,6 +349,34 @@ describe('NodeHttpRequestResponseHandler', () => {
     it('returns true if input is complete', async () => {
 
       await expect(handler.canHandle(streamMock).toPromise()).resolves.toEqual(true);
+
+    });
+
+  });
+
+  describe('parseBody', () => {
+
+    it('should return the body JSON parsed if content type is application/json', async () => {
+
+      const parsed = (handler as any).parseBody('{"name":"jasper","surname":"vandenberghen"}', 'application/json');
+
+      expect(parsed).toEqual({ name: 'jasper', surname: 'vandenberghen' });
+
+    });
+
+    it('should return the body x-www-form-urlencoded parsed if content type is x-www-form-urlencoded', async () => {
+
+      const parsed = (handler as any).parseBody('name=jasper&surname=vandenberghen', 'application/x-www-form-urlencoded');
+
+      expect(parsed).toEqual({ name: 'jasper', surname: 'vandenberghen' });
+
+    });
+
+    it('should return the body if content type is default', async () => {
+
+      const parsed = (handler as any).parseBody('{"name":"jasper","surname":"vandenberghen"}', 'text/plain');
+
+      expect(parsed).toEqual('{"name":"jasper","surname":"vandenberghen"}');
 
     });
 

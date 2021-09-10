@@ -1,9 +1,19 @@
 import { mock } from 'jest-mock-extended';
 import { Logger } from '@digita-ai/handlersjs-core';
+import { throwError } from '@digita-ai/handlersjs-core/node_modules/rxjs';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { NotFoundHttpError } from '../errors/not-found-http-error';
 import { ForbiddenHttpError } from '../errors/forbidden-http-error';
+import { UnsupportedMediaTypeHttpError } from '../errors/unsupported-media-type-http-error';
 import { HttpHandlerStaticAssetService } from './http-handler-static-asset';
+
+jest.mock('fs/promises', () => ({
+  readFile: jest.fn().mockImplementation(async (path) => {
+
+    if (path.toString().includes('test.txt')) { return 'test file'; } else { throw new NotFoundHttpError('Error while trying to read file'); }
+
+  }),
+}));
 
 describe('HttpHandlerStaticAssetService', () => {
 
@@ -47,11 +57,21 @@ describe('HttpHandlerStaticAssetService', () => {
 
   describe('handle()', () => {
 
-    // it('throws an UnsupportedMediaTypeHttpError when content-type is not supported', async() => {
-    //   context.request.headers.accept = 'application/json';
-    //   const response = service.handle(context).toPromise();
-    //   await expect(response).rejects.toThrowError(new UnsupportedMediaTypeHttpError('Content type not supported'));
-    // });
+    it('throws an UnsupportedMediaTypeHttpError when no accept header is found', async() => {
+
+      const response = service.handle({ ...context, request: { ...context.request, headers: { accept: undefined } } })
+        .toPromise();
+
+      await expect(response).rejects.toThrowError(new UnsupportedMediaTypeHttpError('No accept header found'));
+
+    });
+
+    it('throws an UnsupportedMediaTypeHttpError when content-type is not supported', async() => {
+
+      const response = service.handle({ ...context, request: { ...context.request, headers: { accept: 'application/json' } } }).toPromise();
+      await expect(response).rejects.toThrowError(new UnsupportedMediaTypeHttpError('Content type not supported'));
+
+    });
 
     it('throws a ForbiddenHttpError when filename is invalid', async() => {
 
@@ -69,11 +89,21 @@ describe('HttpHandlerStaticAssetService', () => {
 
     });
 
-    // it('should return file content when file is found', async() => {
-    //   context.request.parameters.filename = 'test.txt';
-    //   const response = await service.handle(context).toPromise();
-    //   expect(response.body).toBe('test file');
-    // });
+    it('throws a NotFoundHttpError when file is not provided', async() => {
+
+      context.request.parameters.filename = undefined;
+      const response = service.handle(context).toPromise();
+      await expect(response).rejects.toThrowError(new NotFoundHttpError('Error while trying to read file'));
+
+    });
+
+    it('should return file content when file is found', async() => {
+
+      context.request.parameters.filename = 'test.txt';
+      const response = await service.handle(context).toPromise();
+      expect(response.body).toBe('test file');
+
+    });
 
   });
 

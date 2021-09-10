@@ -36,6 +36,12 @@ describe('SyncService', () => {
 
     fetchMock.mockImplementation(async (url, options) => {
 
+      if (responseMocks.length === 0) {
+
+        return new Response(new TypeError('fetch failed'));
+
+      }
+
       for (const mockInfo of responseMocks) {
 
         if (mockInfo.peer === url) {
@@ -58,15 +64,15 @@ describe('SyncService', () => {
     clearDateMock();
     jest.resetAllMocks();
 
-    fetchMock = (fetch as jest.MockedFunction<typeof fetch>);
-
-    fetchMock.mockImplementation(async (url, options) => new Response('[]', { status: 200, headers }));
-
     store = new MemoryStore<M>([
       [ 'storage', [] ],
       [ 'peers', peers ],
       [ 'other', 'something else' ],
     ]);
+
+    fetchMock = (fetch as jest.MockedFunction<typeof fetch>);
+
+    fetchMock.mockImplementation(async (url, options) => new Response('[]', { status: 200, headers }));
 
     syncService = new SyncService<number, 'storage', 'peers', M>('storage', 'peers', store);
 
@@ -270,6 +276,35 @@ describe('SyncService', () => {
 
         await syncService.handle().toPromise();
         expectStorageEquals([ 1, 2, 3 ]);
+
+      });
+
+      it('should set the storage with an empty array when the fetch request errors', async () => {
+
+        await store.set('peers', [ '1234' ]);
+        store.set = jest.fn();
+
+        mockWithStorages();
+
+        await syncService.handle().toPromise();
+
+        expect(store.set).toHaveBeenCalledTimes(1);
+        expect(store.set).toHaveBeenCalledWith('storage', []);
+
+      });
+
+      it('should set with an empty array when no store was provided', async () => {
+
+        store.set = jest.fn();
+
+        syncService = new SyncService<number, 'storage', 'peers', M>(undefined, 'peers', store, 'endpoint');
+
+        mockWithStorages();
+
+        await syncService.handle().toPromise();
+
+        expect(store.set).toHaveBeenCalledTimes(1);
+        expect(store.set).toHaveBeenCalledWith(undefined, []);
 
       });
 

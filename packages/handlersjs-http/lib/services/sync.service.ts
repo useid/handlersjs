@@ -29,6 +29,7 @@ export class SyncService<T, S extends string, P extends string, M extends {
   private async sync(): Promise<void> {
 
     const storage: T[] = await this.store.get(this.storage) ?? [];
+
     const peers: string[] = await this.store.get(this.peers) ?? [];
 
     const options = this.latestSync ? {
