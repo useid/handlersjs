@@ -144,7 +144,7 @@ describe('NodeHttpRequestResponseHandler', () => {
       await handler.handle(streamMock).toPromise();
       const expectedError = 'The server could not process the request due to an error:\nmock error';
 
-      expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength(expectedError, 'utf-8').toString() });
+      expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength(expectedError, 'utf-8').toString(), 'Acces-Control-Allow-Origin': 'http://localhost:3000/test?works=yes' });
       expect(res.write).toHaveBeenCalledWith(expectedError);
       expect(res.end).toHaveBeenCalledTimes(1);
 
@@ -196,13 +196,13 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     });
 
-    it('should catch objects with a status but without headers and add an empty headers object', async () => {
+    it('should catch objects with a status but without headers and add a headers object with only a CORS header', async () => {
 
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError({ status: 404 }));
 
       await handler.handle(streamMock).toPromise();
 
-      expect(res.writeHead).toHaveBeenCalledWith(404, { 'content-length': Buffer.byteLength('Not Found', 'utf-8').toString() });
+      expect(res.writeHead).toHaveBeenCalledWith(404, { 'content-length': Buffer.byteLength('Not Found', 'utf-8').toString(), 'Acces-Control-Allow-Origin': 'http://localhost:3000/test?works=yes' });
       expect(res.write).toHaveBeenCalledWith('Not Found');
       expect(res.end).toHaveBeenCalledTimes(1);
 
@@ -214,7 +214,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await handler.handle(streamMock).toPromise();
 
-      expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength('Internal Server Error', 'utf-8').toString() });
+      expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength('Internal Server Error', 'utf-8').toString(), 'Acces-Control-Allow-Origin': 'http://localhost:3000/test?works=yes' });
       expect(res.write).toHaveBeenCalledWith('Internal Server Error');
       expect(res.end).toHaveBeenCalledTimes(1);
 
@@ -233,7 +233,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await handler.handle(streamMock).toPromise();
 
-      expect(res.writeHead).toHaveBeenCalledWith(status, { 'content-length': Buffer.byteLength(error, 'utf-8').toString() });
+      expect(res.writeHead).toHaveBeenCalledWith(status, { 'content-length': Buffer.byteLength(error, 'utf-8').toString(), 'Acces-Control-Allow-Origin': 'http://localhost:3000/test?works=yes' });
       expect(res.write).toHaveBeenCalledWith(error);
 
     });
@@ -244,7 +244,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await handler.handle(streamMock).toPromise();
 
-      expect(res.writeHead).toHaveBeenCalledWith(409, { 'content-length': Buffer.byteLength('An Unexpected Error Occured', 'utf-8').toString() });
+      expect(res.writeHead).toHaveBeenCalledWith(409, { 'content-length': Buffer.byteLength('An Unexpected Error Occured', 'utf-8').toString(), 'Acces-Control-Allow-Origin': 'http://localhost:3000/test?works=yes' });
       expect(res.write).toHaveBeenCalledWith('An Unexpected Error Occured');
 
     });
@@ -255,18 +255,19 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await handler.handle(streamMock).toPromise();
 
-      expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength('An Unexpected Error Occured', 'utf-8').toString() });
+      expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength('An Unexpected Error Occured', 'utf-8').toString(), 'Access-Control-Allow-Origin': 'http://localhost:3000/test?works=yes' });
       expect(res.write).toHaveBeenCalledWith('An Unexpected Error Occured');
 
     });
 
     it('should catch objects with any status that is not matched and if the status is not within 400-599 return a 500 response', async () => {
 
-      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError({ headers: {}, status: 600 }));
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError({ headers: { }, status: 600 }));
 
       await handler.handle(streamMock).toPromise();
 
-      expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength('An Unexpected Error Occured', 'utf-8').toString() });
+      expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength('An Unexpected Error Occured', 'utf-8').toString(), 'Access-Control-Allow-Origin': 'http://localhost:3000/test?works=yes' });
+
       expect(res.write).toHaveBeenCalledWith('An Unexpected Error Occured');
 
     });
