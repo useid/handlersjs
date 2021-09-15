@@ -33,21 +33,9 @@ describe('TypedPipeThroughHandler', () => {
 
     });
 
-    it('should return false if input was not provided', async () => {
+    it('should return true if input was not provided', async () => {
 
-      await expect(handler.canHandle(null).toPromise()).resolves.toEqual(false);
-      await expect(handler.canHandle(undefined).toPromise()).resolves.toEqual(false);
-
-    });
-
-  });
-
-  describe('handle', () => {
-
-    it('should throw an error if no input was provided', async () => {
-
-      await expect(() => handler.handle(null).toPromise()).rejects.toThrow('Argument input should be set.');
-      await expect(() => handler.handle(undefined).toPromise()).rejects.toThrow('Argument input should be set.');
+      await expect(handler.canHandle(undefined).toPromise()).resolves.toEqual(true);
 
     });
 

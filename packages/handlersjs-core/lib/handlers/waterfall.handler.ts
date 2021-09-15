@@ -15,13 +15,11 @@ export class WaterfallHandler<T, S> extends Handler<T, S> {
 
   canHandle(input: T, intermediateOutput: S): Observable<boolean> {
 
-    return input && intermediateOutput ? of(true) : of(false);
+    return of(true);
 
   }
 
   handle(input: T, intermediateOutput: S): Observable<S> {
-
-    if (!input) { return throwError(new Error('Argument input should be set.')); }
 
     intermediateOutput = intermediateOutput ?? { body: null, status: 200, headers: {} } as unknown as S;
 
@@ -47,8 +45,7 @@ export class WaterfallHandler<T, S> extends Handler<T, S> {
       switchMap((handler) =>
         handler.canHandle(input, intermediateOutput).pipe(map((canHandle) => ({ canHandle, handler })))),
       first((result) => result.canHandle, null),
-      map((canHandle) => canHandle?.handler),
-      switchMap((handler) => of(handler)),
+      map((canHandle) => canHandle?.handler)
     );
 
   }

@@ -35,37 +35,9 @@ describe('SequenceHandler', () => {
 
     });
 
-    it('should return false if input was not provided', async () => {
-
-      await expect(handler.canHandle(null, intermediateOutput).toPromise()).resolves.toEqual(false);
-      await expect(handler.canHandle(undefined, intermediateOutput).toPromise()).resolves.toEqual(false);
-
-    });
-
-    // it('should return false if intermediateOutput was not provided', async () => {
-
-    //   await expect(handler.canHandle(input, null).toPromise()).resolves.toEqual(false);
-    //   await expect(handler.canHandle(input, undefined).toPromise()).resolves.toEqual(false);
-
-    // });
-
-    it('should return false if no arguments were provided', async () => {
-
-      await expect(handler.canHandle(null, null).toPromise()).resolves.toEqual(false);
-      await expect(handler.canHandle(undefined, undefined).toPromise()).resolves.toEqual(false);
-
-    });
-
   });
 
   describe('handle', () => {
-
-    it('should throw an error if no input was provided', async () => {
-
-      await expect(handler.handle(null, intermediateOutput).toPromise()).rejects.toThrow('Argument input should be set.');
-      await expect(handler.handle(undefined, intermediateOutput).toPromise()).rejects.toThrow('Argument input should be set.');
-
-    });
 
     it('should set intermediateOutput as an unknown empty request object if none was provided', async () => {
 
@@ -73,14 +45,37 @@ describe('SequenceHandler', () => {
 
     });
 
-    it('should call the handlers safeHandle', async () => {
+    it('should call all the nested handlers safeHandles', async () => {
 
-      const nestedHandler = { handle: jest.fn(), canHandle: jest.fn(), safeHandle: jest.fn().mockReturnValue(of()) };
-      const newHandler = new SequenceHandler<unknown, unknown>([ nestedHandler ]);
+      const nestedHandler = {
+        handle: jest.fn(),
+        canHandle: jest.fn(),
+        safeHandle: jest.fn().mockReturnValue(of(intermediateOutput)),
+      };
+
+      const nestedHandler2 = {
+        handle: jest.fn(),
+        canHandle: jest.fn(),
+        safeHandle: jest.fn().mockReturnValue(of(intermediateOutput)),
+      };
+
+      const nestedHandler3 = {
+        handle: jest.fn(),
+        canHandle: jest.fn().mockReturnValue(of(false)),
+        safeHandle: jest.fn().mockReturnValue(of(intermediateOutput)),
+      };
+
+      const newHandler = new SequenceHandler<unknown, unknown>([ nestedHandler, nestedHandler2, nestedHandler3 ]);
 
       await newHandler.handle(input, intermediateOutput).toPromise();
 
       expect(nestedHandler.safeHandle).toHaveBeenCalledTimes(1);
+      expect(nestedHandler2.safeHandle).toHaveBeenCalledTimes(1);
+      expect(nestedHandler3.safeHandle).toHaveBeenCalledTimes(1);
+
+      expect(nestedHandler.safeHandle).toHaveBeenCalledWith(input, intermediateOutput);
+      expect(nestedHandler2.safeHandle).toHaveBeenCalledWith(input, intermediateOutput);
+      expect(nestedHandler3.safeHandle).toHaveBeenCalledWith(input, intermediateOutput);
 
     });
 

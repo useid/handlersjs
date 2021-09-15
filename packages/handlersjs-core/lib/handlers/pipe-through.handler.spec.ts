@@ -62,10 +62,9 @@ describe('PipeThroughHandler', () => {
 
     });
 
-    it('should return false if input was not provided', async () => {
+    it('should return true if input was not provided', async () => {
 
-      await expect(pipeThroughOne.canHandle(null).toPromise()).resolves.toEqual(false);
-      await expect(pipeThroughOne.canHandle(undefined).toPromise()).resolves.toEqual(false);
+      await expect(pipeThroughOne.canHandle(undefined).toPromise()).resolves.toEqual(true);
 
     });
 
@@ -73,19 +72,18 @@ describe('PipeThroughHandler', () => {
 
   describe('handle', () => {
 
-    it('should error if no input was provided', async () => {
-
-      await expect(pipeThroughOne.handle(null).toPromise()).rejects.toEqual(new Error('Argument input should be set.'));
-
-    });
-
     it('should call the nested handlers handler', async () => {
 
-      mockHandler.handle = jest.fn().mockReturnValue(of());
+      mockHandler.handle = jest.fn().mockReturnValue(of(10));
+      mockHandler2.handle = jest.fn().mockReturnValue(of(20));
 
-      await pipeThroughOne.handle(5).toPromise();
+      await pipeThroughTwo.handle(5).toPromise();
 
       expect(mockHandler.handle).toHaveBeenCalledTimes(1);
+      expect(mockHandler2.handle).toHaveBeenCalledTimes(1);
+
+      expect(mockHandler.handle).toHaveBeenCalledWith(5);
+      expect(mockHandler2.handle).toHaveBeenCalledWith(10);
 
     });
 

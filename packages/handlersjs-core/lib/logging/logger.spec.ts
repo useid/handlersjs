@@ -1,3 +1,4 @@
+import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { Logger } from './logger';
 import { LoggerLevel } from './logger-level';
 
@@ -21,14 +22,28 @@ describe('Logger', () => {
 
   const logger = new MockLogger(LoggerLevel.info, LoggerLevel.info);
 
+  const paramCheck = (logFunction: (typeName: string, msg: string) => void) => {
+
+    expect(() => logFunction(undefined, 'msg')).toThrow('Typename should be set');
+    expect(() => logFunction(null, 'msg')).toThrow('Typename should be set');
+    expect(() => logFunction('string', undefined)).toThrow('Message should be set');
+    expect(() => logFunction('string', null)).toThrow('Message should be set');
+
+  };
+
   describe('info', () => {
 
     it('should error when typename or msg are not provided', () => {
 
-      expect(() => logger.info(undefined, 'msg')).toThrow('Typename should be set');
-      expect(() => logger.info(null, 'msg')).toThrow('Typename should be set');
-      expect(() => logger.info('string', undefined)).toThrow('Message should be set');
-      expect(() => logger.info('string', null)).toThrow('Message should be set');
+      paramCheck(logger.info);
+
+    });
+
+    it('should call log with loggerLevel info and given parameters', () => {
+
+      logger.log = jest.fn();
+      logger.info('typeName', 'message', 'logData');
+      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.info, 'typeName', 'message', 'logData');
 
     });
 
@@ -38,10 +53,15 @@ describe('Logger', () => {
 
     it('should error when typename or msg are not provided', () => {
 
-      expect(() => logger.debug(undefined, 'msg')).toThrow('Typename should be set');
-      expect(() => logger.debug(null, 'msg')).toThrow('Typename should be set');
-      expect(() => logger.debug('string', undefined)).toThrow('Message should be set');
-      expect(() => logger.debug('string', null)).toThrow('Message should be set');
+      paramCheck(logger.debug);
+
+    });
+
+    it('should call log with loggerLevel debug and given parameters', () => {
+
+      logger.log = jest.fn();
+      logger.debug('typeName', 'message', 'logData');
+      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.debug, 'typeName', 'message', 'logData');
 
     });
 
@@ -51,10 +71,15 @@ describe('Logger', () => {
 
     it('should error when typename or msg are not provided', () => {
 
-      expect(() => logger.warn(undefined, 'msg')).toThrow('Typename should be set');
-      expect(() => logger.warn(null, 'msg')).toThrow('Typename should be set');
-      expect(() => logger.warn('string', undefined)).toThrow('Message should be set');
-      expect(() => logger.warn('string', null)).toThrow('Message should be set');
+      paramCheck(logger.warn);
+
+    });
+
+    it('should call log with loggerLevel warn and given parameters', () => {
+
+      logger.log = jest.fn();
+      logger.warn('typeName', 'message', 'logData');
+      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.warn, 'typeName', 'message', 'logData');
 
     });
 
@@ -64,10 +89,15 @@ describe('Logger', () => {
 
     it('should error when typename or msg are not provided', () => {
 
-      expect(() => logger.error(undefined, 'msg')).toThrow('Typename should be set');
-      expect(() => logger.error(null, 'msg')).toThrow('Typename should be set');
-      expect(() => logger.error('string', undefined)).toThrow('Message should be set');
-      expect(() => logger.error('string', null)).toThrow('Message should be set');
+      paramCheck(logger.error);
+
+    });
+
+    it('should call log with loggerLevel warn and given parameters', () => {
+
+      logger.log = jest.fn();
+      logger.error('typeName', 'message', new HandlerArgumentError('HandlerArgumentError', 1), true);
+      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.error, 'typeName', 'message', { 'caught': true, 'error' : new HandlerArgumentError('HandlerArgumentError', 1) });
 
     });
 

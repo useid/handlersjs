@@ -18,12 +18,25 @@ describe('WaterfallHandler', () => {
     safeHandle: jest.fn().mockReturnValue(of(intermediateOutput)),
   };
 
-  const handlers: Handler<unknown, unknown>[] = [ nestedHandler ];
+  const nestedHandler2 = {
+    handle: jest.fn().mockReturnValue(of(input)),
+    canHandle: jest.fn().mockReturnValue(of(true)),
+    safeHandle: jest.fn().mockReturnValue(of(intermediateOutput)),
+  };
+
+  const nestedHandler3 = {
+    handle: jest.fn().mockReturnValue(of(input)),
+    canHandle: jest.fn().mockReturnValue(of(true)),
+    safeHandle: jest.fn().mockReturnValue(of(intermediateOutput)),
+  };
+
+  const handlers: Handler<unknown, unknown>[] = [ nestedHandler, nestedHandler2, nestedHandler3 ];
   const handler = new WaterfallHandler(handlers);
 
   it('should be correctly instantiated', () => {
 
-    expect(handler).toBeTruthy();
+    const newHandler = new WaterfallHandler(handlers);
+    expect(newHandler).toBeTruthy();
 
   });
 
@@ -41,42 +54,32 @@ describe('WaterfallHandler', () => {
 
     });
 
-    it('should return false if input was not provided', async () => {
-
-      await expect(handler.canHandle(null, intermediateOutput).toPromise()).resolves.toEqual(false);
-      await expect(handler.canHandle(undefined, intermediateOutput).toPromise()).resolves.toEqual(false);
-
-    });
-
-    it('should return false if intermediateOutput was not provided', async () => {
-
-      await expect(handler.canHandle(input, null).toPromise()).resolves.toEqual(false);
-      await expect(handler.canHandle(input, undefined).toPromise()).resolves.toEqual(false);
-
-    });
-
   });
 
   describe('handle', () => {
 
-    it('should throw an error if no input was provided', async () => {
+    it('should call the handle of the first nested handler that can handle it', async () => {
 
-      await expect(() => handler.handle(null, intermediateOutput).toPromise()).rejects.toThrow('Argument input should be set.');
-      await expect(() => handler.handle(undefined, intermediateOutput).toPromise()).rejects.toThrow('Argument input should be set.');
-
-    });
-
-    it('should return the input if no intermediateOutput was provided', async () => {
-
-      await expect(handler.handle(input, undefined)
-        .toPromise()).resolves.toEqual(input);
+      nestedHandler.canHandle = jest.fn().mockReturnValue(of(false));
+      await handler.handle(input, undefined).toPromise();
+      expect(nestedHandler2.handle).toHaveBeenCalledTimes(1);
 
     });
 
-    it('should return the intermediateOutput if no handlerToExecute was received', async () => {
+    it('should return the input and generated output if no intermediate output was provided', async () => {
 
-      nestedHandler.canHandle = jest.fn().mockReturnValue(of());
-      await expect(handler.handle(input, intermediateOutput).toPromise()).resolves.toEqual(intermediateOutput);
+      nestedHandler.canHandle = jest.fn().mockReturnValue(of(true));
+      await handler.handle(input, undefined).toPromise();
+      expect(nestedHandler2.handle).toHaveBeenCalledWith(input, { body: null, status: 200, headers: {} });
+
+    });
+
+    it('should return intermediateOutput if no handlerToExecute was found', async () => {
+
+      nestedHandler.canHandle = jest.fn().mockReturnValue(of(false));
+      nestedHandler2.canHandle = jest.fn().mockReturnValue(of(false));
+      nestedHandler3.canHandle = jest.fn().mockReturnValue(of(false));
+      expect(handler.handle(input, intermediateOutput).toPromise()).resolves.toEqual(intermediateOutput);
 
     });
 

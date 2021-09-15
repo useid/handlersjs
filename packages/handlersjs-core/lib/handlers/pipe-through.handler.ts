@@ -17,13 +17,11 @@ export class PipeThroughHandler<T, S> extends Handler<T, S> {
 
   canHandle(input: any): Observable<boolean> {
 
-    return input ? of(true) : of(false);
+    return of(true);
 
   }
 
   handle(input: any): Observable<S> {
-
-    if (!input) { return throwError(new Error('Argument input should be set.')); }
 
     let tempInp = of(input);
 

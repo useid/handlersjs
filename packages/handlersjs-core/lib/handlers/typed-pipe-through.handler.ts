@@ -25,13 +25,11 @@ export class TypedPipeThroughHandler<A, B, C, D, E> extends Handler<A, E> {
 
   canHandle(input: A): Observable<boolean> {
 
-    return input ? of(true) : of(false);
+    return of(true);
 
   }
 
   handle(input: A): Observable<E> {
-
-    if (!input) { return throwError(new Error('Argument input should be set.')); }
 
     switch (this.handlers.length) {
 
