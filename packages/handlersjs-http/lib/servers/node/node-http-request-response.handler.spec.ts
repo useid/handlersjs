@@ -150,7 +150,7 @@ describe('NodeHttpRequestResponseHandler', () => {
       await handler.handle(streamMock).toPromise();
       expect(nestedHttpHandler.handle).toHaveBeenCalledTimes(1);
 
-      expect(nestedHttpHandler.handle).toHaveBeenCalledWith({ request: { url: new URL('http://localhost:3000/test?works=yes'), method: 'GET', headers: {}, body: 'bodyString' } });
+      expect(nestedHttpHandler.handle).toHaveBeenCalledWith(expect.objectContaining({ request: expect.objectContaining({ url: new URL('http://localhost:3000/test?works=yes'), method: 'GET', headers: {} }) }));
 
     });
 
@@ -224,7 +224,29 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     });
 
-    it('should return a undefined body if the body type is not string', async () => {
+    it('should set the charset to utf-8 if no charset is specified in the content-type header', async () => {
+
+      const body = 'This is a response body with a certain length.';
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { 'content-type': 'text/html;' }, status:200 }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body, 'utf-8').toString(), 'content-type': 'text/html;' });
+
+    });
+
+    it('should set the charset to utf-8 if no content-type header is specified', async () => {
+
+      const body = 'This is a response body with a certain length.';
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: {}, status:200 }));
+
+      await handler.handle(streamMock).toPromise();
+
+      expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body, 'utf-8').toString() });
+
+    });
+
+    it('should JSON stringify the response body if the body type is not string', async () => {
 
       const body = 1234;
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { 'content-type': 'text/html;' }, status:200 }));
@@ -377,6 +399,12 @@ describe('NodeHttpRequestResponseHandler', () => {
       const parsed = (handler as any).parseBody('{"name":"jasper","surname":"vandenberghen"}', 'text/plain');
 
       expect(parsed).toEqual('{"name":"jasper","surname":"vandenberghen"}');
+
+    });
+
+    it('should error when parser fails', () => {
+
+      expect(() => (handler as any).parseBody('{""}', 'application/json')).toThrow(SyntaxError);
 
     });
 

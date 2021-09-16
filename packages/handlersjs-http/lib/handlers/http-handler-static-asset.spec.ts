@@ -1,6 +1,6 @@
+import fs from 'fs';
 import { mock } from 'jest-mock-extended';
 import { Logger } from '@digita-ai/handlersjs-core';
-import { throwError } from '@digita-ai/handlersjs-core/node_modules/rxjs';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { NotFoundHttpError } from '../errors/not-found-http-error';
 import { ForbiddenHttpError } from '../errors/forbidden-http-error';
