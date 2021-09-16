@@ -301,6 +301,23 @@ describe('SyncService', () => {
 
       });
 
+      it('should set with an empty array when storage was not found in the store', async () => {
+
+        store.set = jest.fn();
+
+        syncService = new SyncService<number, 'storage', 'peers', M>('storage', 'peers', store, 'endpoint');
+
+        await store.delete('storage');
+
+        mockWithStorages();
+
+        await syncService.handle().toPromise();
+
+        expect(store.set).toHaveBeenCalledTimes(1);
+        expect(store.set).toHaveBeenCalledWith('storage', []);
+
+      });
+
       it('should not include any data from peers to which requests fail', async () => {
 
         fetchMock.mockImplementation(() => { throw new Error('fetch failed'); });
