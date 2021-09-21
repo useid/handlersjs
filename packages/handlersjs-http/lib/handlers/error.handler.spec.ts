@@ -138,18 +138,18 @@ describe('error_handler', () => {
     it('should return an Unexpected Error error message with the original body if status code is incorrect and flag is true', async () => {
 
       const res = await errorHandlerTrue.handle({ ...response, status: 409 }).toPromise();
-      expect(res.body).toEqual(`An Unexpected Error Occured: ${response.body}`);
+      expect(res.body).toEqual(`An Unexpected Error Occurred: ${response.body}`);
 
     });
 
-    it('should return an An Unexpected Error Occured Error error message without the original body if status code is incorrect and flag is true', async () => {
+    it('should return an Unexpected Error error message without the original body if status code is incorrect and flag is true', async () => {
 
       const res = await errorHandlerFalse.handle({ ...response, status: 409 }).toPromise();
-      expect(res.body).toEqual(`An Unexpected Error Occured`);
+      expect(res.body).toEqual(`An Unexpected Error Occurred`);
 
     });
 
-    it('should do nothin if status is 200', async () => {
+    it('should do nothing if status is 200', async () => {
 
       const res = await errorHandlerFalse.handle(response200).toPromise();
       expect(res.body).toEqual(`upstream successful response body`);

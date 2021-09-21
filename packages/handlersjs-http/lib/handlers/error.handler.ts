@@ -34,7 +34,7 @@ export class ErrorHandler extends Handler<HttpHandlerResponse, HttpHandlerRespon
       case 405: return of(this.createErrorResponse(response, 'Method Not Allowed', this.showUpstreamError));
       case 500: return of(this.createErrorResponse(response, 'Internal Server Error', this.showUpstreamError));
       default: return response.status < 600 && response.status >= 400
-        ? of(this.createErrorResponse(response, 'An Unexpected Error Occured', this.showUpstreamError))
+        ? of(this.createErrorResponse(response, 'An Unexpected Error Occurred', this.showUpstreamError))
         : of(response);
 
     }

@@ -244,8 +244,8 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await handler.handle(streamMock).toPromise();
 
-      expect(res.writeHead).toHaveBeenCalledWith(409, { 'content-length': Buffer.byteLength('An Unexpected Error Occured', 'utf-8').toString() });
-      expect(res.write).toHaveBeenCalledWith('An Unexpected Error Occured');
+      expect(res.writeHead).toHaveBeenCalledWith(409, { 'content-length': Buffer.byteLength('An Unexpected Error Occurred', 'utf-8').toString() });
+      expect(res.write).toHaveBeenCalledWith('An Unexpected Error Occurred');
 
     });
 
@@ -255,8 +255,8 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await handler.handle(streamMock).toPromise();
 
-      expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength('An Unexpected Error Occured', 'utf-8').toString() });
-      expect(res.write).toHaveBeenCalledWith('An Unexpected Error Occured');
+      expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength('An Unexpected Error Occurred', 'utf-8').toString() });
+      expect(res.write).toHaveBeenCalledWith('An Unexpected Error Occurred');
 
     });
 
@@ -266,8 +266,8 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await handler.handle(streamMock).toPromise();
 
-      expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength('An Unexpected Error Occured', 'utf-8').toString() });
-      expect(res.write).toHaveBeenCalledWith('An Unexpected Error Occured');
+      expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength('An Unexpected Error Occurred', 'utf-8').toString() });
+      expect(res.write).toHaveBeenCalledWith('An Unexpected Error Occurred');
 
     });
 
