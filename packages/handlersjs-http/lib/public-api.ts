@@ -14,6 +14,7 @@ export * from './handlers/http-handler-static-asset';
 export * from './handlers/http.handler.mock';
 export * from './handlers/routed-http-request.handler';
 export * from './handlers/json-store-handler';
+export * from './handlers/error.handler';
 export * from './models/http-handler-context';
 export * from './models/http-handler-controller';
 export * from './models/http-handler-request';

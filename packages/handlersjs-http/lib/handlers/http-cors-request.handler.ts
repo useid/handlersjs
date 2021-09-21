@@ -1,8 +1,9 @@
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs//operators';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
+import { ErrorHandler } from './error.handler';
 
 export abstract class HttpCorsOptions {
 
@@ -33,6 +34,7 @@ export class HttpCorsRequestHandler extends HttpHandler {
 
   constructor(
     private handler: HttpHandler,
+    private errorHandler: ErrorHandler,
     private options?: HttpCorsOptions,
     private passThroughOptions: boolean = false,
   ) {
@@ -95,6 +97,7 @@ export class HttpCorsRequestHandler extends HttpHandler {
         : of({ status: 204, headers: {} });
 
       return initialOptions.pipe(
+        switchMap((response) => this.errorHandler.handle(response)),
         map((response) => ({
           ... response,
           headers: cleanHeaders(response.headers),
@@ -121,6 +124,7 @@ export class HttpCorsRequestHandler extends HttpHandler {
       /* CORS Request */
 
       return this.handler.handle(noCorsRequestContext).pipe(
+        switchMap((response) => this.errorHandler.handle(response)),
         map((response) => ({
           ... response,
           headers: {
