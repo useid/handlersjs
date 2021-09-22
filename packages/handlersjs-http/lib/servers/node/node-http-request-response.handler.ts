@@ -170,7 +170,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
         const body: string | Buffer = response.body ? typeof response.body === 'string' || response.body instanceof Buffer ? response.body : JSON.stringify(response.body) : undefined;
 
         const extraHeaders = {
-          ... (body && (!response.headers['content-type'] || !response.headers['Content-Type']) && typeof response.body !== 'string' && !(response.body instanceof Buffer)) && { 'content-type': 'application/json' },
+          ... (body && !response.headers['content-type'] && !response.headers['Content-Type'] && typeof response.body !== 'string' && !(response.body instanceof Buffer)) && { 'content-type': 'application/json' },
           ... (body) && { 'content-length': Buffer.byteLength(body, charsetString).toString() },
         };
 
