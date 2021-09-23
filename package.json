@@ -4,6 +4,7 @@
   "scripts": {
     "postinstall": "husky install",
     "release": "lerna version",
+    "release:docs": "echo \"$(yaml set docs/antora.yml version $(dot-json lerna.json version))\" > docs/antora.yml",
     "start": "lerna run start --parallel",
     "bootstrap": "npm ci && lerna bootstrap",
     "bootstrap:no-ci": "npm i && lerna bootstrap --no-ci",
@@ -16,7 +17,8 @@
     "lint:staged": "lerna run lint:staged --since HEAD --stream --concurrency 1",
     "test": "lerna run test --since HEAD --parallel",
     "test:all": "lerna run test --parallel",
-    "test:ci": "lerna run test:ci"
+    "test:ci": "lerna run test:ci",
+    "version": "npm run release:docs"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
@@ -27,6 +29,7 @@
     "@types/jest": "^26.0.22",
     "@types/node": "^14.14.41",
     "@typescript-eslint/eslint-plugin": "^4.10.0",
+    "dot-json": "^1.2.1",
     "eslint": "^7.16.0",
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.22.1",
@@ -38,7 +41,8 @@
     "lint-staged": "^10.5.4",
     "ts-jest": "^26.5.5",
     "ts-node": "^9.1.1",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "yaml-cli": "^1.1.8"
   },
   "commitlint": {
     "extends": [

@@ -4,5 +4,6 @@
   "HandlerError",
   "HttpHandlerOperationSecurityType",
   "HttpHandlerResponse",
-  "Logger"
+  "Logger",
+  "TimedTypedKeyValueStore"
 ]

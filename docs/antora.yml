@@ -1,5 +1,5 @@
 name: handlersjs
-title: Actueel Inkomen
-version: master
+title: Handlers JS
+version: 0.3.5
 nav:
-- modules/ROOT/nav.adoc
+  - modules/ROOT/nav.adoc

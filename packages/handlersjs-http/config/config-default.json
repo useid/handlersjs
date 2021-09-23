@@ -7,40 +7,63 @@
         {
             "@id": "urn:handlersjs-http:default:NodeHttpServer",
             "@type": "NodeHttpServer",
-            "NodeHttpServer:_port": "3000",
-            "NodeHttpServer:_host": "localhost",
-            "NodeHttpServer:_nodeHttpStreamsHandler": {
+            "port": "3000",
+            "host": "localhost",
+            "nodeHttpStreamsHandler": {
                 "@id": "urn:handlersjs-http:default:NodeHttpRequestResponseHandler",
                 "@type": "NodeHttpRequestResponseHandler",
-                "NodeHttpRequestResponseHandler:_httpHandler": {
+                "httpHandler": {
                     "@id": "urn:handlersjs-http:default:RoutedHttpRequestHandler",
                     "@type": "RoutedHttpRequestHandler",
-                    "RoutedHttpRequestHandler:_handlerControllerList": [
+                    "handlerControllerList": [
                         {
                             "@id": "urn:handlersjs-http:default:HttpHandlerController",
                             "@type": "HttpHandlerController",
-                            "HttpHandlerController:_label": "ControllerList",
-                            "HttpHandlerController:_routes": [
+                            "label": "ControllerList",
+                            "routes": [
                                 {
                                     "@id": "urn:dgt-id-proxy:default:MockRoute",
                                     "@type": "HttpHandlerRoute",
-                                    "HttpHandlerRoute:_operations": [
+                                    "operations": [
                                         {
                                             "@id": "urn:dgt-id-proxy:default:GetOperation",
                                             "@type": "HttpHandlerOperation",
-                                            "HttpHandlerOperation:_method": "GET",
-                                            "HttpHandlerOperation:_publish": false
+                                            "method": "GET",
+                                            "publish": false
                                         }
                                     ],
-                                    "HttpHandlerRoute:_handler": {
+                                    "handler": {
                                       "@type": "MockHttpHandler"
                                     },
-                                    "HttpHandlerRoute:_path": "/mock"
+                                    "path": "/mock"
+                                }
+                            ]
+                        },
+                        {
+                            "@id": "urn:handlersjs-http:default:HttpHandlerController2",
+                            "@type": "HttpHandlerController",
+                            "label": "ControllerList",
+                            "routes": [
+                                {
+                                    "@id": "urn:dgt-id-proxy:default:MockRoute",
+                                    "@type": "HttpHandlerRoute",
+                                    "operations": [
+                                        {
+                                            "@id": "urn:dgt-id-proxy:default:GetOperation",
+                                            "@type": "HttpHandlerOperation",
+                                            "method": "GET",
+                                            "publish": false
+                                        }
+                                    ],
+                                    "handler": {
+                                      "@type": "MockHttpHandler"
+                                    },
+                                    "path": "/mock2"
                                 }
                             ]
                         }
                     ],
-                    "RoutedHttpRequestHandler:_defaultHandler": {
+                    "defaultHandler": {
                         "@type": "MockHttpHandler"
                     }
                 }

@@ -3,6 +3,67 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.3.5](https://github.com/digita-ai/handlersjs/compare/v0.3.4...v0.3.5) (2021-09-02)
+
+**Note:** Version bump only for package @digita-ai/handlersjs-core
+
+
+
+
+
+### [0.3.4](https://github.com/digita-ai/handlersjs/compare/v0.3.3...v0.3.4) (2021-09-01)
+
+**Note:** Version bump only for package @digita-ai/handlersjs-core
+
+
+
+
+
+### [0.3.3](https://github.com/digita-ai/handlersjs/compare/v0.3.2...v0.3.3) (2021-08-11)
+
+**Note:** Version bump only for package @digita-ai/handlersjs-core
+
+
+
+
+
+### [0.3.2](https://github.com/digita-ai/handlersjs/compare/v0.3.1...v0.3.2) (2021-08-05)
+
+
+### **Features**
+
+* add typescope contexts and component param range ([#97](https://github.com/digita-ai/handlersjs/issues/97)) ([eca9289](https://github.com/digita-ai/handlersjs/commit/eca9289081374cb43dd6a8cfa25a55a769039e79))
+
+
+### **Bug Fixes**
+
+* initialdata immutable memorystore ([#99](https://github.com/digita-ai/handlersjs/issues/99)) ([c9d5a0c](https://github.com/digita-ai/handlersjs/commit/c9d5a0c106712ec6a3bfdc2f868ce873f2be0f15))
+
+
+
+### [0.3.1](https://github.com/digita-ai/handlersjs/compare/v0.3.0...v0.3.1) (2021-08-04)
+
+**Note:** Version bump only for package @digita-ai/handlersjs-core
+
+
+
+
+
+## [0.3.0](https://github.com/digita-ai/handlersjs/compare/v0.2.3...v0.3.0) (2021-08-04)
+
+
+### **Bug Fixes**
+
+* immutable values memorystore ([#91](https://github.com/digita-ai/handlersjs/issues/91)) ([556206a](https://github.com/digita-ai/handlersjs/commit/556206ab6f03484da65e97e904c275722c2c6bbb))
+
+
+### **Features**
+
+* scheduler daemon ([#82](https://github.com/digita-ai/handlersjs/issues/82)) ([5063010](https://github.com/digita-ai/handlersjs/commit/5063010e2c822aa3de200499894045d84b48df69))
+* storage ([#79](https://github.com/digita-ai/handlersjs/issues/79)) ([72a9b08](https://github.com/digita-ai/handlersjs/commit/72a9b08dc1cfb83df8b9e58df3dc5258736b8136))
+
+
+
 ### [0.2.3](https://github.com/digita-ai/handlersjs/compare/v0.2.2...v0.2.3) (2021-06-24)
 
 
