@@ -9,6 +9,8 @@ export class WaterfallHandler<T, S> extends Handler<T, S> {
 
     super();
 
+    if (!handlers) { throw new HandlerArgumentError('Argument handlers should be set.', handlers); }
+
   }
 
   canHandle(input: T, intermediateOutput: S): Observable<boolean> {
@@ -26,8 +28,9 @@ export class WaterfallHandler<T, S> extends Handler<T, S> {
         this.getFirstToHandle(data.input, data.intermediateOutput, data.handlers).pipe(
           map((handlerToExecute) => ({ ...data, handlerToExecute })),
         )),
-      switchMap((data) =>
-        data.handlerToExecute ? data.handlerToExecute.handle(data.input, intermediateOutput) : of(intermediateOutput)),
+      switchMap((data) => data.handlerToExecute
+        ? data.handlerToExecute.handle(data.input, intermediateOutput)
+        : of(intermediateOutput)),
     );
 
   }
@@ -36,20 +39,13 @@ export class WaterfallHandler<T, S> extends Handler<T, S> {
     input: T,
     intermediateOutput: S,
     handlers: Handler<T, S>[],
-  ): Observable<Handler<T, S>> {
-
-    if (!this.handlers) {
-
-      throw new HandlerArgumentError('Argument this.handlers should be set.', this.handlers);
-
-    }
+  ): Observable<Handler<T, S> | undefined> {
 
     return from(handlers).pipe(
       switchMap((handler) =>
         handler.canHandle(input, intermediateOutput).pipe(map((canHandle) => ({ canHandle, handler })))),
       first((result) => result.canHandle, null),
-      map((canHandle) => canHandle?.handler),
-      switchMap((handler) => handler ? of(handler) : throwError(new Error('Handler cannot be undefined.'))),
+      map((canHandle) => canHandle?.handler)
     );
 
   }
