@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { Handler } from './handler';
@@ -19,11 +19,7 @@ export class TypedPipeThroughHandler<A, B, C, D, E> extends Handler<A, E> {
 
     super();
 
-    if (!this.handlers) {
-
-      throw new HandlerArgumentError('Argument this.handlers should be set.', this.handlers);
-
-    }
+    if (!handlers) { throw new HandlerArgumentError('Argument handlers should be set.', handlers); }
 
   }
 
