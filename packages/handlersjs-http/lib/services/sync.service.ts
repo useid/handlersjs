@@ -19,7 +19,17 @@ export class SyncService<T, S extends string, P extends string, M extends {
     private readonly peers: P,
     private readonly store: TimedTypedKeyValueStore<M>,
     private readonly endpoint?: string
-  ) { super(); }
+  ) {
+
+    super();
+
+    if (!storage) { throw new Error('A storage must be provided'); }
+
+    if (!peers) { throw new Error('Peers must be provided'); }
+
+    if (!store) { throw new Error('A store must be provided'); }
+
+  }
 
   /**
    * Synchronizes the storage value of the store with other peers in the network
@@ -29,6 +39,7 @@ export class SyncService<T, S extends string, P extends string, M extends {
   private async sync(): Promise<void> {
 
     const storage: T[] = await this.store.get(this.storage) ?? [];
+
     const peers: string[] = await this.store.get(this.peers) ?? [];
 
     const options = this.latestSync ? {

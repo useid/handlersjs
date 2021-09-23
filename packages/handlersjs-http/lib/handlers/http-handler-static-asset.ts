@@ -30,15 +30,17 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
 
     const canHandleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];
 
-    if (context.request?.headers?.accept) {
+    if (!context.request?.headers?.accept) {
 
-      const reqHeaders = context.request.headers.accept.split(',').map((accept) => accept.split(';')[0]);
+      return throwError(new UnsupportedMediaTypeHttpError('No accept header found'));
 
-      if (!reqHeaders.some((contentType) => canHandleAcceptHeaders.includes(contentType.trim()))) {
+    }
 
-        return throwError(new UnsupportedMediaTypeHttpError('Content type not supported'));
+    const reqHeaders = context.request.headers.accept.split(',').map((accept) => accept.split(';')[0]);
 
-      }
+    if (!reqHeaders.some((contentType) => canHandleAcceptHeaders.includes(contentType.trim()))) {
+
+      return throwError(new UnsupportedMediaTypeHttpError('Content type not supported'));
 
     }
 

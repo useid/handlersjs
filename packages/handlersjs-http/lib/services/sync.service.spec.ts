@@ -36,6 +36,12 @@ describe('SyncService', () => {
 
     fetchMock.mockImplementation(async (url, options) => {
 
+      if (responseMocks.length === 0) {
+
+        return new Response(new TypeError('fetch failed'));
+
+      }
+
       for (const mockInfo of responseMocks) {
 
         if (mockInfo.peer === url) {
@@ -58,15 +64,13 @@ describe('SyncService', () => {
     clearDateMock();
     jest.resetAllMocks();
 
-    fetchMock = (fetch as jest.MockedFunction<typeof fetch>);
-
-    fetchMock.mockImplementation(async (url, options) => new Response('[]', { status: 200, headers }));
-
     store = new MemoryStore<M>([
       [ 'storage', [] ],
       [ 'peers', peers ],
       [ 'other', 'something else' ],
     ]);
+
+    fetchMock = (fetch as jest.MockedFunction<typeof fetch>);
 
     syncService = new SyncService<number, 'storage', 'peers', M>('storage', 'peers', store);
 
@@ -86,6 +90,30 @@ describe('SyncService', () => {
     return calls.length === 0 ? undefined : calls[calls.length - 1][1]?.headers['If-Modified-Since'];
 
   };
+
+  it('should be correctly instantiated', async () => {
+
+    expect(syncService).toBeTruthy();
+
+  });
+
+  it('should error when no storage was provided', async () => {
+
+    expect(() => new SyncService<number, 'storage', 'peers', M>(undefined, 'peers', store)).toThrow('A storage must be provided');
+
+  });
+
+  it('should error when no peers were provided', async () => {
+
+    expect(() => new SyncService<number, 'storage', 'peers', M>('storage', undefined, store)).toThrow('Peers must be provided');
+
+  });
+
+  it('should error when no store was provided', async () => {
+
+    expect(() => new SyncService<number, 'storage', 'peers', M>('storage', 'peers', undefined)).toThrow('A store must be provided');
+
+  });
 
   describe('handle()', () => {
 
@@ -270,6 +298,37 @@ describe('SyncService', () => {
 
         await syncService.handle().toPromise();
         expectStorageEquals([ 1, 2, 3 ]);
+
+      });
+
+      it('should set with an empty array when storage was not found in the store', async () => {
+
+        store.set = jest.fn();
+
+        syncService = new SyncService<number, 'storage', 'peers', M>('storage', 'peers', store, 'endpoint');
+
+        await store.delete('storage');
+
+        mockWithStorages();
+
+        await syncService.handle().toPromise();
+
+        expect(store.set).toHaveBeenCalledTimes(1);
+        expect(store.set).toHaveBeenCalledWith('storage', []);
+
+      });
+
+      it('should not include any data from peers to which requests fail', async () => {
+
+        fetchMock.mockImplementation(() => { throw new Error('fetch failed'); });
+
+        await store.set('peers', [ 'this_is_not_a_valid_peer' ]);
+        store.set = jest.fn();
+
+        await syncService.handle().toPromise();
+
+        expect(store.set).toHaveBeenCalledTimes(1);
+        expect(store.set).toHaveBeenCalledWith('storage', []);
 
       });
 
