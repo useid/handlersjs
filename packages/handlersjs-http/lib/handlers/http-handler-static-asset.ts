@@ -1,5 +1,5 @@
 import { readFile } from 'fs/promises';
-import { join } from 'path';
+import { join, isAbsolute } from 'path';
 import { from, Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Logger } from '@digita-ai/handlersjs-core';
@@ -52,18 +52,17 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
 
     }
 
-    const path = join(process.cwd(), this.path, filename||'');
+    const filePath = join(isAbsolute(this.path) ? this.path : join(process.cwd(), this.path), filename || '');
 
-    return from(readFile(path)).pipe(
-      map((data) => ({
-        body: data.toString(),
+    return from(readFile(filePath)).pipe(
+      map((file) => ({
+        body: file.toString(),
         headers: {
           'Content-Type': this.contentType,
         },
         status: 200,
       })),
-      catchError(() =>
-        throwError(new NotFoundHttpError(`Error while trying to read file`))),
+      catchError(() => throwError(new NotFoundHttpError('Error while trying to read file'))),
     );
 
   }

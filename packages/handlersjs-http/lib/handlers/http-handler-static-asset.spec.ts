@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { join } from 'path';
 import { mock } from 'jest-mock-extended';
 import { Logger } from '@digita-ai/handlersjs-core';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -101,6 +102,17 @@ describe('HttpHandlerStaticAssetService', () => {
 
       context.request.parameters.filename = 'test.txt';
       const response = await service.handle(context).toPromise();
+      expect(response.body).toBe('test file');
+
+    });
+
+    it('should return file content when file is found with an absolute path', async() => {
+
+      const absolutePath = join(__dirname, '../../test-directory/');
+      const absoluteService = new HttpHandlerStaticAssetService(mock<Logger>(), absolutePath, 'text/plain');
+
+      context.request.parameters.filename = 'test.txt';
+      const response = await absoluteService.handle(context).toPromise();
       expect(response.body).toBe('test file');
 
     });
