@@ -1,6 +1,6 @@
 import { Observable, of, throwError } from 'rxjs';
 import { Handler } from '@digita-ai/handlersjs-core';
-import { HttpHandlerResponse } from 'models/http-handler-response';
+import { HttpHandlerResponse } from '../models/http-handler-response';
 
 export class ErrorHandler extends Handler<HttpHandlerResponse, HttpHandlerResponse> {
 
