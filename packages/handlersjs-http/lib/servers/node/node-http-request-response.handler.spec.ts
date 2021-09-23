@@ -249,11 +249,11 @@ describe('NodeHttpRequestResponseHandler', () => {
     it('should JSON stringify the response body if the body type is not string', async () => {
 
       const body = 1234;
-      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { 'content-type': 'text/html;' }, status:200 }));
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { 'content-type': 'text/html' }, status:200 }));
 
       await handler.handle(streamMock).toPromise();
 
-      expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body.toString(), 'utf-8').toString(), 'content-type': 'application/json' });
+      expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body.toString(), 'utf-8').toString(), 'content-type': 'text/html' });
 
     });
 
@@ -386,11 +386,12 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     });
 
-    it('should return the body x-www-form-urlencoded parsed if content type is x-www-form-urlencoded', async () => {
+    it('should return the body x-www-form-urlencoded UNPARSED if content type is x-www-form-urlencoded', async () => {
 
       const parsed = (handler as any).parseBody('name=jasper&surname=vandenberghen', 'application/x-www-form-urlencoded');
 
-      expect(parsed).toEqual({ name: 'jasper', surname: 'vandenberghen' });
+      // expect(parsed).toEqual({ name: 'jasper', surname: 'vandenberghen' });
+      expect(parsed).toEqual('name=jasper&surname=vandenberghen');
 
     });
 
