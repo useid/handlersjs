@@ -36,8 +36,8 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
       case 'application/json':
         return JSON.parse(body);
-      case 'application/x-www-form-urlencoded':
-        return JSON.parse(`{"${decodeURIComponent(body).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`);
+      // case 'application/x-www-form-urlencoded':
+      //   return JSON.parse(`{"${decodeURIComponent(body).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`);
       default:
         return body;
 
@@ -164,13 +164,13 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
         }
 
-        // If the body is not a string, for example an object, stringify it. This is needed
+        // If the body is not a string or a buffer, for example an object, stringify it. This is needed
         // to use Buffer.byteLength and to eventually write the body to the response.
         // Functions will result in 'undefined' which is desired behavior
-        const body: string = response.body ? typeof response.body === 'string' ? response.body : JSON.stringify(response.body) : undefined;
+        const body: string | Buffer = response.body ? typeof response.body === 'string' || response.body instanceof Buffer ? response.body : JSON.stringify(response.body) : undefined;
 
         const extraHeaders = {
-          ... (body && typeof response.body !== 'string') && { 'content-type': 'application/json' },
+          ... (body && !response.headers['content-type'] && !response.headers['Content-Type'] && typeof response.body !== 'string' && !(response.body instanceof Buffer)) && { 'content-type': 'application/json' },
           ... (body) && { 'content-length': Buffer.byteLength(body, charsetString).toString() },
         };
 
