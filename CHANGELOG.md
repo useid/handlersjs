@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.0](https://github.com/digita-ai/handlersjs/compare/v0.3.5...v0.4.0) (2021-09-23)
+
+
+### **Bug Fixes**
+
+* buffer resp body + form-urlencoded req body ([#108](https://github.com/digita-ai/handlersjs/issues/108)) ([79c9c12](https://github.com/digita-ai/handlersjs/commit/79c9c1283463eabc0c173cdf9ba829e88f959b7b))
+* check whether asset path is absolute ([#109](https://github.com/digita-ai/handlersjs/issues/109)) ([de73ad7](https://github.com/digita-ai/handlersjs/commit/de73ad7f3dfe0e71ff06687b6355a6b901e8986f))
+
+
+
 ### [0.3.5](https://github.com/digita-ai/handlersjs/compare/v0.3.4...v0.3.5) (2021-09-02)
 
 **Note:** Version bump only for package root
