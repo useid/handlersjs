@@ -37,115 +37,28 @@ describe('error_handler', () => {
 
     });
 
-    it('should return a custom + original body when status code is undefined and flag is true', async () => {
+    it.each`
+    handler             | resp                                  | expected
+    ${errorHandlerTrue} | ${{ ...response, status: undefined }} | ${`The server could not process the request due to an unknown error:\n${response.body}`}
+    ${errorHandlerFalse}| ${{ ...response, status: undefined }} | ${`The server could not process the request due to an unknown error`}
+    ${errorHandlerTrue} | ${response}                           | ${`Bad Request: ${response.body}`}
+    ${errorHandlerFalse}| ${response}                           | ${`Bad Request`}
+    ${errorHandlerTrue} | ${{ ...response, status: 401 }}       | ${`Unauthorized: ${response.body}`}
+    ${errorHandlerFalse}| ${{ ...response, status: 401 }}       | ${`Unauthorized`}
+    ${errorHandlerTrue} | ${{ ...response, status: 403 }}       | ${`Forbidden: ${response.body}`}
+    ${errorHandlerFalse}| ${{ ...response, status: 403 }}       | ${`Forbidden`}
+    ${errorHandlerTrue} | ${{ ...response, status: 404 }}       | ${`Not Found: ${response.body}`}
+    ${errorHandlerFalse}| ${{ ...response, status: 404 }}       | ${`Not Found`}
+    ${errorHandlerTrue} | ${{ ...response, status: 405 }}       | ${`Method Not Allowed: ${response.body}`}
+    ${errorHandlerFalse}| ${{ ...response, status: 405 }}       | ${`Method Not Allowed`}
+    ${errorHandlerTrue} | ${{ ...response, status: 500 }}       | ${`Internal Server Error: ${response.body}`}
+    ${errorHandlerFalse}| ${{ ...response, status: 500 }}       | ${`Internal Server Error`}
+    ${errorHandlerTrue} | ${{ ...response, status: 409 }}       | ${`An Unexpected Error Occurred: ${response.body}`}
+    ${errorHandlerFalse}| ${{ ...response, status: 409 }}       | ${`An Unexpected Error Occurred`}
+  `('should return $expected when handler is $a and response is $b', async ({ handler, resp, expected }) => {
 
-      const res = await errorHandlerTrue.handle({ ...response, status: undefined }).toPromise();
-      expect(res.body).toEqual(`The server could not process the request due to an unknown error:\n${response.body}`);
-
-    });
-
-    it('should not return the original body when status code is undefined and flag is false', async () => {
-
-      const res = await errorHandlerFalse.handle({ ...response, status: undefined }).toPromise();
-      expect(res.body).toEqual(`The server could not process the request due to an unknown error`);
-
-    });
-
-    it('should return a Bad Request error message with the original body if status code is 400 and flag is true', async () => {
-
-      const res = await errorHandlerTrue.handle(response).toPromise();
-      expect(res.body).toContain(`Bad Request: ${response.body}`);
-
-    });
-
-    it('should return a Bad Request error message without the original body if status code is 400 and flag is false', async () => {
-
-      const res = await errorHandlerFalse.handle(response).toPromise();
-      expect(res.body).toEqual('Bad Request');
-
-    });
-
-    it('should return a Unauthorized error message with the original body if status code is 401 and flag is true', async () => {
-
-      const res = await errorHandlerTrue.handle({ ...response, status: 401 }).toPromise();
-      expect(res.body).toContain(`Unauthorized: ${response.body}`);
-
-    });
-
-    it('should return a Unauthorized error message without the original body if status code is 401 and flag is false', async () => {
-
-      const res = await errorHandlerFalse.handle({ ...response, status: 401 }).toPromise();
-      expect(res.body).toEqual('Unauthorized');
-
-    });
-
-    it('should return a Forbidden error message with the original body if status code is 403 and flag is true', async () => {
-
-      const res = await errorHandlerTrue.handle({ ...response, status: 403 }).toPromise();
-      expect(res.body).toContain(`Forbidden: ${response.body}`);
-
-    });
-
-    it('should return a Forbidden error message without the original body if status code is 403 and flag is false', async () => {
-
-      const res = await errorHandlerFalse.handle({ ...response, status: 403 }).toPromise();
-      expect(res.body).toEqual('Forbidden');
-
-    });
-
-    it('should return a Not Found error message with the original body if status code is 404 and flag is true', async () => {
-
-      const res = await errorHandlerTrue.handle({ ...response, status: 404 }).toPromise();
-      expect(res.body).toContain(`Not Found: ${response.body}`);
-
-    });
-
-    it('should return a Not Found error message without the original body if status code is 404 and flag is false', async () => {
-
-      const res = await errorHandlerFalse.handle({ ...response, status: 404 }).toPromise();
-      expect(res.body).toEqual('Not Found');
-
-    });
-
-    it('should return a Method Not Allowed error message with the original body if status code is 405 and flag is true', async () => {
-
-      const res = await errorHandlerTrue.handle({ ...response, status: 405 }).toPromise();
-      expect(res.body).toContain(`Method Not Allowed: ${response.body}`);
-
-    });
-
-    it('should return a Method Not Allowed error message without the original body if status code is 405 and flag is false', async () => {
-
-      const res = await errorHandlerFalse.handle({ ...response, status: 405 }).toPromise();
-      expect(res.body).toEqual('Method Not Allowed');
-
-    });
-
-    it('should return an Internal Server Error error message with the original body if status code is 500 and flag is true', async () => {
-
-      const res = await errorHandlerTrue.handle({ ...response, status: 500 }).toPromise();
-      expect(res.body).toEqual(`Internal Server Error: ${response.body}`);
-
-    });
-
-    it('should return an Internal Server Error error message with the original body if status code is 500 and flag is true', async () => {
-
-      const res = await errorHandlerFalse.handle({ ...response, status: 500 }).toPromise();
-      expect(res.body).toEqual(`Internal Server Error`);
-
-    });
-
-    it('should return an Unexpected Error error message with the original body if status code is incorrect and flag is true', async () => {
-
-      const res = await errorHandlerTrue.handle({ ...response, status: 409 }).toPromise();
-      expect(res.body).toEqual(`An Unexpected Error Occurred: ${response.body}`);
-
-    });
-
-    it('should return an Unexpected Error error message without the original body if status code is incorrect and flag is true', async () => {
-
-      const res = await errorHandlerFalse.handle({ ...response, status: 409 }).toPromise();
-      expect(res.body).toEqual(`An Unexpected Error Occurred`);
+      const res = await handler.handle(resp).toPromise();
+      expect(res.body).toEqual(expected);
 
     });
 
