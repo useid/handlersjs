@@ -3,9 +3,8 @@
   "compilerOptions": {
     "baseUrl": "./lib",
     "outDir": "./dist",
-    "rootDir": "./lib",
     "module": "commonjs",
-    "strict": false,
+    "strict": false
   },
   "include": [
     "**/*.spec.ts"
@@ -13,5 +12,5 @@
   "exclude": [
     "dist",
     "node_modules"
-  ],
+  ]
 }

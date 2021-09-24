@@ -2,9 +2,9 @@ export class HandlerError extends Error {
 
   public readonly name = HandlerError.name;
 
-  constructor(messsage: string, public cause: Error) {
+  constructor(message: string, public cause?: Error) {
 
-    super(messsage);
+    super(message);
 
     Object.setPrototypeOf(this, HandlerError.prototype);
 

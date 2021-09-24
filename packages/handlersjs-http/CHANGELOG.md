@@ -3,6 +3,127 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.0](https://github.com/digita-ai/handlersjs/compare/v0.3.5...v0.4.0) (2021-09-23)
+
+
+### **Bug Fixes**
+
+* buffer resp body + form-urlencoded req body ([#108](https://github.com/digita-ai/handlersjs/issues/108)) ([79c9c12](https://github.com/digita-ai/handlersjs/commit/79c9c1283463eabc0c173cdf9ba829e88f959b7b))
+* check whether asset path is absolute ([#109](https://github.com/digita-ai/handlersjs/issues/109)) ([de73ad7](https://github.com/digita-ai/handlersjs/commit/de73ad7f3dfe0e71ff06687b6355a6b901e8986f))
+
+
+
+### [0.3.5](https://github.com/digita-ai/handlersjs/compare/v0.3.4...v0.3.5) (2021-09-02)
+
+**Note:** Version bump only for package @digita-ai/handlersjs-http
+
+
+
+
+
+### [0.3.4](https://github.com/digita-ai/handlersjs/compare/v0.3.3...v0.3.4) (2021-09-01)
+
+**Note:** Version bump only for package @digita-ai/handlersjs-http
+
+
+
+
+
+### [0.3.3](https://github.com/digita-ai/handlersjs/compare/v0.3.2...v0.3.3) (2021-08-11)
+
+
+### **Bug Fixes**
+
+* unhandled promise syncservice ([#103](https://github.com/digita-ai/handlersjs/issues/103)) ([eec9fe2](https://github.com/digita-ai/handlersjs/commit/eec9fe253d53a25aa5ba4cafda1dfb08668cb6c4))
+
+
+
+### [0.3.2](https://github.com/digita-ai/handlersjs/compare/v0.3.1...v0.3.2) (2021-08-05)
+
+
+### **Features**
+
+* adjust sync service to use lists ([#98](https://github.com/digita-ai/handlersjs/issues/98)) ([6c3c9f3](https://github.com/digita-ai/handlersjs/commit/6c3c9f3ecdaa23b743af50c8bb73c2b349e3b6a2))
+
+
+
+### [0.3.1](https://github.com/digita-ai/handlersjs/compare/v0.3.0...v0.3.1) (2021-08-04)
+
+
+### **Features**
+
+* export json-store-handler ([#96](https://github.com/digita-ai/handlersjs/issues/96)) ([64a1b3e](https://github.com/digita-ai/handlersjs/commit/64a1b3e1987646052424178deb01d1a6d2f8cd37))
+
+
+
+## [0.3.0](https://github.com/digita-ai/handlersjs/compare/v0.2.3...v0.3.0) (2021-08-04)
+
+
+### **Features**
+
+* endpoint for syncservice ([#94](https://github.com/digita-ai/handlersjs/issues/94)) ([54abbc9](https://github.com/digita-ai/handlersjs/commit/54abbc9259d56a2e68ae40b801d977b49de4b232))
+* json-store-handler ([#85](https://github.com/digita-ai/handlersjs/issues/85)) ([8c7f362](https://github.com/digita-ai/handlersjs/commit/8c7f362c33b49d2ac6b8a838ac1562b244dee815))
+* make sync-service a handler ([#92](https://github.com/digita-ai/handlersjs/issues/92)) ([89bc33f](https://github.com/digita-ai/handlersjs/commit/89bc33fc62a6a8385f51e61c5a48d43f30d1c1c9))
+* scheduler daemon ([#82](https://github.com/digita-ai/handlersjs/issues/82)) ([5063010](https://github.com/digita-ai/handlersjs/commit/5063010e2c822aa3de200499894045d84b48df69))
+* storage ([#79](https://github.com/digita-ai/handlersjs/issues/79)) ([72a9b08](https://github.com/digita-ai/handlersjs/commit/72a9b08dc1cfb83df8b9e58df3dc5258736b8136))
+* sync service ([#86](https://github.com/digita-ai/handlersjs/issues/86)) ([5abcd08](https://github.com/digita-ai/handlersjs/commit/5abcd0854f5794b471ef6cb157993399cbff9b9f))
+
+
+
+### [0.2.3](https://github.com/digita-ai/handlersjs/compare/v0.2.2...v0.2.3) (2021-06-24)
+
+
+### **Features**
+
+* add support for multiple routes with the same path and improve body parsing ([#68](https://github.com/digita-ai/handlersjs/issues/68)) ([679d62d](https://github.com/digita-ai/handlersjs/commit/679d62dde59a9eedec8bef1826cd9a1064076f8d))
+
+
+
+### [0.2.2](https://github.com/digita-ai/handlersjs/compare/v0.2.1...v0.2.2) (2021-06-17)
+
+
+### **Features**
+
+* adjustments to work with api ([#67](https://github.com/digita-ai/handlersjs/issues/67)) ([76806d7](https://github.com/digita-ai/handlersjs/commit/76806d7abb4ddaf6fe68ae58f47b1260cfd0650c))
+* parse request body if application json ([#66](https://github.com/digita-ai/handlersjs/issues/66)) ([61ec945](https://github.com/digita-ai/handlersjs/commit/61ec94547e1ba2c9105a25e5484ae0bced13ee24))
+
+
+
+### [0.2.1](https://github.com/digita-ai/handlersjs/compare/v0.2.0...v0.2.1) (2021-05-28)
+
+
+### **Bug Fixes**
+
+* don't calculate content length when response body is empty ([#60](https://github.com/digita-ai/handlersjs/issues/60)) ([0caf32c](https://github.com/digita-ai/handlersjs/commit/0caf32c9271889b6dbacf643ea6f07c2ff3f56a0))
+
+
+
+## [0.2.0](https://github.com/digita-ai/handlersjs/compare/v0.1.5...v0.2.0) (2021-05-27)
+
+
+### **Features**
+
+* better error handling ([#55](https://github.com/digita-ai/handlersjs/issues/55)) ([12f0e78](https://github.com/digita-ai/handlersjs/commit/12f0e78dc5561cc4f6cc6434830cb8528be1be6d))
+* default handler to match any route ([#56](https://github.com/digita-ai/handlersjs/issues/56)) ([b358184](https://github.com/digita-ai/handlersjs/commit/b358184d2ad16f364a3dd4f9c4456f3ced1b3cf9))
+* even better error handling ([#59](https://github.com/digita-ai/handlersjs/issues/59)) ([3a325c2](https://github.com/digita-ai/handlersjs/commit/3a325c2d231e4c3276d7fbdceab6c7d668279219))
+* set content-length of the response ([#57](https://github.com/digita-ai/handlersjs/issues/57)) ([013993f](https://github.com/digita-ai/handlersjs/commit/013993f97191ef608d43e57abf4a82dd7b41d83d))
+
+
+
+### [0.1.5](https://github.com/digita-ai/handlersjs/compare/v0.1.4...v0.1.5) (2021-05-05)
+
+
+### **Features**
+
+* typescript settings extend from config repo ([#50](https://github.com/digita-ai/handlersjs/issues/50)) ([9f446ae](https://github.com/digita-ai/handlersjs/commit/9f446ae2ef8133e52539be0ccaf947c911396ae4))
+
+
+### **Bug Fixes**
+
+* add HttpMethods to public-api ([790a18a](https://github.com/digita-ai/handlersjs/commit/790a18aa9d5c3ac43ba1cc1939ed11a8ecd04bf9))
+
+
+
 ### [0.1.4](https://github.com/digita-ai/handlersjs/compare/v0.1.3...v0.1.4) (2021-04-29)
 
 

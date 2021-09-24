@@ -13,14 +13,14 @@ import { HttpHandlerRoute } from '../models/http-handler-route';
  */
 export class RoutedHttpRequestHandler extends HttpHandler {
 
-  private pathToRouteMap: Map<string, { controller: HttpHandlerController; route: HttpHandlerRoute }>;
+  private pathToRouteMap: Map<string, { controller: HttpHandlerController; route: HttpHandlerRoute }[]>;
 
   /**
    * Creates a RoutedHttpRequestHandler, super calls the HttpHandler class and expects a list of HttpHandlerControllers
    *
    * @param {HttpHandlerController[]} handlerControllerList - a list of HttpHandlerController objects
    */
-  constructor(private handlerControllerList: HttpHandlerController[]) {
+  constructor(private handlerControllerList: HttpHandlerController[], private defaultHandler?: HttpHandler) {
 
     super();
 
@@ -30,10 +30,18 @@ export class RoutedHttpRequestHandler extends HttpHandler {
 
     }
 
-    this.pathToRouteMap = new Map(
-      this.handlerControllerList.flatMap((controller) =>
-        controller.routes.map((route) => [ route.path, { controller, route } ])),
-    );
+    this.pathToRouteMap = new Map();
+
+    this.handlerControllerList.flatMap((controller) =>
+      controller.routes.forEach((route) => {
+
+        const existing = this.pathToRouteMap.get(route.path);
+
+        existing
+          ? this.pathToRouteMap.set(route.path, [ ...existing, { controller, route } ])
+          : this.pathToRouteMap.set(route.path, [ { controller, route } ]);
+
+      }));
 
   }
 
@@ -79,39 +87,50 @@ export class RoutedHttpRequestHandler extends HttpHandler {
 
     });
 
-    const matchingRoute = match ? this.pathToRouteMap.get(match) : undefined;
+    const matchingRoutes = match ? this.pathToRouteMap.get(match) : undefined;
 
-    if (!matchingRoute) {
+    if (matchingRoutes?.length) {
+
+      const matchingRouteWithOperation = matchingRoutes.find((r) =>
+        r.route.operations.map((op) => op.method).includes(request.method));
+
+      const allowedMethods = matchingRoutes.flatMap((r) => r.route.operations.map((op) => op.method));
+
+      if (!matchingRouteWithOperation) {
+
+        return of({ body: '', headers: { Allow: allowedMethods.join(', ') }, status: 405 });
+
+      }
+
+      // add parameters from requestPath to the request object
+      const parameters = this.extractParameters(matchingRouteWithOperation.route.path.split('/').slice(1), pathSegments);
+      const requestWithParams = Object.assign(request, { parameters });
+      const newContext = { request: requestWithParams, route: matchingRouteWithOperation.route };
+      const preResponseHandler = matchingRouteWithOperation.controller.preResponseHandler;
+
+      return (preResponseHandler
+        ? preResponseHandler.handle(newContext)
+        : of(newContext)
+      ).pipe(
+        switchMap((preresponse) => matchingRouteWithOperation.route.handler.handle(preresponse)),
+        map((response) => ({
+          ... response,
+          headers: {
+            ... response.headers,
+            ... (request.method === 'OPTIONS') && { Allow: allowedMethods.join(', ') },
+          },
+        }))
+      );
+
+    } else if (this.defaultHandler) {
+
+      return this.defaultHandler.handle(context);
+
+    } else {
 
       return of({ body: '', headers: {}, status: 404 });
 
     }
-
-    const allowedMethods = matchingRoute.route.operations.map((op) => op.method);
-    const methodSupported = allowedMethods.includes(request.method);
-
-    if (!methodSupported) {
-
-      return of({ body: '', headers: { Allow: allowedMethods.join(', ') }, status: 405 });
-
-    }
-
-    // add parameters from requestPath to the request object
-    const parameters = this.extractParameters(matchingRoute.route.path.split('/').slice(1), pathSegments);
-    const requestWithParams = Object.assign(request, { parameters });
-    const newContext = { request: requestWithParams, route: matchingRoute.route };
-    const preResponseHandler = matchingRoute.controller.preResponseHandler;
-
-    return (preResponseHandler ? preResponseHandler.handle(newContext) : of(newContext)).pipe(
-      switchMap((preresponse) => matchingRoute.route.handler.handle(preresponse)),
-      map((response) => ({
-        ... response,
-        headers: {
-          ... response.headers,
-          ... (request.method === 'OPTIONS') && { Allow: allowedMethods.join(', ') },
-        },
-      })),
-    );
 
   }
 

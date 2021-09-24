@@ -3,9 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./lib",
     "outDir": "./dist",
-    "rootDir": "./lib",
     "module": "commonjs",
-    "strict": false,
   },
   "include": [ 
       "lib" 
