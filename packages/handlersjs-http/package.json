@@ -69,7 +69,7 @@
     "displayName": "http",
     "coverageThreshold": {
       "global": {
-        "branches": 82.55,
+        "branches": 82.25,
         "functions": 88.57,
         "lines": 89.56,
         "statements": 89.72
