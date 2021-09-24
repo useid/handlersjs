@@ -133,7 +133,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
           case 405: return of({ ...error, body: 'Method Not Allowed' });
           case 500: return of({ ...error, body: 'Internal Server Error' });
           // If no cases match, return a default error message.
-          default: return error.status < 600 && error.status >= 400 ?  of({ ...error, body: 'An Unexpected Error Occurred' }) : of({ body: 'An Unexpected Error Occurred', headers: error.headers, status: 500 });
+          default: return of({ ...error, body: 'Internal Server Error', status: 500 });
 
         }
 

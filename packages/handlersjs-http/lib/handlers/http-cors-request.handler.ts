@@ -34,7 +34,6 @@ export class HttpCorsRequestHandler extends HttpHandler {
 
   constructor(
     private handler: HttpHandler,
-    private errorHandler: ErrorHandler,
     private options?: HttpCorsOptions,
     private passThroughOptions: boolean = false,
   ) {
@@ -97,7 +96,6 @@ export class HttpCorsRequestHandler extends HttpHandler {
         : of({ status: 204, headers: {} });
 
       return initialOptions.pipe(
-        switchMap((response) => this.errorHandler.handle(response)),
         map((response) => ({
           ... response,
           headers: cleanHeaders(response.headers),
@@ -124,7 +122,6 @@ export class HttpCorsRequestHandler extends HttpHandler {
       /* CORS Request */
 
       return this.handler.handle(noCorsRequestContext).pipe(
-        switchMap((response) => this.errorHandler.handle(response)),
         map((response) => ({
           ... response,
           headers: {
