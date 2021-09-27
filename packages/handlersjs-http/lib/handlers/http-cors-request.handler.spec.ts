@@ -2,39 +2,8 @@ import { of } from 'rxjs';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
-import { HttpCorsRequestHandler } from './http-cors-request.handler';
-
-const filterOutCORSHeaders = (c: HttpHandlerContext): HttpHandlerContext => ({
-  ...c,
-  request: {
-    ...c.request,
-    headers: {
-      ...Object.keys(c.request.headers).reduce<{ [key: string]: string }>(
-        (acc, key) => {
-
-          const corsHeaders = [ 'origin', 'access-control-request-method', 'access-control-request-headers' ];
-          const lKey = key.toLowerCase();
-
-          return !corsHeaders.includes(lKey)
-            ? { ...acc, [key]: c.request.headers[key] }
-            : { ...acc };
-
-        }, {} as { [key: string]: string },
-      ),
-    },
-  },
-});
-
-const makeHeaderKeysLowerCase = (c: HttpHandlerContext): HttpHandlerContext => ({
-  ...c,
-  request: {
-    ...c.request,
-    headers: {
-      ...Object.keys(c.request.headers).reduce<{ [key: string]: string }>((acc, key) =>
-        ({ ...acc, [key.toLowerCase()]: c.request.headers[key] }), {} as { [key: string]: string }),
-    },
-  },
-});
+import { cleanHeaders } from '../util/clean-headers';
+import { HttpCorsOptions, HttpCorsRequestHandler } from './http-cors-request.handler';
 
 describe('HttpCorsRequestHandler', () => {
 
@@ -42,6 +11,14 @@ describe('HttpCorsRequestHandler', () => {
   let handler: HttpHandler;
   let context: HttpHandlerContext;
   const mockResponseHeaders = { 'some-header': 'headerSome' };
+
+  const mockOptions: HttpCorsOptions = {
+    origins: [ 'http://text.com', 'http://test.de' ],
+    allowMethods: [ 'GET', 'POST' ],
+    allowHeaders: [],
+    credentials: false,
+    maxAge: 2,
+  };
 
   beforeEach(() => {
 
@@ -56,11 +33,23 @@ describe('HttpCorsRequestHandler', () => {
         url: new URL('http://example.com'),
         method: 'GET',
         headers: {
-          accEPt: 'text/plain',
+          accept: 'text/plain',
           origin: 'http://test.de',
         },
       },
     };
+
+  });
+
+  it('should be correctly instantiated', () => {
+
+    expect(new HttpCorsRequestHandler(handler)).toBeTruthy();
+    expect(new HttpCorsRequestHandler(handler, undefined)).toBeTruthy();
+    expect(new HttpCorsRequestHandler(handler, mockOptions)).toBeTruthy();
+
+    // cover the optional abstract parameters
+    class t extends HttpCorsOptions {}
+    new t();
 
   });
 
@@ -93,9 +82,11 @@ describe('HttpCorsRequestHandler', () => {
       // Check 'noCorsRequestContext' and 'cleanHeaders'
       it('should not pass CORS headers to the child handler.handle and all headers must be lower case', async() => {
 
+        delete context.request.headers.origin;
         await service.handle(context).toPromise();
         expect(handler.handle).toHaveBeenCalledTimes(1);
-        const expectedToBeCalledWith = makeHeaderKeysLowerCase(filterOutCORSHeaders(context));
+        const expectedToBeCalledWith = { ...context, request: { headers:  cleanHeaders(context.request.headers), method: 'GET', url: new URL('http://example.com') } };
+
         expect(handler.handle).toHaveBeenCalledWith(expectedToBeCalledWith);
 
       });
@@ -105,7 +96,7 @@ describe('HttpCorsRequestHandler', () => {
 
         const response = await service.handle(context).toPromise();
         expect(handler.handle).toHaveBeenCalledTimes(1);
-        expect(response).toEqual(expect.objectContaining({ headers: { ...mockResponseHeaders, 'Access-Control-Allow-Origin': '*' } }));
+        expect(response).toEqual(expect.objectContaining({ headers: { ...mockResponseHeaders, 'access-control-allow-origin': '*' } }));
 
       });
 
@@ -115,9 +106,7 @@ describe('HttpCorsRequestHandler', () => {
         context.request.method = 'OPTIONS';
         const response = await service.handle(context).toPromise();
         expect(handler.handle).toHaveBeenCalledTimes(0);
-        expect(response.headers).toEqual(expect.objectContaining({ 'Access-Control-Max-Age': '-1' }));
-        expect(response.headers).toEqual(expect.objectContaining({ 'Access-Control-Allow-Origin': '*' }));
-        expect(response.headers).toEqual(expect.objectContaining({ 'Access-Control-Allow-Methods': 'GET, HEAD, PUT, POST, DELETE, PATCH'  }));
+        expect(response.headers).toEqual(expect.objectContaining({ 'access-control-max-age': '-1', 'access-control-allow-origin': '*', 'access-control-allow-methods': 'GET, HEAD, PUT, POST, DELETE, PATCH' }));
         expect(response).toEqual(expect.objectContaining({ status: 204 }));
 
       });
@@ -139,12 +128,16 @@ describe('HttpCorsRequestHandler', () => {
       context.request.method = 'OPTIONS';
       const response = await service.handle(context).toPromise();
       expect(handler.handle).toHaveBeenCalledTimes(1);
-      expect(response).toEqual(expect.objectContaining({ body: 'handler done' }));
-      expect(response).toEqual(expect.objectContaining({ status: 200 }));
-      expect(response.headers).toEqual(expect.objectContaining({ 'Access-Control-Max-Age': '-1' }));
-      expect(response.headers).toEqual(expect.objectContaining({ ...mockResponseHeaders }));
-      expect(response.headers).toEqual(expect.objectContaining({ 'Access-Control-Allow-Origin': '*' }));
-      expect(response.headers).toEqual(expect.objectContaining({ 'Access-Control-Allow-Methods': 'GET, HEAD, PUT, POST, DELETE, PATCH' }));
+      expect(response).toEqual(expect.objectContaining({ body: 'handler done', status: 200 }));
+
+      expect(response.headers).toEqual(
+        expect.objectContaining({
+          ...mockResponseHeaders,
+          'access-control-max-age': '-1',
+          'access-control-allow-origin': '*',
+          'access-control-allow-methods': 'GET, HEAD, PUT, POST, DELETE, PATCH',
+        })
+      );
 
     });
 
@@ -167,9 +160,7 @@ describe('HttpCorsRequestHandler', () => {
     it('should return the right headers in the response when no special options were passed to the constructor', async() => {
 
       const response = await service.handle(context).toPromise();
-      expect(response.headers).toEqual(expect.objectContaining({ 'Access-Control-Allow-Origin': 'http://test.de' }));
-      expect(response.headers).toEqual(expect.objectContaining({ 'Vary': 'Origin' }));
-      expect(response.headers).toEqual(expect.objectContaining({ ...mockResponseHeaders }));
+      expect(response.headers).toEqual(expect.objectContaining({ 'access-control-allow-origin': 'http://test.de', 'vary': 'origin', ...mockResponseHeaders  }));
 
     });
 
@@ -177,14 +168,12 @@ describe('HttpCorsRequestHandler', () => {
 
       context.request.method = 'OPTIONS';
       const response = await service.handle(context).toPromise();
-      expect(response.headers).toEqual(expect.objectContaining({ ...mockResponseHeaders }));
-      expect(response.headers).toEqual(expect.objectContaining({ 'Vary': 'Origin' }));
-      expect(response).toEqual(expect.objectContaining({ status: 200 }));
-      expect(response).toEqual(expect.objectContaining({ body: 'handler done' }));
+      expect(response.headers).toEqual(expect.objectContaining({ ...mockResponseHeaders, 'vary': 'origin' }));
+      expect(response).toEqual(expect.objectContaining({ status: 200, body: 'handler done' }));
 
     });
 
-    it('should return a \'access-control-allow-credentials\' header set to \'true\'', async() => {
+    it(`should return a 'access-control-allow-credentials' header set to 'true'`, async() => {
 
       service = new HttpCorsRequestHandler(handler, {
         origins: [ 'http://text.com', 'http://test.de' ],
@@ -193,11 +182,8 @@ describe('HttpCorsRequestHandler', () => {
       }, true);
 
       const response = await service.handle(context).toPromise();
-      expect(response.headers).toEqual(expect.objectContaining({ 'Access-Control-Allow-Credentials': 'true' }));
-      expect(response.headers).toEqual(expect.objectContaining({ 'Vary': 'Origin' }));
-      expect(response.headers).toEqual(expect.objectContaining({ ...mockResponseHeaders }));
-      expect(response).toEqual(expect.objectContaining({ status: 200 }));
-      expect(response).toEqual(expect.objectContaining({ body: 'handler done' }));
+      expect(response.headers).toEqual(expect.objectContaining({ 'access-control-allow-credentials': 'true',  'vary': 'origin', ...mockResponseHeaders }));
+      expect(response).toEqual(expect.objectContaining({ status: 200, body: 'handler done'  }));
 
     });
 

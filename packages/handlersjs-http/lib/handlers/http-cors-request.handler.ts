@@ -3,7 +3,7 @@ import { map } from 'rxjs/operators';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
-
+import { cleanHeaders } from '../util/clean-headers';
 export abstract class HttpCorsOptions {
 
   constructor(
@@ -16,19 +16,6 @@ export abstract class HttpCorsOptions {
   ) { }
 
 }
-
-const cleanHeaders = (headers: { [key: string]: string }) => Object.keys(headers).reduce<{ [key: string]: string }>(
-  (acc, key) => {
-
-    const lKey = key.toLowerCase();
-
-    return acc[lKey]
-      ? { ... acc, [lKey]: `${acc[lKey]},${headers[key]}` }
-      : { ... acc, [lKey]: headers[key] };
-
-  }, {} as { [key: string]: string },
-);
-
 export class HttpCorsRequestHandler extends HttpHandler {
 
   constructor(
@@ -105,12 +92,12 @@ export class HttpCorsRequestHandler extends HttpHandler {
 
             ... response.headers,
             ... allowOrigin && ({
-              ... (allowOrigin !== '*') && { 'Vary': 'Origin' },
-              'Access-Control-Allow-Origin': allowOrigin,
-              'Access-Control-Allow-Methods': (allowMethods ?? routeMethods ?? allMethods).join(', '),
-              ... (allowHeadersOrRequested) && { 'Access-Control-Allow-Headers': allowHeadersOrRequested },
-              ... (credentials) && { 'Access-Control-Allow-Credentials': 'true' },
-              'Access-Control-Max-Age': (maxAge ?? -1).toString(),
+              ... (allowOrigin !== '*') && { 'vary': 'origin' },
+              'access-control-allow-origin': allowOrigin,
+              'access-control-allow-methods': (allowMethods ?? routeMethods ?? allMethods).join(', '),
+              ... (allowHeadersOrRequested) && { 'access-control-allow-headers': allowHeadersOrRequested },
+              ... (credentials) && { 'access-control-allow-credentials': 'true' },
+              'access-control-max-age': (maxAge ?? -1).toString(),
             }),
           },
         })),
@@ -126,10 +113,10 @@ export class HttpCorsRequestHandler extends HttpHandler {
           headers: {
             ... response.headers,
             ... allowOrigin && ({
-              'Access-Control-Allow-Origin': allowOrigin,
-              ... (allowOrigin !== '*') && { 'Vary': 'Origin' },
-              ... (credentials) && { 'Access-Control-Allow-Credentials': 'true' },
-              ... (exposeHeaders) && { 'Access-Control-Expose-Headers': exposeHeaders.join(',') },
+              'access-control-allow-origin': allowOrigin,
+              ... (allowOrigin !== '*') && { 'vary': 'origin' },
+              ... (credentials) && { 'access-control-allow-credentials': 'true' },
+              ... (exposeHeaders) && { 'access-control-expose-headers': exposeHeaders.join(',') },
             }),
           },
         })),
