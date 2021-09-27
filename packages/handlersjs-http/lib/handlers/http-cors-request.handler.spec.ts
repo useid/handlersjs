@@ -47,7 +47,7 @@ describe('HttpCorsRequestHandler', () => {
     expect(new HttpCorsRequestHandler(handler, undefined)).toBeTruthy();
     expect(new HttpCorsRequestHandler(handler, mockOptions)).toBeTruthy();
 
-    // cover the optional abstract parameters
+    // cover the optional abstract class parameters
     class t extends HttpCorsOptions {}
     new t();
 
@@ -147,13 +147,7 @@ describe('HttpCorsRequestHandler', () => {
 
     beforeEach(() => {
 
-      service = new HttpCorsRequestHandler(handler, {
-        origins: [ 'http://text.com', 'http://test.de' ],
-        allowMethods: [ 'GET', 'POST' ],
-        allowHeaders: [],
-        credentials: false,
-        maxAge: 2,
-      }, true);
+      service = new HttpCorsRequestHandler(handler, mockOptions, true);
 
     });
 
@@ -161,6 +155,14 @@ describe('HttpCorsRequestHandler', () => {
 
       const response = await service.handle(context).toPromise();
       expect(response.headers).toEqual(expect.objectContaining({ 'access-control-allow-origin': 'http://test.de', 'vary': 'origin', ...mockResponseHeaders  }));
+
+    });
+
+    it('should join the given expose headers in the response', async () => {
+
+      mockOptions.exposeHeaders = [ 'Content-Encoding', 'X-Kuma-Revision' ];
+      const response = await service.handle(context).toPromise();
+      expect(response.headers['access-control-expose-headers']).toEqual('Content-Encoding,X-Kuma-Revision');
 
     });
 
@@ -184,6 +186,44 @@ describe('HttpCorsRequestHandler', () => {
       const response = await service.handle(context).toPromise();
       expect(response.headers).toEqual(expect.objectContaining({ 'access-control-allow-credentials': 'true',  'vary': 'origin', ...mockResponseHeaders }));
       expect(response).toEqual(expect.objectContaining({ status: 200, body: 'handler done'  }));
+
+    });
+
+    it('should set access-control-allow-origin header to undefined if requested origin is not in the options origins', async () => {
+
+      const handlerWithOptions = new HttpCorsRequestHandler(handler, mockOptions);
+
+      context.request.method = 'OPTIONS';
+      context.request.headers.origin = 'http://test.be';
+      const response = await handlerWithOptions.handle(context).toPromise();
+      expect(response.headers['access-control-allow-origin']).toEqual(undefined);
+
+    });
+
+    it('should set access-control-allow-origin header to requestedOrigin if no origins were provided in the options', async () => {
+
+      delete mockOptions.origins;
+      mockOptions.credentials = true;
+      const handlerWithOptions = new HttpCorsRequestHandler(handler, mockOptions);
+
+      context.request.method = 'OPTIONS';
+      const response = await handlerWithOptions.handle(context).toPromise();
+      expect(response.headers['access-control-allow-origin']).toEqual('http://test.de');
+
+    });
+
+    it('should set access-control-allow-headers to', async () => {
+
+      service = new HttpCorsRequestHandler(handler, {
+        origins: [ 'http://text.com', 'http://test.de' ],
+        allowMethods: [], allowHeaders: [ 'X-Custom-Header', 'Upgrade-Insecure-Requests' ],
+        credentials: true, maxAge: 2,
+      }, true);
+
+      context.request.method = 'OPTIONS';
+      const response = await service.handle(context).toPromise();
+
+      expect(response.headers['access-control-allow-headers']).toEqual('X-Custom-Header,Upgrade-Insecure-Requests');
 
     });
 
