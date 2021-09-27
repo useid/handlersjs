@@ -158,7 +158,7 @@ describe('HttpCorsRequestHandler', () => {
 
     });
 
-    it('should join the given expose headers in the response', async () => {
+    it('should join the given expose headers in the response headers', async () => {
 
       mockOptions.exposeHeaders = [ 'Content-Encoding', 'X-Kuma-Revision' ];
       const response = await service.handle(context).toPromise();
@@ -212,7 +212,7 @@ describe('HttpCorsRequestHandler', () => {
 
     });
 
-    it('should set access-control-allow-headers to', async () => {
+    it('should join the given access-control-allow-headers in the response headers', async () => {
 
       service = new HttpCorsRequestHandler(handler, {
         origins: [ 'http://text.com', 'http://test.de' ],
