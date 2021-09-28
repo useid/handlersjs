@@ -1,3 +1,4 @@
+import { request } from 'http';
 import { of } from 'rxjs';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -47,7 +48,7 @@ describe('HttpCorsRequestHandler', () => {
     expect(new HttpCorsRequestHandler(handler, undefined)).toBeTruthy();
     expect(new HttpCorsRequestHandler(handler, mockOptions)).toBeTruthy();
 
-    // cover the optional abstract class parameters
+    // this covers the optional abstract class parameters of HttpCorsOptions
     class t extends HttpCorsOptions {}
     new t();
 
@@ -80,14 +81,26 @@ describe('HttpCorsRequestHandler', () => {
     describe('handle()', () => {
 
       // Check 'noCorsRequestContext' and 'cleanHeaders'
-      it('should not pass CORS headers to the child handler.handle and all headers must be lower case', async() => {
+      it('should not pass CORS headers to the child handler.handle', async() => {
 
-        delete context.request.headers.origin;
-        await service.handle(context).toPromise();
+        const noCorsHeaderContext = { ...context, request: { ...context.request, headers: { accept: 'text/plain' } } };
+
+        await service.handle(noCorsHeaderContext).toPromise();
+
         expect(handler.handle).toHaveBeenCalledTimes(1);
-        const expectedToBeCalledWith = { ...context, request: { headers:  cleanHeaders(context.request.headers), method: 'GET', url: new URL('http://example.com') } };
+        const expectedToBeCalledWith = { ...context, request: { headers:  cleanHeaders(noCorsHeaderContext.request.headers), method: 'GET', url: new URL('http://example.com') } };
 
         expect(handler.handle).toHaveBeenCalledWith(expectedToBeCalledWith);
+
+      });
+
+      it('should set all headers to lower case', async() => {
+
+        const noCorsHeaderContext = { ...context, request: { ...context.request, headers: { ACCEPT: 'text/plain' } } };
+        await service.handle(noCorsHeaderContext).toPromise();
+        expect(handler.handle).toHaveBeenCalledTimes(1);
+
+        expect(handler.handle).toHaveBeenCalledWith({ ...context, request: { ...context.request, headers: { accept: 'text/plain' } } });
 
       });
 
@@ -202,7 +215,7 @@ describe('HttpCorsRequestHandler', () => {
 
     it('should set access-control-allow-origin header to requestedOrigin if no origins were provided in the options', async () => {
 
-      delete mockOptions.origins;
+      mockOptions.origins = undefined;
       mockOptions.credentials = true;
       const handlerWithOptions = new HttpCorsRequestHandler(handler, mockOptions);
 
