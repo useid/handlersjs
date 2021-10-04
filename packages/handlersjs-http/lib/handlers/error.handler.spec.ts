@@ -1,4 +1,7 @@
+import { of } from 'rxjs';
+import { PipeThroughHandler } from '@digita-ai/handlersjs-core';
 import { HttpHandlerResponse } from '../models/http-handler-response';
+import { HttpCorsRequestHandler } from './http-cors-request.handler';
 import { ErrorHandler } from './error.handler';
 
 const response: HttpHandlerResponse = {
@@ -21,6 +24,14 @@ describe('error_handler', () => {
 
   const errorHandlerTrue = new ErrorHandler(true);
   const errorHandlerFalse = new ErrorHandler();
+
+  const nestedHttpHandler = {
+    canHandle: jest.fn().mockReturnValue(of(true)),
+    handle: jest.fn().mockReturnValue(of(response)),
+    safeHandle: jest.fn().mockReturnValue(of(response)),
+  };
+
+  const corsHandler = new HttpCorsRequestHandler(new PipeThroughHandler([ nestedHttpHandler, errorHandlerTrue ]));
 
   it('should be instantiated correctly', () => {
 
@@ -67,6 +78,23 @@ describe('error_handler', () => {
       const res = await errorHandlerFalse.handle(response200).toPromise();
       expect(res.body).toEqual(`upstream successful response body`);
       expect(res.status).toEqual(200);
+
+    });
+
+    it('should have the correct description provided by the error handler and cors headers provided by the cors handler', async () => {
+
+      const resp = await corsHandler.handle({
+        request: {
+          url: new URL('http://example.com'),
+          method: 'GET',
+          headers: {
+            accept: 'text/plain',
+            origin: 'http://test.de',
+          },
+        },
+      }).toPromise();
+
+      expect(resp).toEqual({ body: 'Bad Request: upstream response body', status: 400, headers: { location: 'http://test.be', 'Access-Control-Allow-Origin': '*' } });
 
     });
 
