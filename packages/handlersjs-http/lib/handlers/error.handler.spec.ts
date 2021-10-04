@@ -94,7 +94,7 @@ describe('error_handler', () => {
         },
       }).toPromise();
 
-      expect(resp).toEqual({ body: 'Bad Request: upstream response body', status: 400, headers: { location: 'http://test.be', 'Access-Control-Allow-Origin': '*' } });
+      expect(resp).toEqual({ body: 'Bad Request: upstream response body', status: 400, headers: { location: 'http://test.be', 'access-control-allow-origin': '*' } });
 
     });
 
