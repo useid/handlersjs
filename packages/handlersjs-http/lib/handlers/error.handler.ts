@@ -32,6 +32,7 @@ export class ErrorHandler extends Handler<HttpHandlerResponse, HttpHandlerRespon
       case 403: return of(this.createErrorResponse(response, 'Forbidden', this.showUpstreamError));
       case 404: return of(this.createErrorResponse(response, 'Not Found', this.showUpstreamError));
       case 405: return of(this.createErrorResponse(response, 'Method Not Allowed', this.showUpstreamError));
+      case 409: return of(this.createErrorResponse(response, 'Conflict', this.showUpstreamError));
       case 500: return of(this.createErrorResponse(response, 'Internal Server Error', this.showUpstreamError));
       default: return response.status < 600 && response.status >= 400
         ? of(this.createErrorResponse(response, 'An Unexpected Error Occurred', this.showUpstreamError))
@@ -43,7 +44,7 @@ export class ErrorHandler extends Handler<HttpHandlerResponse, HttpHandlerRespon
 
   private createErrorResponse(res: HttpHandlerResponse, msg: string, showError: boolean) {
 
-    return showError ? { ...res, body: msg + ': ' + res.body } : { ...res, body: msg };
+    return showError ? { ...res, body: msg + ': ' + res.body, status: res.status } : { ...res, body: msg, status: res.status  };
 
   }
 

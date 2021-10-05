@@ -62,10 +62,12 @@ describe('error_handler', () => {
     ${errorHandlerFalse}| ${{ ...response, status: 404 }}       | ${`Not Found`}
     ${errorHandlerTrue} | ${{ ...response, status: 405 }}       | ${`Method Not Allowed: ${response.body}`}
     ${errorHandlerFalse}| ${{ ...response, status: 405 }}       | ${`Method Not Allowed`}
+    ${errorHandlerTrue} | ${{ ...response, status: 409 }}       | ${`Conflict: ${response.body}`}
+    ${errorHandlerFalse}| ${{ ...response, status: 409 }}       | ${`Conflict`}
     ${errorHandlerTrue} | ${{ ...response, status: 500 }}       | ${`Internal Server Error: ${response.body}`}
     ${errorHandlerFalse}| ${{ ...response, status: 500 }}       | ${`Internal Server Error`}
-    ${errorHandlerTrue} | ${{ ...response, status: 409 }}       | ${`An Unexpected Error Occurred: ${response.body}`}
-    ${errorHandlerFalse}| ${{ ...response, status: 409 }}       | ${`An Unexpected Error Occurred`}
+    ${errorHandlerTrue} | ${{ ...response, status: 408 }}       | ${`An Unexpected Error Occurred: ${response.body}`}
+    ${errorHandlerFalse}| ${{ ...response, status: 408 }}       | ${`An Unexpected Error Occurred`}
   `('should return $expected when handler is $a and response is $b', async ({ handler, resp, expected }) => {
 
       const res = await handler.handle(resp).toPromise();
