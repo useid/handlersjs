@@ -100,7 +100,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
       }),
       switchMap((context: HttpHandlerContext) => this.httpHandler.handle(context)),
-      catchError((error) => of({ ...error, headers: {}, body: 'Internal Server Error', status: 500 })),
+      catchError((error) => of({ headers: {}, ...error, body: 'Internal Server Error', status: 500 })),
       switchMap((response) => {
 
         const contentTypeHeader = response.headers['content-type'];

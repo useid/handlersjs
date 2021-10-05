@@ -77,7 +77,7 @@ export class ErrorHandler extends Handler<HttpHandlerResponse, HttpHandlerRespon
 
   private createErrorResponse(res: HttpHandlerResponse, msg: string, showError: boolean) {
 
-    return showError ? { ...res, body: msg + ': ' + res.body, status: res.status } : { ...res, body: msg, status: res.status  };
+    return showError ? { ...res, body: msg + ': ' + res.body } : { ...res, body: msg };
 
   }
 
