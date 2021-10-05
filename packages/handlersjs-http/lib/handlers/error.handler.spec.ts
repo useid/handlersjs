@@ -132,6 +132,8 @@ describe('error_handler', () => {
     ${errorHandlerFalse}| ${{ ...response, status: 510 }}       | ${`Not Extended`}
     ${errorHandlerTrue} | ${{ ...response, status: 511 }}       | ${`Network Authentication Required: ${response.body}`}
     ${errorHandlerFalse}| ${{ ...response, status: 511 }}       | ${`Network Authentication Required`}
+    ${errorHandlerTrue} | ${{ ...response, status: 555 }}       | ${`An Unexpected Error Occurred: ${response.body}`}
+    ${errorHandlerFalse}| ${{ ...response, status: 555 }}       | ${`An Unexpected Error Occurred`}
   `('should return $expected when handler is $a and response is $b', async ({ handler, resp, expected }) => {
 
       const res = await handler.handle(resp).toPromise();
