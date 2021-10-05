@@ -100,44 +100,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
       }),
       switchMap((context: HttpHandlerContext) => this.httpHandler.handle(context)),
-      catchError((error) => {
-
-        if (error.status && !error.headers) {
-
-          error.headers = {};
-
-        }
-
-        switch (error.status) {
-
-          // if status is undefined, check if the error has a message, otherwise return server error response without the message.
-          case undefined: {
-
-            if(error.message) {
-
-              return of({ body: 'The server could not process the request due to an error:\n' + error.message, headers: {}, status: 500 });
-
-            } else {
-
-              return of({ body: 'Internal Server Error', headers: {}, status: 500 });
-
-            }
-
-          }
-
-          // Provide custom errors for common status codes
-          case 400: return of({ ...error, body: 'Bad Request' });
-          case 401: return of({ ...error, body: 'Unauthorized' });
-          case 403: return of({ ...error, body: 'Forbidden' });
-          case 404: return of({ ...error, body: 'Not Found' });
-          case 405: return of({ ...error, body: 'Method Not Allowed' });
-          case 500: return of({ ...error, body: 'Internal Server Error' });
-          // If no cases match, return a default error message.
-          default: return error.status < 600 && error.status >= 400 ?  of({ ...error, body: 'An Unexpected Error Occured' }) : of({ body: 'An Unexpected Error Occured', headers: error.headers, status: 500 });
-
-        }
-
-      }),
+      catchError((error) => of({ ...error, body: 'Internal Server Error', status: 500 })),
       switchMap((response) => {
 
         const contentTypeHeader = response.headers['content-type'];
