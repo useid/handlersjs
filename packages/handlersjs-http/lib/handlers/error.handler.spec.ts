@@ -1,6 +1,6 @@
 import { of } from 'rxjs';
-import { PipeThroughHandler } from '@digita-ai/handlersjs-core';
 import { HttpHandlerResponse } from '../models/http-handler-response';
+import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpCorsRequestHandler } from './http-cors-request.handler';
 import { ErrorHandler } from './error.handler';
 
@@ -12,18 +12,15 @@ const response: HttpHandlerResponse = {
   status: 400,
 };
 
-const response200: HttpHandlerResponse = {
-  body: 'upstream successful response body',
-  headers: {
-    location: `http://test.be`,
+const context: HttpHandlerContext = {
+  request: {
+    url: new URL('http://example.org'),
+    method: 'GET',
+    headers: {},
   },
-  status: 200,
 };
 
 describe('error_handler', () => {
-
-  const errorHandlerTrue = new ErrorHandler(true);
-  const errorHandlerFalse = new ErrorHandler();
 
   const nestedHttpHandler = {
     canHandle: jest.fn().mockReturnValue(of(true)),
@@ -31,7 +28,10 @@ describe('error_handler', () => {
     safeHandle: jest.fn().mockReturnValue(of(response)),
   };
 
-  const corsHandler = new HttpCorsRequestHandler(new PipeThroughHandler([ nestedHttpHandler, errorHandlerTrue ]));
+  const errorHandlerTrue = new ErrorHandler(nestedHttpHandler, true);
+  const errorHandlerFalse = new ErrorHandler(nestedHttpHandler);
+
+  const corsHandler = new HttpCorsRequestHandler(errorHandlerTrue);
 
   it('should be instantiated correctly', () => {
 
@@ -39,14 +39,14 @@ describe('error_handler', () => {
 
   });
 
+  it('should error when no nested handler was received', async () => {
+
+    await expect(new ErrorHandler(null)).toThrow('A HttpHandler must be provided');
+    await expect(new ErrorHandler(undefined)).toThrow('A HttpHandler must be provided');
+
+  });
+
   describe('handler', () => {
-
-    it('should error when no response was received', async () => {
-
-      await expect(errorHandlerTrue.handle(undefined).toPromise()).rejects.toThrow('A response must be provided');
-      await expect(errorHandlerTrue.handle(null).toPromise()).rejects.toThrow('A response must be provided');
-
-    });
 
     it.each`
     handler             | resp                                  | expected
@@ -143,7 +143,7 @@ describe('error_handler', () => {
 
     it('should do nothing if status is 200', async () => {
 
-      const res = await errorHandlerFalse.handle(response200).toPromise();
+      const res = await errorHandlerFalse.handle(context).toPromise();
       expect(res.body).toEqual(`upstream successful response body`);
       expect(res.status).toEqual(200);
 
@@ -170,9 +170,9 @@ describe('error_handler', () => {
 
   describe('canHandle', () => {
 
-    it('should return true when response is received', async () => {
+    it('should return true when context is received', async () => {
 
-      await expect(errorHandlerTrue.canHandle(response).toPromise()).resolves.toEqual(true);
+      await expect(errorHandlerTrue.canHandle(context).toPromise()).resolves.toEqual(true);
 
     });
 
