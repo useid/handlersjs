@@ -26,7 +26,7 @@ export const statusCodes: { [code: number]: string } = {
   417: 'Expectation Failed',
   418: `I'm a teapot`,
   421: 'Misdirected Request',
-  422: 'Unprocesable Entity',
+  422: 'Unprocessable Entity',
   423: 'Locked',
   424: 'Failed Dependency',
   425: 'Too Early',
@@ -74,11 +74,19 @@ export class ErrorHandler extends Handler<HttpHandlerContext, HttpHandlerRespons
 
     if (!context) { return throwError(new Error('A context must be provided')); }
 
-    return this.nestedHandler.handle(context).pipe(catchError((error) => of({
-      status: statusCodes[error?.status] ? error.status : 500,
-      headers: error?.headers ?? {},
-      body: this.showUpstreamError ? error?.body ?? error : statusCodes[error?.status] ?? statusCodes[500],
-    })));
+    return this.nestedHandler.handle(context).pipe(
+      catchError((error) => of({
+        status: statusCodes[error?.status] ? error.status : 500,
+        headers: error?.headers ?? {},
+        body: this.showUpstreamError
+          ? error?.body
+            ? statusCodes[error?.status]
+              ? `${statusCodes[error?.status]}: ${error?.body}`
+              : error?.body
+            : error?.body ?? error
+          : statusCodes[error?.status] ?? statusCodes[500],
+      }))
+    );
 
   }
 
