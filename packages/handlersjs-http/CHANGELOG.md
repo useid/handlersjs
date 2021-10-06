@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.4.4](https://github.com/digita-ai/handlersjs/compare/v0.4.3...v0.4.4) (2021-10-06)
+
+**Note:** Version bump only for package @digita-ai/handlersjs-http
+
+
+
+
+
 ### [0.4.3](https://github.com/digita-ai/handlersjs/compare/v0.4.2...v0.4.3) (2021-10-05)
 
 
