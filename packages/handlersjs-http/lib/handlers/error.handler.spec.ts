@@ -55,9 +55,9 @@ describe('error_handler', () => {
     flag    | status         | expected
     ${true} | ${ undefined } | ${`${response.body}`}
     ${false}| ${ undefined } | ${`Internal Server Error`}
-    ${true} | ${ 400 }       | ${`Bad Request: ${response.body}`}
+    ${true} | ${ 400 }       | ${`${response.body}`}
     ${false}| ${ 400 }       | ${`Bad Request`}
-    ${true} | ${ 500 }       | ${`Internal Server Error: ${response.body}`}
+    ${true} | ${ 500 }       | ${`${response.body}`}
     ${false}| ${ 500 }       | ${`Internal Server Error`}
 
   `('should return $expected when $status is handled and flag is $flag', async ({ flag, status, expected }) => {
@@ -136,7 +136,7 @@ describe('error_handler', () => {
         },
       }).toPromise();
 
-      expect(resp).toEqual({ body: 'Bad Request: upstream response body', status: 400, headers: { location: 'http://test.be', 'access-control-allow-origin': '*' } });
+      expect(resp).toEqual({ body: 'upstream response body', status: 400, headers: { location: 'http://test.be', 'access-control-allow-origin': '*' } });
 
     });
 

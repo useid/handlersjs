@@ -79,11 +79,7 @@ export class ErrorHandler extends Handler<HttpHandlerContext, HttpHandlerRespons
         status: statusCodes[error?.status] ? error.status : 500,
         headers: error?.headers ?? {},
         body: this.showUpstreamError
-          ? error?.body
-            ? statusCodes[error?.status]
-              ? `${statusCodes[error?.status]}: ${error?.body}`
-              : error?.body
-            : error?.body ?? error
+          ? error?.body ?? error
           : statusCodes[error?.status] ?? statusCodes[500],
       }))
     );
