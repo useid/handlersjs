@@ -1,89 +1,94 @@
 import { Observable, of, throwError } from 'rxjs';
 import { Handler } from '@digita-ai/handlersjs-core';
+import { catchError } from 'rxjs/operators';
 import { HttpHandlerResponse } from '../models/http-handler-response';
+import { HttpHandler } from '../models/http-handler';
+import { HttpHandlerContext } from '../models/http-handler-context';
 
-export class ErrorHandler extends Handler<HttpHandlerResponse, HttpHandlerResponse> {
+export const statusCodes: { [code: number]: string } = {
+  400: 'Bad Request',
+  401: 'Unauthorized',
+  402: 'Payment Required',
+  403: 'Forbidden',
+  404: 'Not Found',
+  405: 'Method Not Allowed',
+  406: 'Not Acceptable',
+  407: 'Proxy Authentication Required',
+  408: 'Request Timeout',
+  409: 'Conflict',
+  410: 'Gone',
+  411: 'Length Required',
+  412: 'Precondition Failed',
+  413: 'Payload Too Large',
+  414: 'URI Too Long',
+  415: 'Unsupported Media Type',
+  416: 'Range Not Satisfiable',
+  417: 'Expectation Failed',
+  418: `I'm a teapot`,
+  421: 'Misdirected Request',
+  422: 'Unprocessable Entity',
+  423: 'Locked',
+  424: 'Failed Dependency',
+  425: 'Too Early',
+  426: 'Upgrade Required',
+  428: 'Precondition required',
+  429: 'Too Many Requests',
+  431: 'Request Header Fields Too Large',
+  451: 'Unavailable For Legal Reasons',
+  500: 'Internal Server Error',
+  501: 'Not Implemented',
+  502: 'Bad Gateway',
+  503: 'Service Unavailable',
+  504: 'Gateway Timeout',
+  505: 'HTTP Version Not Supported',
+  506: 'Variant Also Negotiates',
+  507: 'Insufficient Storage',
+  508: 'Loop detected',
+  510: 'Not Extended',
+  511: 'Network Authentication Required',
+};
+
+export class ErrorHandler extends Handler<HttpHandlerContext, HttpHandlerResponse> {
 
   /**
    * Creates an {ErrorHandler} that catches errors and returns an error response to the given handler.
    *
    * @param {boolean} showUpstreamError - flag to show upstream errors or not
    */
-  constructor(private showUpstreamError: boolean = false) {
+  constructor(
+    private nestedHandler: HttpHandler,
+    private showUpstreamError: boolean = false
+  ) {
 
     super();
 
-  }
+    if (!nestedHandler) {
 
-  handle(response: HttpHandlerResponse): Observable<HttpHandlerResponse>{
-
-    if (!response) { return throwError(new Error('A response must be provided')); }
-
-    switch (response.status) {
-
-      case undefined: {
-
-        return this.showUpstreamError ? of({ ...response, body: 'The server could not process the request due to an unknown error:\n' + response.body, status: 500 }) : of({ ...response, body: 'The server could not process the request due to an unknown error', status: 500 });
-
-      }
-
-      case 400: return of(this.createErrorResponse(response, 'Bad Request', this.showUpstreamError));
-      case 401: return of(this.createErrorResponse(response, 'Unauthorized', this.showUpstreamError));
-      case 402: return of(this.createErrorResponse(response, 'Payment Required', this.showUpstreamError));
-      case 403: return of(this.createErrorResponse(response, 'Forbidden', this.showUpstreamError));
-      case 404: return of(this.createErrorResponse(response, 'Not Found', this.showUpstreamError));
-      case 405: return of(this.createErrorResponse(response, 'Method Not Allowed', this.showUpstreamError));
-      case 406: return of(this.createErrorResponse(response, 'Not Acceptable', this.showUpstreamError));
-      case 407: return of(this.createErrorResponse(response, 'Proxy Authentication Required', this.showUpstreamError));
-      case 408: return of(this.createErrorResponse(response, 'Request Timeout', this.showUpstreamError));
-      case 409: return of(this.createErrorResponse(response, 'Conflict', this.showUpstreamError));
-      case 410: return of(this.createErrorResponse(response, 'Gone', this.showUpstreamError));
-      case 411: return of(this.createErrorResponse(response, 'Length Required', this.showUpstreamError));
-      case 412: return of(this.createErrorResponse(response, 'Precondition Failed', this.showUpstreamError));
-      case 413: return of(this.createErrorResponse(response, 'Payload Too Large', this.showUpstreamError));
-      case 414: return of(this.createErrorResponse(response, 'URI Too Long', this.showUpstreamError));
-      case 415: return of(this.createErrorResponse(response, 'Unsupported Media Type', this.showUpstreamError));
-      case 416: return of(this.createErrorResponse(response, 'Range Not Satisfiable', this.showUpstreamError));
-      case 417: return of(this.createErrorResponse(response, 'Expectation Failed', this.showUpstreamError));
-      case 418: return of(this.createErrorResponse(response, `I'm a teapot`, this.showUpstreamError));
-      case 421: return of(this.createErrorResponse(response, 'Misdirected Request', this.showUpstreamError));
-      case 422: return of(this.createErrorResponse(response, 'Unprocessable Entity', this.showUpstreamError));
-      case 423: return of(this.createErrorResponse(response, 'Locked', this.showUpstreamError));
-      case 424: return of(this.createErrorResponse(response, 'Failed Dependency', this.showUpstreamError));
-      case 425: return of(this.createErrorResponse(response, 'Too Early', this.showUpstreamError));
-      case 426: return of(this.createErrorResponse(response, 'Upgrade Required', this.showUpstreamError));
-      case 428: return of(this.createErrorResponse(response, 'Precondition required', this.showUpstreamError));
-      case 429: return of(this.createErrorResponse(response, 'Too Many Requests', this.showUpstreamError));
-      case 431: return of(this.createErrorResponse(response, 'Request Header Fields Too Large', this.showUpstreamError));
-      case 451: return of(this.createErrorResponse(response, 'Unavailable For Legal Reasons', this.showUpstreamError));
-      case 500: return of(this.createErrorResponse(response, 'Internal Server Error', this.showUpstreamError));
-      case 501: return of(this.createErrorResponse(response, 'Not Implemented', this.showUpstreamError));
-      case 502: return of(this.createErrorResponse(response, 'Bad Gateway', this.showUpstreamError));
-      case 503: return of(this.createErrorResponse(response, 'Service Unavailable', this.showUpstreamError));
-      case 504: return of(this.createErrorResponse(response, 'Gateway Timeout', this.showUpstreamError));
-      case 505: return of(this.createErrorResponse(response, 'HTTP Version Not Supported', this.showUpstreamError));
-      case 506: return of(this.createErrorResponse(response, 'Variant Also Negotiates', this.showUpstreamError));
-      case 507: return of(this.createErrorResponse(response, 'Insufficient Storage', this.showUpstreamError));
-      case 508: return of(this.createErrorResponse(response, 'Loop detected', this.showUpstreamError));
-      case 510: return of(this.createErrorResponse(response, 'Not Extended', this.showUpstreamError));
-      case 511: return of(this.createErrorResponse(response, 'Network Authentication Required', this.showUpstreamError));
-      default: return response.status < 600 && response.status >= 400
-        ? of(this.createErrorResponse(response, 'An Unexpected Error Occurred', this.showUpstreamError))
-        : of(response);
+      throw new Error('A HttpHandler must be provided');
 
     }
 
   }
 
-  private createErrorResponse(res: HttpHandlerResponse, msg: string, showError: boolean) {
+  handle(context: HttpHandlerContext): Observable<HttpHandlerResponse>{
 
-    return showError ? { ...res, body: msg + ': ' + res.body } : { ...res, body: msg };
+    if (!context) { return throwError(new Error('A context must be provided')); }
+
+    return this.nestedHandler.handle(context).pipe(
+      catchError((error) => of({
+        status: statusCodes[error?.status] ? error.status : 500,
+        headers: error?.headers ?? {},
+        body: this.showUpstreamError
+          ? error?.body ?? error
+          : statusCodes[error?.status] ?? statusCodes[500],
+      }))
+    );
 
   }
 
-  canHandle(response: HttpHandlerResponse): Observable<boolean> {
+  canHandle(context: HttpHandlerContext): Observable<boolean> {
 
-    return response? of(true) : of(false);
+    return context? of(true) : of(false);
 
   }
 
