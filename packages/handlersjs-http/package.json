@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/handlersjs-http",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "",
   "main": "./dist/public-api.js",
   "directories": {
@@ -50,7 +50,7 @@
     "typescript": "^4.4.4"
   },
   "dependencies": {
-    "@digita-ai/handlersjs-core": "0.4.6",
+    "@digita-ai/handlersjs-core": "0.4.7",
     "@types/semver": "^7.3.9",
     "node-fetch": "^2.6.1",
     "rxjs": "^7.4.0",
