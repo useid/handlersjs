@@ -5,6 +5,11 @@
     "outDir": "./dist",
     "module": "commonjs",
     //
+    "types": [
+      "jest",
+      "n3",
+      "node-fetch"
+    ],
     "inlineSourceMap": false,
     "inlineSources": true,
     "sourceMap": true,
