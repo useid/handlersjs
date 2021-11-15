@@ -1,4 +1,4 @@
-import { from, Observable, of, throwError } from 'rxjs';
+import { from, lastValueFrom, Observable, of, throwError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { Handler } from './handler';
@@ -35,7 +35,7 @@ export class SequenceHandler<T, S> extends Handler<T, S> {
 
     for (const handler of handlers) {
 
-      temporaryIntermediateOutput = await handler.safeHandle(input, temporaryIntermediateOutput).toPromise();
+      temporaryIntermediateOutput = await lastValueFrom(handler.safeHandle(input, temporaryIntermediateOutput));
 
     }
 

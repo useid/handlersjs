@@ -169,7 +169,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     it('should calculate the content-length of the response body with the given charset', async () => {
 
-      const body = btoa('This is a response body with a certain length.');
+      const body = Buffer.from('This is a response body with a certain length.').toString('base64');
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { 'content-length': '2', 'content-type': 'text/html; charset=base64' }, status:200 }));
 
       await handler.handle(streamMock).toPromise();
