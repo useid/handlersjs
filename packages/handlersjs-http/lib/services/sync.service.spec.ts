@@ -9,10 +9,10 @@ const { Response } = jest.requireActual('node-fetch');
 
 describe('SyncService', () => {
 
-  const headers = new Headers({
+  const headers = {
     'Content-Type': 'application/json',
     Accept: '*/*',
-  });
+  };
 
   const peers = [ 'peer1.com', 'peer2.com' ];
 
