@@ -109,7 +109,7 @@ describe('HttpCorsRequestHandler', () => {
 
         const response = await service.handle(context).toPromise();
         expect(handler.handle).toHaveBeenCalledTimes(1);
-        expect(response).toEqual(expect.objectContaining({ headers: { ...mockResponseHeaders, 'access-control-allow-origin': '*' } }));
+        expect(response).toEqual(expect.objectContaining({ headers: { ...mockResponseHeaders, 'access-control-allow-origin': 'http://test.de', 'vary': 'origin' } }));
 
       });
 
@@ -119,7 +119,7 @@ describe('HttpCorsRequestHandler', () => {
         context.request.method = 'OPTIONS';
         const response = await service.handle(context).toPromise();
         expect(handler.handle).toHaveBeenCalledTimes(0);
-        expect(response.headers).toEqual(expect.objectContaining({ 'access-control-max-age': '-1', 'access-control-allow-origin': '*', 'access-control-allow-methods': 'GET, HEAD, PUT, POST, DELETE, PATCH' }));
+        expect(response.headers).toEqual(expect.objectContaining({ 'access-control-max-age': '-1', 'access-control-allow-origin': 'http://test.de', 'access-control-allow-methods': 'GET, HEAD, PUT, POST, DELETE, PATCH' }));
         expect(response).toEqual(expect.objectContaining({ status: 204 }));
 
       });
@@ -146,8 +146,9 @@ describe('HttpCorsRequestHandler', () => {
       expect(response.headers).toEqual(
         expect.objectContaining({
           ...mockResponseHeaders,
+          'vary': 'origin',
           'access-control-max-age': '-1',
-          'access-control-allow-origin': '*',
+          'access-control-allow-origin': 'http://test.de',
           'access-control-allow-methods': 'GET, HEAD, PUT, POST, DELETE, PATCH',
         })
       );

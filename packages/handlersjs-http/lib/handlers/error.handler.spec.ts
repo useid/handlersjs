@@ -136,7 +136,7 @@ describe('error_handler', () => {
         },
       }).toPromise();
 
-      expect(resp).toEqual({ body: 'upstream response body', status: 400, headers: { location: 'http://test.be', 'access-control-allow-origin': '*' } });
+      expect(resp).toEqual({ body: 'upstream response body', status: 400, headers: { location: 'http://test.be', 'access-control-allow-origin': 'http://test.de', 'vary': 'origin' } });
 
     });
 

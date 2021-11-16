@@ -62,13 +62,7 @@ export class HttpCorsRequestHandler extends HttpHandler {
       },
     };
 
-    const allowOrigin = origins
-      ? origins.includes(requestedOrigin)
-        ? requestedOrigin
-        : undefined
-      : credentials
-        ? requestedOrigin
-        : '*';
+    const allowOrigin = !origins || origins.includes(requestedOrigin) ? requestedOrigin : undefined;
 
     const allowHeadersOrRequested = allowHeaders?.join(',') ?? requestedHeaders;
 
