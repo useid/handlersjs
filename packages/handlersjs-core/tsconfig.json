@@ -4,6 +4,10 @@
     "baseUrl": "./lib",
     "outDir": "./dist",
     "module": "commonjs",
+    //
+    "types": [
+      "node"
+    ]
   },
   "include": [ 
       "lib" 
