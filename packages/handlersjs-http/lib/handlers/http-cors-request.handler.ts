@@ -5,17 +5,13 @@ import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { cleanHeaders } from '../util/clean-headers';
 
-export abstract class HttpCorsOptions {
-
-  constructor(
-    public origins?: string[],
-    public allowMethods?: string[],
-    public allowHeaders?: string[],
-    public exposeHeaders?: string[],
-    public credentials?: boolean,
-    public maxAge?: number,
-  ) { }
-
+export interface HttpCorsOptions {
+  origins?: string[];
+  allowMethods?: string[];
+  allowHeaders?: string[];
+  exposeHeaders?: string[];
+  credentials?: boolean;
+  maxAge?: number;
 }
 export class HttpCorsRequestHandler extends HttpHandler {
 
