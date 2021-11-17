@@ -3,6 +3,13 @@
   "version": "0.4.6",
   "description": "",
   "main": "./dist/public-api.js",
+  "types": "./dist/public-api.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "require": "./dist/public-api.js"
+    }
+  },
   "directories": {
     "lib": "lib"
   },
@@ -11,7 +18,6 @@
     "dist",
     "config"
   ],
-  "types": "./dist/public-api.d.ts",
   "scripts": {
     "test": "jest",
     "test:ci": "jest --silent --runInBand --passWithNoTests",
@@ -47,7 +53,7 @@
   },
   "dependencies": {
     "clone": "^2.1.2",
-    "rxjs": "^6.6.7"
+    "rxjs": "^7.4.0"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core",
   "lsd:components": "dist/components/components.jsonld",

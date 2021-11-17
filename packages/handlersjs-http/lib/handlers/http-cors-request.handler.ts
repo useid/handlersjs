@@ -1,10 +1,9 @@
 import { Observable, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs//operators';
+import { map } from 'rxjs/operators';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { cleanHeaders } from '../util/clean-headers';
-import { ErrorHandler } from './error.handler';
 
 export abstract class HttpCorsOptions {
 
