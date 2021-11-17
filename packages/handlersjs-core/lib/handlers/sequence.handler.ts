@@ -1,4 +1,4 @@
-import { from, lastValueFrom, Observable, of, throwError } from 'rxjs';
+import { from, lastValueFrom, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { Handler } from './handler';
