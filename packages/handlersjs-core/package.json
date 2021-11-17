@@ -43,7 +43,7 @@
     "lint-staged": "^10.5.4",
     "rimraf": "^2.7.1",
     "ts-node": "^9.1.1",
-    "typescript": "3.8.3"
+    "typescript": "^4.2.3"
   },
   "dependencies": {
     "clone": "^2.1.2",
