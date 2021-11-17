@@ -168,7 +168,6 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
    * Indicates this handler accepts every NodeHttpStreams pair as input.
    *
    * @param {NodeHttpStreams} input - the incoming streams
-   * @returns always `of(true)`
    */
   canHandle(input: NodeHttpStreams): Observable<boolean> {
 

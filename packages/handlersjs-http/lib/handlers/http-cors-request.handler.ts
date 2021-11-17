@@ -1,11 +1,13 @@
 import { Observable, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs//operators';
+import { map } from 'rxjs//operators';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { cleanHeaders } from '../util/clean-headers';
-import { ErrorHandler } from './error.handler';
 
+/**
+ * Abstract class representing Http CORS options.
+ */
 export abstract class HttpCorsOptions {
 
   constructor(
@@ -18,8 +20,19 @@ export abstract class HttpCorsOptions {
   ) { }
 
 }
+
+/**
+ * A { HttpHandler } that handles CORS requests.
+ */
 export class HttpCorsRequestHandler extends HttpHandler {
 
+  /**
+   * Creates a { HttpCorsRequestHandler }.
+   *
+   * @param { HttpHandler } handler - The nested handler to pass the request to.
+   * @param { HttpCorsOptions } options? - The CORS options.
+   * @param passThroughOptions - Flag to indicate to include request options or not.
+   */
   constructor(
     private handler: HttpHandler,
     private options?: HttpCorsOptions,
@@ -30,12 +43,21 @@ export class HttpCorsRequestHandler extends HttpHandler {
 
   }
 
+  /**
+   * Confirms whether the handler can handle the context.
+   */
   canHandle(context: HttpHandlerContext): Observable<boolean> {
 
     return of(true);
 
   }
 
+  /**
+   * Handles the context. Cleans the headers on the request and checks if it's a preflight request or not and handles it accordingly.
+   * Adds the appropriate CORS headers to the response.
+   *
+   * @param { HttpHandlerContext } context
+   */
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
     const { origins, allowMethods, allowHeaders, exposeHeaders, credentials, maxAge } = this.options || ({});

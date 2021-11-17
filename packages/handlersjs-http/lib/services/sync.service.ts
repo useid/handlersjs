@@ -2,12 +2,16 @@ import { Handler, TimedTypedKeyValueStore } from '@digita-ai/handlersjs-core';
 import fetch from 'node-fetch';
 import { from, Observable, of } from 'rxjs';
 
+/**
+ * A sync service that uses the handlersjs-core library to store and retrieve data.
+ */
 export class SyncService<T, S extends string, P extends string, M extends {
   [s in S]: T[] } & { [p in P]: string[] }> extends Handler<void, void> {
 
   latestSync: Date | undefined = undefined;
 
   /**
+   * Creates a { SyncService }.
    *
    * @param storage key in which the storage is located
    * @param peers key in which the peers are located
@@ -74,6 +78,9 @@ export class SyncService<T, S extends string, P extends string, M extends {
 
   }
 
+  /**
+   * Handles the input by calling the sync method.
+   */
   handle(input: void): Observable<void> {
 
     return from(this.sync());

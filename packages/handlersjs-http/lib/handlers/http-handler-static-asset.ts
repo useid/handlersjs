@@ -10,14 +10,27 @@ import { NotFoundHttpError } from '../errors/not-found-http-error';
 import { UnsupportedMediaTypeHttpError } from '../errors/unsupported-media-type-http-error';
 import { ForbiddenHttpError } from '../errors/forbidden-http-error';
 
+/**
+ * A { HttpHandler } that serves static assets.
+ */
 export class HttpHandlerStaticAssetService extends HttpHandler {
 
+  /**
+   * Creates a { HttpHandlerStaticAssetService }.
+   *
+   * @param { Logger } logger - The logger used to log debug messages.
+   * @param { string } path - The path to the static asset.
+   * @param { string } contentType - The content type of the static asset.
+   */
   constructor(protected logger: Logger, private path: string, private contentType: string) {
 
     super();
 
   }
 
+  /**
+   * Confirms whether the handler can handle the given context.
+   */
   canHandle(context: HttpHandlerContext): Observable<boolean> {
 
     this.logger.debug(HttpHandlerStaticAssetService.name, 'Checking canHandle', context.request);
@@ -26,6 +39,14 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
 
   }
 
+  /**
+   * Handles the context.
+   * Checks if an accept header is present.
+   * Checks if the content type is supported.
+   * Reads the file and returns the content if the file was found.
+   *
+   * @param { HttpHandlerContext } context - The context to handle.
+   */
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
     const canHandleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];
