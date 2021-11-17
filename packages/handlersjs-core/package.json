@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/handlersjs-core",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "",
   "main": "./dist/public-api.js",
   "types": "./dist/public-api.d.ts",
