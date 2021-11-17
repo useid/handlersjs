@@ -1,6 +1,11 @@
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
+/**
+ * Abstract class representing a { Handler<T = void, S = void> }.
+ * Contains 2 abstract methods: canHandle and handle.
+ * And a safeHandle method that checks if the handler can handle the request and then calls handle.
+ */
 export abstract class Handler<T = void, S = void> {
 
   public abstract canHandle(input: T, intermediateOutput?: S): Observable<boolean>;
