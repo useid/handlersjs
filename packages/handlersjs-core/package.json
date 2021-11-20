@@ -71,7 +71,7 @@
     "displayName": "core",
     "coverageThreshold": {
       "global": {
-        "branches": 88,
+        "branches": 87.93,
         "functions": 88.52,
         "lines": 90.81,
         "statements": 91.17
