@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 import { promises as fsPromises } from 'fs';
+import { dirname, isAbsolute, join } from 'path';
 import clone from 'clone';
 import { TypedKeyValueStore } from './models/typed-key-value-store';
 
@@ -30,7 +31,13 @@ import { TypedKeyValueStore } from './models/typed-key-value-store';
  */
 export class JsonFileStore<M extends Record<string, any>> implements TypedKeyValueStore<M> {
 
-  constructor(private path: string) { }
+  private path: string;
+
+  constructor(path: string) {
+
+    this.path = isAbsolute(path) ? path : join(process.cwd(), path);
+
+  }
 
   async get<T extends keyof M>(key: T): Promise<M[T] | undefined> {
 
@@ -50,7 +57,7 @@ export class JsonFileStore<M extends Record<string, any>> implements TypedKeyVal
 
   async set<T extends keyof M>(key: T, value: M[T]): Promise<this> {
 
-    return this.updateJson((json: M): this => {
+    return await this.updateJson((json: M): this => {
 
       json[key] = value;
 
@@ -62,7 +69,7 @@ export class JsonFileStore<M extends Record<string, any>> implements TypedKeyVal
 
   async delete<T extends keyof M>(key: T): Promise<boolean> {
 
-    return this.updateJson((json: M): boolean => {
+    return await this.updateJson((json: M): boolean => {
 
       if (typeof json[key] !== 'undefined') {
 
@@ -105,6 +112,7 @@ export class JsonFileStore<M extends Record<string, any>> implements TypedKeyVal
       const json = await this.getJson();
       const result = updateFn(json);
       const updatedText = JSON.stringify(json, null, 2);
+      await fsPromises.mkdir(dirname(this.path), { recursive: true });
       await fsPromises.writeFile(this.path, updatedText, 'utf8');
 
       return result;
