@@ -1,5 +1,13 @@
 import { KeyValueStore } from './key-value-store';
 
+/**
+ * Data structure that links a value to a timestamp
+ */
+export interface TimedValue<V> {
+  value: V;
+  timestamp: number;
+}
+
 export interface TimedKeyValueStore<K, V> extends KeyValueStore<K, V> {
 
   /**

@@ -15,4 +15,5 @@ export * from './storage/models/key-value-store';
 export * from './storage/models/timed-key-value-store';
 export * from './storage/models/timed-typed-key-value-store';
 export * from './storage/models/typed-key-value-store';
+export * from './storage/json-file-store';
 export * from './storage/memory-store';
