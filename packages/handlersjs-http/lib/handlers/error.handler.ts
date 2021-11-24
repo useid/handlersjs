@@ -72,7 +72,7 @@ export class ErrorHandler extends Handler<HttpHandlerContext, HttpHandlerRespons
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse>{
 
-    if (!context) { return throwError(new Error('A context must be provided')); }
+    if (!context) { return throwError(() => new Error('A context must be provided')); }
 
     return this.nestedHandler.handle(context).pipe(
       catchError((error) => of({

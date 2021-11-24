@@ -24,7 +24,7 @@ export class MockHttpHandler extends HttpHandler {
 
     if (!context) {
 
-      return throwError(new Error('Context cannot be null or undefined'));
+      return throwError(() => new Error('Context cannot be null or undefined'));
 
     }
 
@@ -46,7 +46,7 @@ export class MockHttpHandler extends HttpHandler {
    */
   canHandle(context: HttpHandlerContext): Observable<boolean> {
 
-    return context ? of(true) : throwError(new Error('Context cannot be null or undefined'));
+    return context ? of(true) : throwError(() => new Error('Context cannot be null or undefined'));
 
   }
 
