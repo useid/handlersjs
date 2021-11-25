@@ -26,7 +26,7 @@ export class Scheduler extends Daemon {
 
     if (this.currentTimeout) {
 
-      return throwError(new Error('Scheduler was already running'));
+      return throwError(() => new Error('Scheduler was already running'));
 
     } else {
 
@@ -54,7 +54,7 @@ export class Scheduler extends Daemon {
 
     } else {
 
-      return throwError(new Error("Scheduler wasn't running"));
+      return throwError(() => new Error("Scheduler wasn't running"));
 
     }
 
