@@ -1,4 +1,4 @@
-import { of } from 'rxjs';
+import { of, lastValueFrom } from 'rxjs';
 import { Handler } from './handler';
 import { PassThroughHandler } from './pass-through.handler';
 
@@ -37,7 +37,7 @@ describe('PassThroughHandler', () => {
 
     it('should return true if input and intermediateOutput was provided', async () => {
 
-      await expect(handler.canHandle(input, intermediateOutput).toPromise()).resolves.toEqual(true);
+      await expect(lastValueFrom(handler.canHandle(input, intermediateOutput))).resolves.toEqual(true);
 
     });
 
@@ -47,13 +47,13 @@ describe('PassThroughHandler', () => {
 
     it('should handle the input and intermediateOutput', async () => {
 
-      await expect(handler.handle(input, intermediateOutput).toPromise()).resolves.toEqual({ msg: 'output' });
+      await expect(lastValueFrom(handler.handle(input, intermediateOutput))).resolves.toEqual({ msg: 'output' });
 
     });
 
     it('should call the nested handler', async () => {
 
-      await handler.handle(input, intermediateOutput).toPromise();
+      await lastValueFrom(handler.handle(input, intermediateOutput));
       expect(nestedHandler.handle).toHaveBeenCalledWith(input, intermediateOutput);
 
     });

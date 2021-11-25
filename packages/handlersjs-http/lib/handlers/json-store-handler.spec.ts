@@ -1,4 +1,5 @@
 import { MemoryStore } from '@digita-ai/handlersjs-core';
+import { lastValueFrom } from 'rxjs';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpMethods } from '../models/http-method';
@@ -38,7 +39,7 @@ describe('JsonStoreHandler', () => {
 
     it('can GET the data correctly', async () => {
 
-      const response: HttpHandlerResponse = await jsonStoreHandler.handle(requestContext).toPromise();
+      const response: HttpHandlerResponse = await lastValueFrom(jsonStoreHandler.handle(requestContext));
       const resultData: string[] = JSON.parse(response.body);
 
       expect(resultData).toEqual(inputData);
@@ -50,7 +51,7 @@ describe('JsonStoreHandler', () => {
       async (method) => {
 
         requestContext.request.method = method;
-        const response: HttpHandlerResponse = await jsonStoreHandler.handle(requestContext).toPromise();
+        const response: HttpHandlerResponse = await lastValueFrom(jsonStoreHandler.handle(requestContext));
 
         expect(response.status).toEqual(method === 'GET' ? 200 : 405);
 
@@ -59,7 +60,7 @@ describe('JsonStoreHandler', () => {
     it('returns "not found" if the data is not available', async () => {
 
       await memoryStore.delete('data');
-      const response: HttpHandlerResponse = await jsonStoreHandler.handle(requestContext).toPromise();
+      const response: HttpHandlerResponse = await lastValueFrom(jsonStoreHandler.handle(requestContext));
 
       expect(response.status).toEqual(404);
 
@@ -67,7 +68,7 @@ describe('JsonStoreHandler', () => {
 
     it('can GET updated data', async () => {
 
-      const response: HttpHandlerResponse = await jsonStoreHandler.handle(requestContext).toPromise();
+      const response: HttpHandlerResponse = await lastValueFrom(jsonStoreHandler.handle(requestContext));
       const resultData: string[] = JSON.parse(response.body);
 
       expect(resultData).toEqual(inputData);
@@ -75,7 +76,7 @@ describe('JsonStoreHandler', () => {
 
       // update the data
       await memoryStore.set('data', inputData2);
-      const response2 = await jsonStoreHandler.handle(requestContext).toPromise();
+      const response2 = await lastValueFrom(jsonStoreHandler.handle(requestContext));
       const resultData2 = JSON.parse(response2.body);
 
       expect(resultData2).toEqual(inputData2);
@@ -91,7 +92,7 @@ describe('JsonStoreHandler', () => {
         nextHour.setTime(nextHour.getTime() + 60*60*1000);
 
         requestContext.request.headers['if-modified-since'] = nextHour.toUTCString();
-        const response: HttpHandlerResponse = await jsonStoreHandler.handle(requestContext).toPromise();
+        const response: HttpHandlerResponse = await lastValueFrom(jsonStoreHandler.handle(requestContext));
 
         expect(response.status).toEqual(304); // not modified
         expect(response.body).toEqual('');
@@ -101,7 +102,7 @@ describe('JsonStoreHandler', () => {
       it('returns the data if it was updated', async () => {
 
         requestContext.request.headers['if-modified-since'] = new Date(1970).toUTCString();
-        const response: HttpHandlerResponse = await jsonStoreHandler.handle(requestContext).toPromise();
+        const response: HttpHandlerResponse = await lastValueFrom(jsonStoreHandler.handle(requestContext));
 
         expect(response.status).toEqual(200);
 
@@ -118,7 +119,7 @@ describe('JsonStoreHandler', () => {
 
     it('can always handle a request', async () => {
 
-      const canHandle = await jsonStoreHandler.canHandle(requestContext).toPromise();
+      const canHandle = await lastValueFrom(jsonStoreHandler.canHandle(requestContext));
       expect(canHandle).toEqual(true);
 
     });

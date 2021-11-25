@@ -1,4 +1,4 @@
-import { of, throwError } from 'rxjs';
+import { lastValueFrom, of, throwError } from 'rxjs';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpCorsRequestHandler } from './http-cors-request.handler';
@@ -47,7 +47,7 @@ describe('error_handler', () => {
 
     it('should error when no context was provided', async () => {
 
-      expect(() => errorHandlerTrue.handle(undefined).toPromise()).rejects.toThrow('A context must be provided');
+      expect(() => lastValueFrom(errorHandlerTrue.handle(undefined))).rejects.toThrow('A context must be provided');
 
     });
 
@@ -66,7 +66,7 @@ describe('error_handler', () => {
 
       const newErrorHandler = new ErrorHandler(nestedHttpHandler, flag);
 
-      const res = await newErrorHandler.handle(context).toPromise();
+      const res = await lastValueFrom(newErrorHandler.handle(context));
       expect(res.body).toEqual(expected);
 
     });
@@ -77,7 +77,7 @@ describe('error_handler', () => {
 
       const newErrorHandler = new ErrorHandler(nestedHttpHandler, true);
 
-      const res = newErrorHandler.handle(context).toPromise();
+      const res = lastValueFrom(newErrorHandler.handle(context));
 
       await expect(res).resolves.toEqual({
         body: {
@@ -99,7 +99,7 @@ describe('error_handler', () => {
 
       const newErrorHandler = new ErrorHandler(nestedHttpHandler, true);
 
-      const res = await newErrorHandler.handle(context).toPromise();
+      const res = await lastValueFrom(newErrorHandler.handle(context));
 
       expect(res.headers).toEqual({});
       expect(res.status).toEqual(500);
@@ -112,7 +112,7 @@ describe('error_handler', () => {
 
       const newErrorHandler = new ErrorHandler(nestedHttpHandler, true);
 
-      const res = await newErrorHandler.handle(context).toPromise();
+      const res = await lastValueFrom(newErrorHandler.handle(context));
       expect(res.body).toEqual(`upstream response body`);
       expect(res.status).toEqual(200);
 
@@ -125,7 +125,7 @@ describe('error_handler', () => {
       const newErrorHandler = new ErrorHandler(nestedHttpHandler, true);
       const corsHandler = new HttpCorsRequestHandler(newErrorHandler);
 
-      const resp = await corsHandler.handle({
+      const resp = await lastValueFrom(corsHandler.handle({
         request: {
           url: new URL('http://example.com'),
           method: 'GET',
@@ -134,7 +134,7 @@ describe('error_handler', () => {
             origin: 'http://test.de',
           },
         },
-      }).toPromise();
+      }));
 
       expect(resp).toEqual({ body: 'upstream response body', status: 400, headers: { location: 'http://test.be', 'access-control-allow-origin': '*' } });
 
@@ -146,14 +146,14 @@ describe('error_handler', () => {
 
     it('should return true when context is received', async () => {
 
-      await expect(errorHandlerTrue.canHandle(context).toPromise()).resolves.toEqual(true);
+      await expect(lastValueFrom(errorHandlerTrue.canHandle(context))).resolves.toEqual(true);
 
     });
 
     it('should return false when response is not received', async () => {
 
-      await expect(errorHandlerTrue.canHandle(undefined).toPromise()).resolves.toEqual(false);
-      await expect(errorHandlerTrue.canHandle(null).toPromise()).resolves.toEqual(false);
+      await expect(lastValueFrom(errorHandlerTrue.canHandle(undefined))).resolves.toEqual(false);
+      await expect(lastValueFrom(errorHandlerTrue.canHandle(null))).resolves.toEqual(false);
 
     });
 

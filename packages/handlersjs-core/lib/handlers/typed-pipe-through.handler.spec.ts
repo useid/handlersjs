@@ -1,3 +1,4 @@
+import { lastValueFrom } from 'rxjs';
 import { Handler } from './handler';
 import { TypedPipeThroughHandler } from './typed-pipe-through.handler';
 
@@ -29,13 +30,13 @@ describe('TypedPipeThroughHandler', () => {
 
     it('should return true if input was provided', async () => {
 
-      await expect(handler.canHandle({}).toPromise()).resolves.toEqual(true);
+      await expect(lastValueFrom(handler.canHandle({}))).resolves.toEqual(true);
 
     });
 
     it('should return true if input was not provided', async () => {
 
-      await expect(handler.canHandle(undefined).toPromise()).resolves.toEqual(true);
+      await expect(lastValueFrom(handler.canHandle(undefined))).resolves.toEqual(true);
 
     });
 

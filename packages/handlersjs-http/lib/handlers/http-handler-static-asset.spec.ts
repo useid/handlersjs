@@ -1,7 +1,7 @@
-import fs from 'fs';
 import { join } from 'path';
 import { mock } from 'jest-mock-extended';
 import { Logger } from '@digita-ai/handlersjs-core';
+import { lastValueFrom } from 'rxjs';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { NotFoundHttpError } from '../errors/not-found-http-error';
 import { ForbiddenHttpError } from '../errors/forbidden-http-error';
@@ -49,7 +49,7 @@ describe('HttpHandlerStaticAssetService', () => {
 
     it('should always return true', async() => {
 
-      const response = service.canHandle(context).toPromise();
+      const response = lastValueFrom(service.canHandle(context));
       await expect(response).resolves.toBe(true);
 
     });
@@ -60,8 +60,8 @@ describe('HttpHandlerStaticAssetService', () => {
 
     it('throws an UnsupportedMediaTypeHttpError when no accept header is found', async() => {
 
-      const response = service.handle({ ...context, request: { ...context.request, headers: { accept: undefined } } })
-        .toPromise();
+      const response = lastValueFrom(service
+        .handle({ ...context, request: { ...context.request, headers: { accept: undefined } } }));
 
       await expect(response).rejects.toThrowError(new UnsupportedMediaTypeHttpError('No accept header found'));
 
@@ -69,7 +69,7 @@ describe('HttpHandlerStaticAssetService', () => {
 
     it('throws an UnsupportedMediaTypeHttpError when content-type is not supported', async() => {
 
-      const response = service.handle({ ...context, request: { ...context.request, headers: { accept: 'application/json' } } }).toPromise();
+      const response = lastValueFrom(service.handle({ ...context, request: { ...context.request, headers: { accept: 'application/json' } } }));
       await expect(response).rejects.toThrowError(new UnsupportedMediaTypeHttpError('Content type not supported'));
 
     });
@@ -77,7 +77,7 @@ describe('HttpHandlerStaticAssetService', () => {
     it('throws a ForbiddenHttpError when filename is invalid', async() => {
 
       context.request.parameters.filename = '../../test.txt';
-      const response = service.handle(context).toPromise();
+      const response = lastValueFrom(service.handle(context));
       await expect(response).rejects.toThrowError(new ForbiddenHttpError(''));
 
     });
@@ -85,7 +85,7 @@ describe('HttpHandlerStaticAssetService', () => {
     it('throws a NotFoundHttpError when file is not found', async() => {
 
       context.request.parameters.filename = 'test.php';
-      const response = service.handle(context).toPromise();
+      const response = lastValueFrom(service.handle(context));
       await expect(response).rejects.toThrowError(new NotFoundHttpError('Error while trying to read file'));
 
     });
@@ -93,7 +93,7 @@ describe('HttpHandlerStaticAssetService', () => {
     it('throws a NotFoundHttpError when file is not provided', async() => {
 
       context.request.parameters.filename = undefined;
-      const response = service.handle(context).toPromise();
+      const response = lastValueFrom(service.handle(context));
       await expect(response).rejects.toThrowError(new NotFoundHttpError('Error while trying to read file'));
 
     });
@@ -101,7 +101,7 @@ describe('HttpHandlerStaticAssetService', () => {
     it('should return file content when file is found', async() => {
 
       context.request.parameters.filename = 'test.txt';
-      const response = await service.handle(context).toPromise();
+      const response = await lastValueFrom(service.handle(context));
       expect(response.body).toBe('test file');
 
     });
@@ -112,7 +112,7 @@ describe('HttpHandlerStaticAssetService', () => {
       const absoluteService = new HttpHandlerStaticAssetService(mock<Logger>(), absolutePath, 'text/plain');
 
       context.request.parameters.filename = 'test.txt';
-      const response = await absoluteService.handle(context).toPromise();
+      const response = await lastValueFrom(absoluteService.handle(context));
       expect(response.body).toBe('test file');
 
     });
