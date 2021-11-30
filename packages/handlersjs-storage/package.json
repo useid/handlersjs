@@ -1,5 +1,5 @@
 {
-  "name": "@digita-ai/handlersjs-core",
+  "name": "@digita-ai/handlersjs-storage",
   "version": "0.5.2",
   "description": "",
   "main": "./dist/public-api.js",
@@ -32,7 +32,7 @@
   "repository": {
     "type": "git",
     "url": "ssh://git@github.com/digita-ai/handlersjs.git",
-    "directory": "packages/handlersjs-core"
+    "directory": "packages/handlersjs-storage"
   },
   "author": "Wouter Janssens",
   "license": "ISC",
@@ -56,25 +56,25 @@
     "clone": "^2.1.2",
     "rxjs": "^7.4.0"
   },
-  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core",
+  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-storage",
   "lsd:components": "dist/components/components.jsonld",
   "lsd:contexts": {
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/context.jsonld": "dist/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-storage/^0.0.0/components/context.jsonld": "dist/components/context.jsonld"
   },
   "lsd:importPaths": {
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/": "dist/components/",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/config/": "config/",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/dist/": "dist/"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-storage/^0.0.0/components/": "dist/components/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-storage/^0.0.0/config/": "config/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-storage/^0.0.0/dist/": "dist/"
   },
   "jest": {
     "preset": "@digita-ai/jest-config",
     "displayName": "core",
     "coverageThreshold": {
       "global": {
-        "statements": 90.52,
-        "branches": 86.95,
-        "lines": 90.16,
-        "functions": 86.53
+        "statements": 68.65,
+        "branches": 48,
+        "lines": 68.75,
+        "functions": 76.92
       }
     },
     "coveragePathIgnorePatterns": [
