@@ -1,5 +1,5 @@
 import { from, Observable, of } from 'rxjs';
-import { TimedTypedKeyValueStore } from '@digita-ai/handlersjs-core';
+import { TimedTypedKeyValueStore } from '@digita-ai/handlersjs-storage';
 import { map, switchMap } from 'rxjs/operators';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
