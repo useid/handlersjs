@@ -54,13 +54,13 @@ export class RoutedHttpRequestHandler extends HttpHandler {
 
     if (!context) {
 
-      return throwError(new Error('context must be defined.'));
+      return throwError(() => new Error('context must be defined.'));
 
     }
 
     if (!context.request) {
 
-      return throwError(new Error('context.request must be defined.'));
+      return throwError(() => new Error('context.request must be defined.'));
 
     }
 

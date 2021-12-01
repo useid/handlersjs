@@ -23,15 +23,8 @@
  */
 
 import clone from 'clone';
+import { TimedValue } from './models/timed-key-value-store';
 import { TimedTypedKeyValueStore } from './models/timed-typed-key-value-store';
-
-/**
- * Datastructure that links a value to a timestamp
- */
-interface TimedValue<V> {
-  value: V;
-  timestamp: number;
-}
 
 /**
  * A {@link KeyValueStore} which uses a JavaScript Map for internal storage.

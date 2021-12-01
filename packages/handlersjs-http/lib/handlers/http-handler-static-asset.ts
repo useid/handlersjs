@@ -53,7 +53,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
 
     if (!context.request?.headers?.accept) {
 
-      return throwError(new UnsupportedMediaTypeHttpError('No accept header found'));
+      return throwError(() => new UnsupportedMediaTypeHttpError('No accept header found'));
 
     }
 
@@ -61,7 +61,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
 
     if (!reqHeaders.some((contentType) => canHandleAcceptHeaders.includes(contentType.trim()))) {
 
-      return throwError(new UnsupportedMediaTypeHttpError('Content type not supported'));
+      return throwError(() => new UnsupportedMediaTypeHttpError('Content type not supported'));
 
     }
 
@@ -69,7 +69,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
 
     if(filename && filename.includes('../')) {
 
-      return throwError(new ForbiddenHttpError());
+      return throwError(() => new ForbiddenHttpError());
 
     }
 
@@ -83,7 +83,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
         },
         status: 200,
       })),
-      catchError(() => throwError(new NotFoundHttpError('Error while trying to read file'))),
+      catchError(() => throwError(() => new NotFoundHttpError('Error while trying to read file'))),
     );
 
   }

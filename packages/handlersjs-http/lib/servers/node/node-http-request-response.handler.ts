@@ -59,7 +59,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
     if (!url) {
 
-      return throwError(new Error('url of the request cannot be null or undefined.'));
+      return throwError(() => new Error('url of the request cannot be null or undefined.'));
 
     }
 
@@ -67,13 +67,13 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
     if (!method) {
 
-      return throwError(new Error('method of the request cannot be null or undefined.'));
+      return throwError(() => new Error('method of the request cannot be null or undefined.'));
 
     }
 
     if (!nodeHttpStreams.requestStream.headers) {
 
-      return throwError(new Error('headers of the request cannot be null or undefined.'));
+      return throwError(() => new Error('headers of the request cannot be null or undefined.'));
 
     }
 
@@ -123,7 +123,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
           && charsetString !== 'hex'
         ) {
 
-          return throwError(new Error('The specified charset is not supported'));
+          return throwError(() => new Error('The specified charset is not supported'));
 
         }
 

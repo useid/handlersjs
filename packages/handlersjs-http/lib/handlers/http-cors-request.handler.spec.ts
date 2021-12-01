@@ -48,10 +48,6 @@ describe('HttpCorsRequestHandler', () => {
     expect(new HttpCorsRequestHandler(handler, undefined)).toBeTruthy();
     expect(new HttpCorsRequestHandler(handler, mockOptions)).toBeTruthy();
 
-    // this covers the optional abstract class parameters of HttpCorsOptions
-    class t extends HttpCorsOptions {}
-    new t();
-
   });
 
   describe('basic tests', () => {
