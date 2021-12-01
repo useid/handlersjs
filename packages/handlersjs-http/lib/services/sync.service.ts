@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import { from, Observable, of } from 'rxjs';
 
 /**
- * A sync service that uses the handlersjs-core library to store and retrieve data.
+ * A sync service that uses a TimedTypedKeyValueStore to store and retrieve data.
  */
 export class SyncService<T, S extends string, P extends string, M extends {
   [s in S]: T[] } & { [p in P]: string[] }> extends Handler<void, void> {
@@ -13,10 +13,10 @@ export class SyncService<T, S extends string, P extends string, M extends {
   /**
    * Creates a { SyncService }.
    *
-   * @param storage key in which the storage is located
-   * @param peers key in which the peers are located
-   * @param store the given store, used by storage and peers
-   * @param endpoint an optional endpoint suffix
+   * @param { S } storage - The key in which the storage is located
+   * @param { P } peers - The key in which the peers are located
+   * @param { TimedTypedKeyValueStore } store - The given store, used by storage and peers
+   * @param { string } endpoint (optional) - An endpoint suffix
    */
   constructor(
     private readonly storage: S,

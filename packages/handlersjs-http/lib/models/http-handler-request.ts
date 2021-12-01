@@ -1,7 +1,7 @@
 import { HttpMethod } from './http-method';
 
 /**
- * An interface representing a HTTP request.
+ * Represents a HTTP request.
  * Containing:
  * - url: The url of the request.
  * - method: The HTTP method of the request.

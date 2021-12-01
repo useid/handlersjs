@@ -18,7 +18,7 @@ export class MockHttpHandler extends HttpHandler {
    * ```
    *
    * @param {HttpHandlerContext} context - an irrelevant incoming context
-   * @returns {Observable<HttpHandlerResponse>} - the mock response
+   * @returns The mocked response.
    */
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 

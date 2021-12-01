@@ -24,7 +24,7 @@ export class HttpCorsRequestHandler extends HttpHandler {
    *
    * @param { HttpHandler } handler - The nested handler to pass the request to.
    * @param { HttpCorsOptions } options? - The CORS options.
-   * @param passThroughOptions - Flag to indicate to include request options or not.
+   * @param { boolean } passThroughOptions - Flag to indicate to include request options or not.
    */
   constructor(
     private handler: HttpHandler,
@@ -46,10 +46,10 @@ export class HttpCorsRequestHandler extends HttpHandler {
   }
 
   /**
-   * Handles the context. Cleans the headers on the request and checks if it's a preflight request or not and handles it accordingly.
+   * Cleans the headers on the request and checks if it's a preflight request or not and handles it accordingly.
    * Adds the appropriate CORS headers to the response.
    *
-   * @param { HttpHandlerContext } context
+   * @param { HttpHandlerContext } context - The context containing the request.
    */
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 

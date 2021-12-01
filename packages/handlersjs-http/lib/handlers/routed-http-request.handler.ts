@@ -7,9 +7,7 @@ import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpHandlerRoute } from '../models/http-handler-route';
 
 /**
- * A {HttpHandler} handling requests based on routes in a given list of {HttpHandlerController}s.
- *
- * @class
+ * A { HttpHandler } handling requests based on routes in a given list of { HttpHandlerController }s.
  */
 export class RoutedHttpRequestHandler extends HttpHandler {
 
@@ -18,7 +16,7 @@ export class RoutedHttpRequestHandler extends HttpHandler {
   /**
    * Creates a RoutedHttpRequestHandler, super calls the HttpHandler class and expects a list of HttpHandlerControllers
    *
-   * @param {HttpHandlerController[]} handlerControllerList - a list of HttpHandlerController objects
+   * @param { HttpHandlerController[] } handlerControllerList - a list of HttpHandlerController objects.
    */
   constructor(private handlerControllerList: HttpHandlerController[], private defaultHandler?: HttpHandler) {
 
@@ -46,7 +44,7 @@ export class RoutedHttpRequestHandler extends HttpHandler {
   }
 
   /**
-   * Passes the {HttpHandlerContext} to the handler of the {HttpHandlerRoute} matching the request's path.
+   * Passes the { HttpHandlerContext } to the handler of the {HttpHandlerRoute} matching the request's path.
    *
    * @param {HttpHandlerContext} context - a HttpHandlerContext object containing a HttpHandlerRequest and HttpHandlerRoute
    */
@@ -135,10 +133,10 @@ export class RoutedHttpRequestHandler extends HttpHandler {
   }
 
   /**
-   * Indicates that this handler can handle every `HttpHandlerContext `.
+   * Confirms that the handler can handle the context if one is present.
    *
-   * @returns always `of(true)`
-   * @param {HttpHandlerContext} context - a HttpHandlerContext object containing a HttpHandlerRequest and HttpHandlerRoute
+   * @param { HttpHandlerContext } context - a HttpHandlerContext object containing a HttpHandlerRequest and HttpHandlerRoute
+   * @returns Boolean confirming if the context can be handled.
    */
   canHandle(context: HttpHandlerContext): Observable<boolean> {
 

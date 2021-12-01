@@ -42,7 +42,6 @@ export class TypedPipeThroughHandler<A, B, C, D, E> extends Handler<A, E> {
 
   /**
    * Pipes the typed input from one handler to the next calling the handle method on each handler in the sequence of handlers.
-   *
    */
   handle(input: A): Observable<E> {
 

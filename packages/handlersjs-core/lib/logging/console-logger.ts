@@ -18,6 +18,14 @@ export class ConsoleLogger extends Logger {
 
   }
 
+  /**
+   * Logs a message at the specified level
+   *
+   * @param { LoggerLevel } level - The logging level (severity) of the message.
+   * @param { string } typeName - The name of the type of the log message.
+   * @param { string } message - The message to log.
+   * @param { unknown } data (optional) - Additional data to log.
+   */
   log(level: LoggerLevel, typeName: string, message: string, data?: unknown): void {
 
     if (level === null || level === undefined) {

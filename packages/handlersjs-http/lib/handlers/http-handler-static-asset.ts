@@ -11,7 +11,8 @@ import { UnsupportedMediaTypeHttpError } from '../errors/unsupported-media-type-
 import { ForbiddenHttpError } from '../errors/forbidden-http-error';
 
 /**
- * A { HttpHandler } that serves static assets.
+ * A { HttpHandler } that serves static assets
+ * by reading a file and returning the contents in a { HttpHandlerResponse } object.
  */
 export class HttpHandlerStaticAssetService extends HttpHandler {
 
@@ -30,6 +31,8 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
 
   /**
    * Confirms whether the handler can handle the given context.
+   *
+   * @returns Boolean indicating whether the handler can handle the given context.
    */
   canHandle(context: HttpHandlerContext): Observable<boolean> {
 
@@ -40,12 +43,12 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
   }
 
   /**
-   * Handles the context.
    * Checks if an accept header is present.
    * Checks if the content type is supported.
-   * Reads the file and returns the content if the file was found.
+   * Reads the file and returns the content in a response if the file was found.
    *
    * @param { HttpHandlerContext } context - The context to handle.
+   * @returns A response containing the file contents and the appropriate content type header.
    */
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 

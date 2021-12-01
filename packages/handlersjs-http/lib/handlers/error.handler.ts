@@ -99,9 +99,10 @@ export class ErrorHandler extends Handler<HttpHandlerContext, HttpHandlerRespons
   }
 
   /**
-   * Confirms if the handler can handle the input by returning true if context was provided.
+   * Confirms if the handler can handle the input by checking if context was provided.
    *
    * @param { HttpHandlerContext } context - The context of the request.
+   * @returns Boolean confirming if the handler can handle the context.
    */
   canHandle(context: HttpHandlerContext): Observable<boolean> {
 

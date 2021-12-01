@@ -33,9 +33,9 @@ export class PassThroughHandler<T, S> extends Handler<T, S> {
   /**
    * Passes the input to the nested handler's handle method and maps it to the intermediate output.
    *
-   * @param input - The input to handle.
-   * @param intermediateOutput - The intermediate output of the previous handler.
-   * @returns { Observable<S> } - The intermediate output of the handler.
+   * @param { T } input - The input to handle.
+   * @param { S } intermediateOutput - The intermediate output of the previous handler.
+   * @returns The intermediate output of the handler.
    */
   handle(input: T, intermediateOutput: S): Observable<S> {
 

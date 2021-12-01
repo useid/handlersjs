@@ -25,7 +25,7 @@ export class PipeThroughHandler<T, S> extends Handler<T, S> {
   }
 
   /**
-   * Confirms if the handler can handle the input.
+   * Confirms the handler can handle any input.
    */
   canHandle(input: any): Observable<boolean> {
 

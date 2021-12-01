@@ -1,5 +1,5 @@
 /**
- * An interface representing a http response.
+ * Represents a http response.
  * Containing:
  * - body (optional): the response body
  * - headers: the response headers

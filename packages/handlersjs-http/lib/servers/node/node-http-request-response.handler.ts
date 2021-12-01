@@ -8,13 +8,13 @@ import { NodeHttpStreamsHandler } from './node-http-streams.handler';
 import { NodeHttpStreams } from './node-http-streams.model';
 
 /**
- * A {NodeHttpStreamsHandler} reading the request stream into a {HttpHandlerRequest},
- * passing it through a {HttpHandler} and writing the resulting {HttpHandlerResponse} to the response stream.
+ * A { NodeHttpStreamsHandler } reading the request stream into a { HttpHandlerRequest },
+ * passing it through a { HttpHandler } and writing the resulting { HttpHandlerResponse } to the response stream.
  */
 export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
   /**
-   * Creates a {NodeHttpRequestResponseHandler} passing requests through the given handler.
+   * Creates a { NodeHttpRequestResponseHandler } passing requests through the given handler.
    *
    * @param {HttpHandler} httpHandler - the handler through which to pass incoming requests.
    */
@@ -30,6 +30,13 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
   }
 
+  /**
+   * Parses the body of the request into a string or object according to the provided content-type.
+   *
+   * @param { string } body - The body to parse.
+   * @param { string } contentType - The content-type of the body.
+   * @returns A string containing the body or a JSON object containing the parsed body.
+   */
   private parseBody(body: string, contentType?: string): string | { [key: string]: string } {
 
     switch (contentType) {
@@ -165,7 +172,7 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
   }
 
   /**
-   * Indicates this handler accepts every NodeHttpStreams pair as input.
+   * Confirms if the handler can handle the input if present and containing all necessary information.
    *
    * @param {NodeHttpStreams} input - the incoming streams
    */

@@ -5,19 +5,18 @@ import { NodeHttpStreams } from './node-http-streams.model';
 import { NodeHttpStreamsHandler } from './node-http-streams.handler';
 
 /**
- * A {Server} implemented with [Node.js HTTP]{@link https://nodejs.org/api/http.html}, handling requests through a {NodeHttpStreamsHandler}.
+ * A { Server } implemented with [Node.js HTTP]{@link https://nodejs.org/api/http.html}, handling requests through a { NodeHttpStreamsHandler }.
  */
 export class NodeHttpServer extends Server {
 
   private server: NodeServer;
 
   /**
-   * Creates a {NodeHttpServer} listening on `http://``host``:``port`, passing requests through the given {NodeHttpStreamsHandler}.
+   * Creates a { NodeHttpServer } listening on `http://``host``:``port`, passing requests through the given {NodeHttpStreamsHandler}.
    *
-   * @param {string} host- the host name on which to listen
-   * @param {number} port - the port number on which to listen
-   * @param {NodeHttpStreamsHandler} nodeHttpStreamsHandler - the handler handling incoming requests
-   * @constructor
+   * @param { string } host - the host name on which to listen
+   * @param { number } port - the port number on which to listen
+   * @param { NodeHttpStreamsHandler } nodeHttpStreamsHandler - the handler handling incoming requests
    */
   constructor(protected host: string, protected port: number, private nodeHttpStreamsHandler: NodeHttpStreamsHandler){
 

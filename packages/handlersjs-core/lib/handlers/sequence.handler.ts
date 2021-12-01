@@ -28,9 +28,9 @@ export class SequenceHandler<T, S> extends Handler<T, S> {
   /**
    * Handles the input by performing safeHandleMultiple on the sequence of handlers provided.
    *
-   * @param input - The input to handle.
-   * @param intermediateOutput - The intermediate output to use.
-   * @returns { Observable<S> } - The temporary intermediate output of the handler.
+   * @param { T } input - The input to handle.
+   * @param { S } intermediateOutput (optional) - The intermediate output to use.
+   * @returns The temporary intermediate output of the handler.
    */
   handle(input: T, intermediateOutput?: S): Observable<S> {
 
@@ -46,9 +46,9 @@ export class SequenceHandler<T, S> extends Handler<T, S> {
    * Calls the safeHandle method of the series of handler provided with the given input and intermediate output.
    *
    * @param { Handler<T, S>[] } handlers - The series of handlers to call.
-   * @param input - The input to handle.
-   * @param intermediateOutput - The intermediate output to use.
-   * @returns { Promise<S> } - The temporary intermediate output of the handler.
+   * @param { T } input - The input to handle.
+   * @param { S } intermediateOutput - The intermediate output to use.
+   * @returns The temporary intermediate output of the handler.
    */
   private async safeHandleMultiple(handlers: Handler<T, S>[], input: T, intermediateOutput: S): Promise<S> {
 
