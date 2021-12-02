@@ -1,4 +1,4 @@
-import { MemoryStore } from '@digita-ai/handlersjs-core';
+import { MemoryStore } from '@digita-ai/handlersjs-storage';
 import fetch from 'node-fetch';
 import { advanceBy as advanceDateBy, clear as clearDateMock } from 'jest-date-mock';
 import { lastValueFrom } from 'rxjs';
