@@ -101,6 +101,10 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
+      - run: npm publish packages/handlersjs-storage
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
   publish-docs:
     name: Publish docs
     needs: test

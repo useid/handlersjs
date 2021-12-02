@@ -1,4 +1,4 @@
-import { MemoryStore } from '@digita-ai/handlersjs-core';
+import { MemoryStore } from '@digita-ai/handlersjs-storage';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpMethods } from '../models/http-method';

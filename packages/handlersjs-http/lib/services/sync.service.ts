@@ -1,4 +1,5 @@
-import { Handler, TimedTypedKeyValueStore } from '@digita-ai/handlersjs-core';
+import { Handler } from '@digita-ai/handlersjs-core';
+import { TimedTypedKeyValueStore } from '@digita-ai/handlersjs-storage';
 import fetch from 'node-fetch';
 import { from, Observable, of } from 'rxjs';
 

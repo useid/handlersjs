@@ -12,6 +12,10 @@
       "name": "http",
       "path": "packages/handlersjs-http"
     },
+    {
+      "name": "storage",
+      "path": "packages/handlersjs-storage"
+    },
   ],
   "settings": {
     "eslint.format.enable": true,
