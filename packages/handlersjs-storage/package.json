@@ -68,7 +68,7 @@
   },
   "jest": {
     "preset": "@digita-ai/jest-config",
-    "displayName": "core",
+    "displayName": "storage",
     "coverageThreshold": {
       "global": {
         "statements": 68.65,
