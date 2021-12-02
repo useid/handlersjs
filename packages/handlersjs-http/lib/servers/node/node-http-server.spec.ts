@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { Socket } from 'net';
-import { of } from 'rxjs';
+import { lastValueFrom, of } from 'rxjs';
 import { HttpHandler } from '../../models/http-handler';
 import { NodeHttpServer } from './node-http-server';
 import { NodeHttpRequestResponseHandler } from './node-http-request-response.handler';
@@ -64,8 +64,8 @@ describe('NodeHttpServer', () => {
 
     it('should return server if all goes well', async () => {
 
-      await expect(server.start().toPromise()).resolves.toEqual(server);
-      await server.stop().toPromise();
+      await expect(lastValueFrom(server.start())).resolves.toEqual(server);
+      await lastValueFrom(server.stop());
 
     });
 
@@ -77,7 +77,7 @@ describe('NodeHttpServer', () => {
 
       });
 
-      await expect(server.start().toPromise()).rejects.toThrow('The server ran into a problem:');
+      await expect(lastValueFrom(server.start())).rejects.toThrow('The server ran into a problem:');
 
     });
 
@@ -87,8 +87,8 @@ describe('NodeHttpServer', () => {
 
     it('should return server if all goes well', async () => {
 
-      await server.start().toPromise();
-      await expect(server.stop().toPromise()).resolves.toEqual(server);
+      await lastValueFrom(server.start());
+      await expect(lastValueFrom(server.stop())).resolves.toEqual(server);
 
     });
 
@@ -100,7 +100,7 @@ describe('NodeHttpServer', () => {
 
       });
 
-      await expect(server.stop().toPromise()).rejects.toThrow('The server ran into a problem:');
+      await expect(lastValueFrom(server.stop())).rejects.toThrow('The server ran into a problem:');
 
     });
 

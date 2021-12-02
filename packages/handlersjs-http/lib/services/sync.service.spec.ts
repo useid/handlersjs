@@ -1,6 +1,7 @@
 import { MemoryStore } from '@digita-ai/handlersjs-storage';
 import fetch from 'node-fetch';
 import { advanceBy as advanceDateBy, clear as clearDateMock } from 'jest-date-mock';
+import { lastValueFrom } from 'rxjs';
 import { SyncService } from './sync.service';
 
 jest.mock('node-fetch');
@@ -120,20 +121,20 @@ describe('SyncService', () => {
     it('resolves when there are no peers', async () => {
 
       await store.set('peers', []);
-      await expect(syncService.handle().toPromise()).resolves.toBeUndefined();
+      await expect(lastValueFrom(syncService.handle())).resolves.toBeUndefined();
 
     });
 
     it('resolves when peers are undefined', async () => {
 
       await store.delete('peers');
-      await expect(syncService.handle().toPromise()).resolves.toBeUndefined();
+      await expect(lastValueFrom(syncService.handle())).resolves.toBeUndefined();
 
     });
 
     it('sends a request to all peers in the store', async () => {
 
-      await syncService.handle().toPromise();
+      await lastValueFrom(syncService.handle());
       fetchMock.mock.calls.forEach((call) => expect(peers.indexOf(call[0].toString())).not.toBe(-1));
 
     });
@@ -142,11 +143,11 @@ describe('SyncService', () => {
 
       it('has the If-Modified-Since header from the second request and onwards', async () => {
 
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
         expect(latestModifiedSinceHeader()).toBeUndefined();
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
         expect(latestModifiedSinceHeader()).toBeDefined();
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
         expect(latestModifiedSinceHeader()).toBeDefined();
 
       });
@@ -154,10 +155,10 @@ describe('SyncService', () => {
       it('has the correct modifiedSince header', async () => {
 
         const beforeFirstSync = Math.floor(Date.now() / 1000); // If-Modified-Since header value rounds down to the second
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
         const afterFirstSync = Math.floor(Date.now() / 1000);
 
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
         const firstSync = new Date(latestModifiedSinceHeader()).getTime() / 1000;
 
         expect(beforeFirstSync <= firstSync && firstSync <= afterFirstSync).toBe(true);
@@ -166,15 +167,15 @@ describe('SyncService', () => {
 
       it('updates the If-Modified-Since header correctly', async () => {
 
-        await syncService.handle().toPromise();
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
+        await lastValueFrom(syncService.handle());
         const firstSync = new Date(latestModifiedSinceHeader()).getTime();
 
         const nextSync = firstSync + 10000;
         advanceDateBy(10000);
 
-        await syncService.handle().toPromise();
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
+        await lastValueFrom(syncService.handle());
         const secondSync = new Date(latestModifiedSinceHeader()).getTime();
 
         expect(secondSync > nextSync - 1000 && secondSync < nextSync + 1000).toBe(true);
@@ -192,7 +193,7 @@ describe('SyncService', () => {
           { peer: 'peer2.com', httpStatus: 200, storages: [ 1, 4, 5 ] },
         );
 
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
         expectStorageEquals([ 1, 2, 3, 4, 5 ]);
 
         mockWithStorages(
@@ -200,7 +201,7 @@ describe('SyncService', () => {
           { peer: 'peer2.com', httpStatus: 304 },
         );
 
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
         expectStorageEquals([ 1, 2, 3, 4, 5 ]);
 
       });
@@ -211,14 +212,14 @@ describe('SyncService', () => {
           { peer: 'peer1.com', httpStatus: 200, storages: [ 1, 2, 3 ] },
         );
 
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
         expectStorageEquals([ 1, 2, 3 ]);
 
         mockWithStorages(
           { peer: 'peer2.com', httpStatus: 200, storages: [ 13, 14, 15 ] },
         );
 
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
         expectStorageEquals([ 1, 2, 3, 13, 14, 15 ]);
 
       });
@@ -230,7 +231,7 @@ describe('SyncService', () => {
           { peer: 'peer2.com', httpStatus: 200, storages: [ 1, 4, 5 ] },
         );
 
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
 
         expectStorageEquals([ 1, 2, 3, 4, 5 ]);
 
@@ -243,21 +244,21 @@ describe('SyncService', () => {
           { peer: 'peer2.com', httpStatus: 200, storages: [ 1, 4, 5 ] },
         );
 
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
         expectStorageEquals([ 1, 2, 3, 4, 5 ]);
 
         mockWithStorages(
           { peer: 'peer2.com', httpStatus: 200, storages: [ 13, 14, 15 ] },
         );
 
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
         expectStorageEquals([ 1, 2, 3, 4, 5, 13, 14, 15 ]);
 
         mockWithStorages(
           { peer: 'peer1.com', httpStatus: 200, storages: [ 11, 12, 13 ] },
         );
 
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
         expectStorageEquals([ 1, 2, 3, 4, 5, 11, 12, 13, 14, 15 ]);
 
       });
@@ -269,7 +270,7 @@ describe('SyncService', () => {
           { peer: 'peer2.com', httpStatus: 200, storages: [ 1, 4, 5 ] },
         );
 
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
 
         mockWithStorages(
           { peer: 'peer3.com', httpStatus: 200, storages: [ 50, 51, 52 ] }
@@ -279,7 +280,7 @@ describe('SyncService', () => {
         peersList.push('peer3.com');
         await store.set('peers', peersList);
 
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
         expectStorageEquals([ 1, 2, 3, 4, 5, 50, 51, 52 ]);
 
       });
@@ -296,7 +297,7 @@ describe('SyncService', () => {
           { peer: 'peer3.com', httpStatus: 400, storages: [ 7, 8, 9 ] },
         );
 
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
         expectStorageEquals([ 1, 2, 3 ]);
 
       });
@@ -311,7 +312,7 @@ describe('SyncService', () => {
 
         mockWithStorages();
 
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
 
         expect(store.set).toHaveBeenCalledTimes(1);
         expect(store.set).toHaveBeenCalledWith('storage', []);
@@ -325,7 +326,7 @@ describe('SyncService', () => {
         await store.set('peers', [ 'this_is_not_a_valid_peer' ]);
         store.set = jest.fn();
 
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
 
         expect(store.set).toHaveBeenCalledTimes(1);
         expect(store.set).toHaveBeenCalledWith('storage', []);
@@ -345,7 +346,7 @@ describe('SyncService', () => {
           { peer: 'peer2.com/endpoint', httpStatus: 200, storages: [ 1, 4, 5 ] },
         );
 
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
 
         expectStorageEquals([ 1, 2, 3, 4, 5 ]);
 
@@ -363,7 +364,7 @@ describe('SyncService', () => {
           { peer: 'peer2.com/endpoint2', httpStatus: 200, storages: [ 8, 9, 10 ] },
         );
 
-        await syncService.handle().toPromise();
+        await lastValueFrom(syncService.handle());
 
         expectStorageEquals([ 7, 8, 9 ]);
 
@@ -377,7 +378,7 @@ describe('SyncService', () => {
 
     it('should return true', async () => {
 
-      await expect(syncService.canHandle().toPromise()).resolves.toBe(true);
+      await expect(lastValueFrom(syncService.canHandle())).resolves.toBe(true);
 
     });
 

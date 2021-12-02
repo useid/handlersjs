@@ -1,4 +1,4 @@
-import { of } from 'rxjs';
+import { lastValueFrom, of } from 'rxjs';
 import { WaterfallHandler } from './waterfall.handler';
 import { Handler } from './handler';
 
@@ -50,7 +50,7 @@ describe('WaterfallHandler', () => {
 
     it('should return true if input  was provided', async () => {
 
-      await expect(handler.canHandle(input, intermediateOutput).toPromise()).resolves.toEqual(true);
+      await expect(lastValueFrom(handler.canHandle(input, intermediateOutput))).resolves.toEqual(true);
 
     });
 
@@ -61,7 +61,7 @@ describe('WaterfallHandler', () => {
     it('should call the handle of the first nested handler that can handle it', async () => {
 
       nestedHandler.canHandle = jest.fn().mockReturnValue(of(false));
-      await handler.handle(input, undefined).toPromise();
+      await lastValueFrom(handler.handle(input, undefined));
       expect(nestedHandler2.handle).toHaveBeenCalledTimes(1);
 
     });
@@ -69,7 +69,7 @@ describe('WaterfallHandler', () => {
     it('should return the input and generated output if no intermediate output was provided', async () => {
 
       nestedHandler.canHandle = jest.fn().mockReturnValue(of(true));
-      await handler.handle(input, undefined).toPromise();
+      await lastValueFrom(handler.handle(input, undefined));
       expect(nestedHandler2.handle).toHaveBeenCalledWith(input, { body: null, status: 200, headers: {} });
 
     });
@@ -79,7 +79,7 @@ describe('WaterfallHandler', () => {
       nestedHandler.canHandle = jest.fn().mockReturnValue(of(false));
       nestedHandler2.canHandle = jest.fn().mockReturnValue(of(false));
       nestedHandler3.canHandle = jest.fn().mockReturnValue(of(false));
-      expect(handler.handle(input, intermediateOutput).toPromise()).resolves.toEqual(intermediateOutput);
+      expect(lastValueFrom(handler.handle(input, intermediateOutput))).resolves.toEqual(intermediateOutput);
 
     });
 

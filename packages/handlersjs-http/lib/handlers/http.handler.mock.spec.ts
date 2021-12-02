@@ -1,3 +1,4 @@
+import { lastValueFrom } from 'rxjs';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { MockHttpHandler } from './http.handler.mock';
 
@@ -23,14 +24,14 @@ describe('MockHttpHandler', () => {
 
     it('should return a response with body: "some mock output", status: 200, header: {}', async () => {
 
-      await expect(handler.handle(context).toPromise()).resolves.toEqual({ body: 'some mock output', status: 200, headers: {} });
+      await expect(lastValueFrom(handler.handle(context))).resolves.toEqual({ body: 'some mock output', status: 200, headers: {} });
 
     });
 
     it('should throw an error when called with null or undefined', async () => {
 
-      await expect(handler.handle(null).toPromise()).rejects.toThrow('Context cannot be null or undefined');
-      await expect(handler.handle(undefined).toPromise()).rejects.toThrow('Context cannot be null or undefined');
+      await expect(lastValueFrom(handler.handle(null))).rejects.toThrow('Context cannot be null or undefined');
+      await expect(lastValueFrom(handler.handle(undefined))).rejects.toThrow('Context cannot be null or undefined');
 
     });
 
@@ -40,14 +41,14 @@ describe('MockHttpHandler', () => {
 
     it('should return true if context is not undefined', async () => {
 
-      await expect(handler.canHandle(context).toPromise()).resolves.toEqual(true);
+      await expect(lastValueFrom(handler.canHandle(context))).resolves.toEqual(true);
 
     });
 
     it('should throw an error when called with null or undefined', async () => {
 
-      await expect(handler.canHandle(null).toPromise()).rejects.toThrow('Context cannot be null or undefined');
-      await expect(handler.canHandle(undefined).toPromise()).rejects.toThrow('Context cannot be null or undefined');
+      await expect(lastValueFrom(handler.canHandle(null))).rejects.toThrow('Context cannot be null or undefined');
+      await expect(lastValueFrom(handler.canHandle(undefined))).rejects.toThrow('Context cannot be null or undefined');
 
     });
 

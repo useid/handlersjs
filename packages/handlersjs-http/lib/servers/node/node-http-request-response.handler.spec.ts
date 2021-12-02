@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { of, throwError } from 'rxjs';
+import { lastValueFrom, of, throwError } from 'rxjs';
 import * as mockhttp from 'mock-http';
 import { HttpHandler } from '../../models/http-handler';
 import { NodeHttpRequestResponseHandler } from './node-http-request-response.handler';
@@ -69,11 +69,11 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       streamMock.requestStream.url = null;
       expect(streamMock.requestStream.url).toBeNull();
-      await expect(handler.handle(streamMock).toPromise()).rejects.toThrow('url of the request cannot be null or undefined.');
+      await expect(lastValueFrom(handler.handle(streamMock))).rejects.toThrow('url of the request cannot be null or undefined.');
 
       streamMock.requestStream.url = undefined;
       expect(streamMock.requestStream.url).toBeUndefined();
-      await expect(handler.handle(streamMock).toPromise()).rejects.toThrow('url of the request cannot be null or undefined.');
+      await expect(lastValueFrom(handler.handle(streamMock))).rejects.toThrow('url of the request cannot be null or undefined.');
 
     });
 
@@ -81,11 +81,11 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       streamMock.requestStream.method = null;
       expect(streamMock.requestStream.method).toBeNull();
-      await expect(handler.handle(streamMock).toPromise()).rejects.toThrow('method of the request cannot be null or undefined.');
+      await expect(lastValueFrom(handler.handle(streamMock))).rejects.toThrow('method of the request cannot be null or undefined.');
 
       streamMock.requestStream.method = undefined;
       expect(streamMock.requestStream.method).toBeUndefined();
-      await expect(handler.handle(streamMock).toPromise()).rejects.toThrow('method of the request cannot be null or undefined.');
+      await expect(lastValueFrom(handler.handle(streamMock))).rejects.toThrow('method of the request cannot be null or undefined.');
 
     });
 
@@ -93,17 +93,17 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       streamMock.requestStream.headers = null;
       expect(streamMock.requestStream.headers).toBeNull();
-      await expect(handler.handle(streamMock).toPromise()).rejects.toThrow('headers of the request cannot be null or undefined.');
+      await expect(lastValueFrom(handler.handle(streamMock))).rejects.toThrow('headers of the request cannot be null or undefined.');
 
       streamMock.requestStream.headers = undefined;
       expect(streamMock.requestStream.headers).toBeUndefined();
-      await expect(handler.handle(streamMock).toPromise()).rejects.toThrow('headers of the request cannot be null or undefined.');
+      await expect(lastValueFrom(handler.handle(streamMock))).rejects.toThrow('headers of the request cannot be null or undefined.');
 
     });
 
     it('should set the body in the request if found in the request stream', async () => {
 
-      await handler.handle(streamMock).toPromise();
+      await lastValueFrom(handler.handle(streamMock));
       expect(nestedHttpHandler.handle).toHaveBeenCalledTimes(1);
 
       expect(nestedHttpHandler.handle).toHaveBeenCalledWith({
@@ -119,35 +119,35 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     it('should call the nested handlers handle method', async () => {
 
-      await handler.handle(streamMock).toPromise();
+      await lastValueFrom(handler.handle(streamMock));
       expect(nestedHttpHandler.handle).toHaveBeenCalledTimes(1);
 
     });
 
     it('should write the headers to response stream', async () => {
 
-      await handler.handle(streamMock).toPromise();
+      await lastValueFrom(handler.handle(streamMock));
       expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(200, { mockKey: 'mockValue', 'content-length': Buffer.byteLength('mockBody', 'utf-8').toString() });
 
     });
 
     it('should write the body to response stream', async () => {
 
-      await handler.handle(streamMock).toPromise();
+      await lastValueFrom(handler.handle(streamMock));
       expect(streamMock.responseStream.write).toHaveBeenCalledWith('mockBody');
 
     });
 
     it('should close the output stream', async () => {
 
-      await handler.handle(streamMock).toPromise();
+      await lastValueFrom(handler.handle(streamMock));
       expect(streamMock.responseStream.end).toHaveBeenCalledTimes(1);
 
     });
 
     it('should parse the url correctly', async () => {
 
-      await handler.handle(streamMock).toPromise();
+      await lastValueFrom(handler.handle(streamMock));
       expect(nestedHttpHandler.handle).toHaveBeenCalledTimes(1);
 
       expect(nestedHttpHandler.handle).toHaveBeenCalledWith(expect.objectContaining({ request: expect.objectContaining({ url: new URL('http://localhost:3000/test?works=yes'), method: 'GET', headers: {} }) }));
@@ -159,7 +159,7 @@ describe('NodeHttpRequestResponseHandler', () => {
       const body = 'This is a response body with a certain length.';
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { 'content-length': '2' }, status:200 }));
 
-      await handler.handle(streamMock).toPromise();
+      await lastValueFrom(handler.handle(streamMock));
 
       expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body, 'utf-8').toString() });
       expect(res.write).toHaveBeenCalledWith(body);
@@ -172,7 +172,7 @@ describe('NodeHttpRequestResponseHandler', () => {
       const body = Buffer.from('This is a response body with a certain length.').toString('base64');
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { 'content-length': '2', 'content-type': 'text/html; charset=base64' }, status:200 }));
 
-      await handler.handle(streamMock).toPromise();
+      await lastValueFrom(handler.handle(streamMock));
 
       expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body, 'base64').toString(), 'content-type': 'text/html; charset=base64' });
       expect(res.write).toHaveBeenCalledWith(body);
@@ -184,7 +184,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ headers: { mockKey: 'mockValue' }, status:200 }));
 
-      await handler.handle(streamMock).toPromise();
+      await lastValueFrom(handler.handle(streamMock));
 
       expect(res.writeHead).toHaveBeenCalledWith(200, { mockKey: 'mockValue' });
       expect(res.write).toHaveBeenCalledTimes(0);
@@ -196,7 +196,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body: 'mockBody', headers: { 'content-type': 'text/html; charset=unsupported' }, status:200 }));
 
-      await expect(handler.handle(streamMock).toPromise()).rejects.toThrow('The specified charset is not supported');
+      await expect(lastValueFrom(handler.handle(streamMock))).rejects.toThrow('The specified charset is not supported');
 
     });
 
@@ -205,7 +205,7 @@ describe('NodeHttpRequestResponseHandler', () => {
       const body = 'This is a response body with a certain length.';
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { 'content-type': 'text/html;' }, status:200 }));
 
-      await handler.handle(streamMock).toPromise();
+      await lastValueFrom(handler.handle(streamMock));
 
       expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body, 'utf-8').toString(), 'content-type': 'text/html;' });
 
@@ -216,7 +216,7 @@ describe('NodeHttpRequestResponseHandler', () => {
       const body = 'This is a response body with a certain length.';
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { 'content-type': 'text/html;' }, status:200 }));
 
-      await handler.handle(streamMock).toPromise();
+      await lastValueFrom(handler.handle(streamMock));
 
       expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body, 'utf-8').toString(), 'content-type': 'text/html;' });
 
@@ -227,7 +227,7 @@ describe('NodeHttpRequestResponseHandler', () => {
       const body = 'This is a response body with a certain length.';
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: {}, status:200 }));
 
-      await handler.handle(streamMock).toPromise();
+      await lastValueFrom(handler.handle(streamMock));
 
       expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body, 'utf-8').toString() });
 
@@ -238,7 +238,7 @@ describe('NodeHttpRequestResponseHandler', () => {
       const body = 1234;
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { 'content-type': 'text/html' }, status:200 }));
 
-      await handler.handle(streamMock).toPromise();
+      await lastValueFrom(handler.handle(streamMock));
 
       expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body.toString(), 'utf-8').toString(), 'content-type': 'text/html' });
 
@@ -248,7 +248,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError({ headers: {}, status: 409 }));
 
-      await handler.handle(streamMock).toPromise();
+      await lastValueFrom(handler.handle(streamMock));
 
       expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength('Internal Server Error', 'utf-8').toString() });
       expect(res.write).toHaveBeenCalledWith('Internal Server Error');
@@ -259,7 +259,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError({ headers: {}, status: 399 }));
 
-      await handler.handle(streamMock).toPromise();
+      await lastValueFrom(handler.handle(streamMock));
 
       expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength('Internal Server Error', 'utf-8').toString() });
       expect(res.write).toHaveBeenCalledWith('Internal Server Error');
@@ -270,7 +270,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(throwError({ headers: {}, status: 600 }));
 
-      await handler.handle(streamMock).toPromise();
+      await lastValueFrom(handler.handle(streamMock));
 
       expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength('Internal Server Error', 'utf-8').toString() });
       expect(res.write).toHaveBeenCalledWith('Internal Server Error');
@@ -283,9 +283,9 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     it('should return false if input is null or undefined', async () => {
 
-      await expect(handler.canHandle(null).toPromise()).resolves.toEqual(false);
+      await expect(lastValueFrom(handler.canHandle(null))).resolves.toEqual(false);
 
-      await expect(handler.canHandle(undefined).toPromise()).resolves.toEqual(false);
+      await expect(lastValueFrom(handler.canHandle(undefined))).resolves.toEqual(false);
 
     });
 
@@ -293,11 +293,11 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       streamMock.requestStream = null;
       expect(streamMock.requestStream).toBeNull();
-      await expect(handler.canHandle(streamMock).toPromise()).resolves.toEqual(false);
+      await expect(lastValueFrom(handler.canHandle(streamMock))).resolves.toEqual(false);
 
       streamMock.requestStream = undefined;
       expect(streamMock.requestStream).toBeUndefined();
-      await expect(handler.canHandle(streamMock).toPromise()).resolves.toEqual(false);
+      await expect(lastValueFrom(handler.canHandle(streamMock))).resolves.toEqual(false);
 
     });
 
@@ -305,17 +305,17 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       streamMock.responseStream = null;
       expect(streamMock.responseStream).toBeNull();
-      await expect(handler.canHandle(streamMock).toPromise()).resolves.toEqual(false);
+      await expect(lastValueFrom(handler.canHandle(streamMock))).resolves.toEqual(false);
 
       streamMock.responseStream = undefined;
       expect(streamMock.responseStream).toBeUndefined();
-      await expect(handler.canHandle(streamMock).toPromise()).resolves.toEqual(false);
+      await expect(lastValueFrom(handler.canHandle(streamMock))).resolves.toEqual(false);
 
     });
 
     it('returns true if input is complete', async () => {
 
-      await expect(handler.canHandle(streamMock).toPromise()).resolves.toEqual(true);
+      await expect(lastValueFrom(handler.canHandle(streamMock))).resolves.toEqual(true);
 
     });
 

@@ -1,4 +1,4 @@
-import { of } from 'rxjs';
+import { lastValueFrom, of } from 'rxjs';
 import { Handler } from './handler';
 import { SequenceHandler } from './sequence.handler';
 
@@ -31,7 +31,7 @@ describe('SequenceHandler', () => {
 
     it('should return true if input and intermediateOutput was provided', async () => {
 
-      await expect(handler.canHandle(input, intermediateOutput).toPromise()).resolves.toEqual(true);
+      await expect(lastValueFrom(handler.canHandle(input, intermediateOutput))).resolves.toEqual(true);
 
     });
 
@@ -41,7 +41,7 @@ describe('SequenceHandler', () => {
 
     it('should set intermediateOutput as an unknown empty request object if none was provided', async () => {
 
-      await expect(handler.handle(input).toPromise()).resolves.toEqual({ body: null, status: 200, headers: {} });
+      await expect(lastValueFrom(handler.handle(input))).resolves.toEqual({ body: null, status: 200, headers: {} });
 
     });
 
@@ -67,7 +67,7 @@ describe('SequenceHandler', () => {
 
       const newHandler = new SequenceHandler<unknown, unknown>([ nestedHandler, nestedHandler2, nestedHandler3 ]);
 
-      await newHandler.handle(input, intermediateOutput).toPromise();
+      await lastValueFrom(newHandler.handle(input, intermediateOutput));
 
       expect(nestedHandler.safeHandle).toHaveBeenCalledTimes(1);
       expect(nestedHandler2.safeHandle).toHaveBeenCalledTimes(1);

@@ -1,4 +1,4 @@
-import { of } from 'rxjs';
+import { lastValueFrom, of } from 'rxjs';
 import { PipeThroughHandler } from './pipe-through.handler';
 import { Handler } from './handler';
 
@@ -47,9 +47,9 @@ describe('PipeThroughHandler', () => {
 
   it('should pass on the input to every next handler', async() => {
 
-    let response = await pipeThroughOne.handle(5).toPromise();
+    let response = await lastValueFrom(pipeThroughOne.handle(5));
     expect(response).toEqual(10);
-    response = await pipeThroughTwo.handle(5).toPromise();
+    response = await lastValueFrom(pipeThroughTwo.handle(5));
     expect(response).toEqual(40);
 
   });
@@ -58,13 +58,13 @@ describe('PipeThroughHandler', () => {
 
     it('should return true if input was provided', async () => {
 
-      await expect(pipeThroughOne.canHandle({}).toPromise()).resolves.toEqual(true);
+      await expect(lastValueFrom(pipeThroughOne.canHandle({}))).resolves.toEqual(true);
 
     });
 
     it('should return true if input was not provided', async () => {
 
-      await expect(pipeThroughOne.canHandle(undefined).toPromise()).resolves.toEqual(true);
+      await expect(lastValueFrom(pipeThroughOne.canHandle(undefined))).resolves.toEqual(true);
 
     });
 
@@ -77,7 +77,7 @@ describe('PipeThroughHandler', () => {
       mockHandler.handle = jest.fn().mockReturnValue(of(10));
       mockHandler2.handle = jest.fn().mockReturnValue(of(20));
 
-      await pipeThroughTwo.handle(5).toPromise();
+      await lastValueFrom(pipeThroughTwo.handle(5));
 
       expect(mockHandler.handle).toHaveBeenCalledTimes(1);
       expect(mockHandler2.handle).toHaveBeenCalledTimes(1);
