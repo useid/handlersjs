@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import { lastValueFrom, Observable, of } from 'rxjs';
 import { Handler } from './handler';
 
 describe('Handler', () => {
@@ -38,9 +38,9 @@ describe('Handler', () => {
 
     it('should call canHandle and handle if canHandleResult is true', async () => {
 
-      mockedHandlerObject.handle = jest.fn().mockReturnValue(of());
+      mockedHandlerObject.handle = jest.fn().mockReturnValue(of({}));
       mockedHandlerObject.canHandle = jest.fn().mockReturnValue(of(true));
-      await mockedHandlerObject.safeHandle(mockInput, mockIntermediateOutput).toPromise();
+      await lastValueFrom(mockedHandlerObject.safeHandle(mockInput, mockIntermediateOutput));
       expect(mockedHandlerObject.canHandle).toHaveBeenCalledTimes(1);
       expect(mockedHandlerObject.handle).toHaveBeenCalledTimes(1);
 
@@ -48,9 +48,9 @@ describe('Handler', () => {
 
     it('should not call handle if canHandleResult is false', async () => {
 
-      mockedHandlerObject.handle = jest.fn().mockReturnValue(of());
+      mockedHandlerObject.handle = jest.fn().mockReturnValue(of({}));
       mockedHandlerObject.canHandle = jest.fn().mockReturnValue(of(false));
-      await mockedHandlerObject.safeHandle(mockInput, null).toPromise();
+      await lastValueFrom(mockedHandlerObject.safeHandle(mockInput, null));
       expect(mockedHandlerObject.canHandle).toHaveBeenCalledTimes(1);
       expect(mockedHandlerObject.handle).toHaveBeenCalledTimes(0);
 

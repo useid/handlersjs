@@ -64,8 +64,6 @@ describe('Scheduler', () => {
 
     it('will schedule the task when started', async () => {
 
-      // lastValueFrom(scheduler.start().subscribe(async () => expect(await isRunning()).toBe(false));
-
       await lastValueFrom(scheduler.start());
       await expectIsRunning();
 
