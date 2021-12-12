@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/handlersjs-storage",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "",
   "main": "./dist/public-api.js",
   "types": "./dist/public-api.d.ts",
