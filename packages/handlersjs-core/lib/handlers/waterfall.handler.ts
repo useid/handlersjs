@@ -1,5 +1,5 @@
-import { from, Observable, of, throwError } from 'rxjs';
-import { first, map, switchMap } from 'rxjs/operators';
+import { from, Observable, of, throwError, zip } from 'rxjs';
+import { catchError, first, switchMap, tap } from 'rxjs/operators';
 import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { Handler } from './handler';
 
@@ -13,39 +13,19 @@ export class WaterfallHandler<T, S> extends Handler<T, S> {
 
   }
 
-  canHandle(input: T, intermediateOutput: S): Observable<boolean> {
+  canHandle(input: T): Observable<boolean> {
 
     return of(true);
 
   }
 
-  handle(input: T, intermediateOutput: S): Observable<S> {
+  handle(input: T): Observable<S> {
 
-    intermediateOutput = intermediateOutput ?? { body: null, status: 200, headers: {} } as unknown as S;
-
-    return of({ input, intermediateOutput, handlers: this.handlers }).pipe(
-      switchMap((data) =>
-        this.getFirstToHandle(data.input, data.intermediateOutput, data.handlers).pipe(
-          map((handlerToExecute) => ({ ...data, handlerToExecute })),
-        )),
-      switchMap((data) => data.handlerToExecute
-        ? data.handlerToExecute.handle(data.input, intermediateOutput)
-        : of(intermediateOutput)),
-    );
-
-  }
-
-  private getFirstToHandle(
-    input: T,
-    intermediateOutput: S,
-    handlers: Handler<T, S>[],
-  ): Observable<Handler<T, S> | undefined> {
-
-    return from(handlers).pipe(
-      switchMap((handler) =>
-        handler.canHandle(input, intermediateOutput).pipe(map((canHandle) => ({ canHandle, handler })))),
-      first((result) => result.canHandle, null),
-      map((canHandle) => canHandle?.handler)
+    return from(this.handlers).pipe(
+      switchMap((handler) => zip(of(handler), handler.canHandle(input))),
+      first(([ handler, canHandle ]) => canHandle),
+      switchMap(([ handler, canHandle ]) => handler.handle(input)),
+      catchError(() => throwError(() => new HandlerArgumentError('No handler can handle the input.', input))),
     );
 
   }

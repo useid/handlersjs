@@ -1,11 +1,11 @@
-import { from, Observable, of, throwError } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
 import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { Handler } from './handler';
 
-export class PassThroughHandler<T, S> extends Handler<T, S> {
+export class PassThroughHandler<T> extends Handler<T, T> {
 
-  constructor(public handler: Handler<T, S>) {
+  constructor(public handler: Handler<T, any>) {
 
     super();
 
@@ -13,17 +13,15 @@ export class PassThroughHandler<T, S> extends Handler<T, S> {
 
   }
 
-  canHandle(input: T, intermediateOutput: S): Observable<boolean> {
+  canHandle(input: T): Observable<boolean> {
 
     return of(true);
 
   }
 
-  handle(input: T, intermediateOutput: S): Observable<S> {
+  handle(input: T): Observable<T> {
 
-    return from(this.handler.handle(input, intermediateOutput)).pipe(
-      mapTo(intermediateOutput),
-    );
+    return from(this.handler.handle(input)).pipe(mapTo(input));
 
   }
 

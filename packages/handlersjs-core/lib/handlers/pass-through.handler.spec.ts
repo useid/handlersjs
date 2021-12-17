@@ -8,14 +8,13 @@ describe('PassThroughHandler', () => {
     msg: 'input',
   };
 
-  const intermediateOutput = {
+  const nestedOutput = {
     msg: 'output',
   };
 
   const nestedHandler: Handler<unknown, unknown> = {
-    handle: jest.fn().mockReturnValue(of(intermediateOutput)),
+    handle: jest.fn().mockReturnValue(of(nestedOutput)),
     canHandle: jest.fn(),
-    safeHandle: jest.fn(),
   };
 
   const handler = new PassThroughHandler(nestedHandler);
@@ -35,9 +34,9 @@ describe('PassThroughHandler', () => {
 
   describe('canHandle', () => {
 
-    it('should return true if input and intermediateOutput was provided', async () => {
+    it('should return true if input was provided', async () => {
 
-      await expect(lastValueFrom(handler.canHandle(input, intermediateOutput))).resolves.toEqual(true);
+      await expect(lastValueFrom(handler.canHandle(input))).resolves.toEqual(true);
 
     });
 
@@ -45,16 +44,16 @@ describe('PassThroughHandler', () => {
 
   describe('handle', () => {
 
-    it('should handle the input and intermediateOutput', async () => {
+    it('should handle the input', async () => {
 
-      await expect(lastValueFrom(handler.handle(input, intermediateOutput))).resolves.toEqual({ msg: 'output' });
+      await expect(lastValueFrom(handler.handle(input))).resolves.toEqual(input);
 
     });
 
     it('should call the nested handler', async () => {
 
-      await lastValueFrom(handler.handle(input, intermediateOutput));
-      expect(nestedHandler.handle).toHaveBeenCalledWith(input, intermediateOutput);
+      await lastValueFrom(handler.handle(input));
+      expect(nestedHandler.handle).toHaveBeenCalledWith(input);
 
     });
 

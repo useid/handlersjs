@@ -24,7 +24,6 @@ describe('HttpCorsRequestHandler', () => {
 
     handler = {
       handle: jest.fn().mockReturnValue(of({ headers: mockResponseHeaders, status: 200, body: 'handler done' } as HttpHandlerResponse)),
-      safeHandle: jest.fn(),
       canHandle: jest.fn().mockReturnValue(of(true)),
     };
 

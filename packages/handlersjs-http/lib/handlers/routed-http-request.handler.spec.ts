@@ -9,7 +9,6 @@ import { RoutedHttpRequestHandler } from './routed-http-request.handler';
 const getMockedHttpHandler = (): HttpHandler => ({
   handle: jest.fn().mockReturnValue(of({ status: 200, headers: {} })),
   canHandle: jest.fn(),
-  safeHandle: jest.fn(),
 });
 
 const getMockedHttpHandlerAndRoute = (route: string): { handler: HttpHandler; route: HttpHandlerRoute } => {
@@ -21,11 +20,10 @@ const getMockedHttpHandlerAndRoute = (route: string): { handler: HttpHandler; ro
 
 };
 
-const getMockPreresponseHandler = () => ({
+const getMockPreresponseHandler: () => Handler<HttpHandlerContext, HttpHandlerContext> = () => ({
   handle: jest.fn().mockImplementation((input) => of(input)),
   canHandle: jest.fn(),
-  safeHandle: jest.fn(),
-} as Handler<HttpHandlerContext, HttpHandlerContext>);
+});
 
 describe('RoutedHttpRequestHandler', () => {
 
@@ -308,7 +306,6 @@ describe('RoutedHttpRequestHandler', () => {
       const defaultHandler: HttpHandler = {
         handle: jest.fn().mockReturnValueOnce(of({ body: 'defaultHandler mockBody', headers: {}, status:200 })),
         canHandle: jest.fn(),
-        safeHandle: jest.fn(),
       };
 
       const defaultRoutedHttpRequestHandler = new RoutedHttpRequestHandler(handlerControllerList, defaultHandler);

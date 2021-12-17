@@ -1,11 +1,15 @@
-import { from, lastValueFrom, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { Handler } from './handler';
 
+export type PipeThroughHandler<T, S> = SequenceHandler<T, S>;
+
 export class SequenceHandler<T, S> extends Handler<T, S> {
 
-  constructor(public handlers: Handler<T, S>[]) {
+  constructor(
+    public handlers: Handler<any, any>[],
+  ) {
 
     super();
 
@@ -13,33 +17,25 @@ export class SequenceHandler<T, S> extends Handler<T, S> {
 
   }
 
-  canHandle(input: T, intermediateOutput?: S): Observable<boolean> {
+  canHandle(input: any): Observable<boolean> {
 
     return of(true);
 
   }
 
-  handle(input: T, intermediateOutput?: S): Observable<S> {
+  handle(input: any): Observable<S> {
 
-    intermediateOutput = intermediateOutput ?? { body: null, status: 200, headers: {} } as unknown as S;
+    let tempInp = of(input);
 
-    return of({ handlers: this.handlers, input, intermediateOutput }).pipe(
-      switchMap((data) => from(this.safeHandleMultiple(data.handlers, data.input, data.intermediateOutput))),
-    );
+    for (const handler of this.handlers) {
 
-  }
-
-  private async safeHandleMultiple(handlers: Handler<T, S>[], input: T, intermediateOutput: S): Promise<S> {
-
-    let temporaryIntermediateOutput = intermediateOutput;
-
-    for (const handler of handlers) {
-
-      temporaryIntermediateOutput = await lastValueFrom(handler.safeHandle(input, temporaryIntermediateOutput));
+      tempInp = tempInp.pipe(
+        switchMap((inp) => handler.handle(inp)),
+      );
 
     }
 
-    return temporaryIntermediateOutput;
+    return tempInp;
 
   }
 

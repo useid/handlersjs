@@ -6,7 +6,7 @@ type HandlerSequence1<A, B> = [ Handler<A, B> ];
 
 describe('TypedPipeThroughHandler', () => {
 
-  const nestedHandler = { handle: jest.fn(), canHandle: jest.fn(), safeHandle: jest.fn() };
+  const nestedHandler = { handle: jest.fn(), canHandle: jest.fn() };
   const handlers: HandlerSequence1<unknown, unknown> = [ nestedHandler ];
   const handler = new TypedPipeThroughHandler(handlers);
 

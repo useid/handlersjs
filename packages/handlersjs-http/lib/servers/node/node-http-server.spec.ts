@@ -20,7 +20,6 @@ describe('NodeHttpServer', () => {
     nestedHttpHandler = {
       canHandle: jest.fn(),
       handle: jest.fn(),
-      safeHandle: jest.fn(),
     };
 
     handler = new NodeHttpRequestResponseHandler(nestedHttpHandler);
