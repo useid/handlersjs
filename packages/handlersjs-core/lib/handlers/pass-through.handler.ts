@@ -13,12 +13,6 @@ export class PassThroughHandler<T> extends Handler<T, T> {
 
   }
 
-  canHandle(input: T): Observable<boolean> {
-
-    return of(true);
-
-  }
-
   handle(input: T): Observable<T> {
 
     return from(this.handler.handle(input)).pipe(mapTo(input));

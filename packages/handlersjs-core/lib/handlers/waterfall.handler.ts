@@ -13,12 +13,6 @@ export class WaterfallHandler<T, S> extends Handler<T, S> {
 
   }
 
-  canHandle(input: T): Observable<boolean> {
-
-    return of(true);
-
-  }
-
   handle(input: T): Observable<S> {
 
     return from(this.handlers).pipe(

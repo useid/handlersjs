@@ -32,18 +32,6 @@ describe('WaterfallHandler', () => {
 
   });
 
-  describe('canHandle', () => {
-
-    it('should return true if input  was provided', async () => {
-
-      const handler = new WaterfallHandler([ ableHandler ]);
-
-      await expect(lastValueFrom(handler.canHandle(input))).resolves.toEqual(true);
-
-    });
-
-  });
-
   describe('handle', () => {
 
     it('should call the handle of the first nested handler that can handle it', async () => {

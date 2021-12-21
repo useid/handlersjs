@@ -32,16 +32,6 @@ describe('PassThroughHandler', () => {
 
   });
 
-  describe('canHandle', () => {
-
-    it('should return true if input was provided', async () => {
-
-      await expect(lastValueFrom(handler.canHandle(input))).resolves.toEqual(true);
-
-    });
-
-  });
-
   describe('handle', () => {
 
     it('should handle the input', async () => {

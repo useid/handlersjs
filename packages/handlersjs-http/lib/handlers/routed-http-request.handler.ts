@@ -134,18 +134,6 @@ export class RoutedHttpRequestHandler extends HttpHandler {
 
   }
 
-  /**
-   * Indicates that this handler can handle every `HttpHandlerContext `.
-   *
-   * @returns always `of(true)`
-   * @param {HttpHandlerContext} context - a HttpHandlerContext object containing a HttpHandlerRequest and HttpHandlerRoute
-   */
-  canHandle(context: HttpHandlerContext): Observable<boolean> {
-
-    return context && context.request ? of(true) : of(false);
-
-  }
-
   private extractParameters(routeSegments: string[], pathSegments: string[]): { [key: string]: string } {
 
     const parameters: { [key: string]: string } = {};

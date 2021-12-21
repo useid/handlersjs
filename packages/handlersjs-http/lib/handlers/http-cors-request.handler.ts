@@ -25,12 +25,6 @@ export class HttpCorsRequestHandler extends HttpHandler {
 
   }
 
-  canHandle(context: HttpHandlerContext): Observable<boolean> {
-
-    return of(true);
-
-  }
-
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
     const { origins, allowMethods, allowHeaders, exposeHeaders, credentials, maxAge } = this.options || ({});

@@ -26,20 +26,4 @@ describe('TypedPipeThroughHandler', () => {
 
   });
 
-  describe('canHandle', () => {
-
-    it('should return true if input was provided', async () => {
-
-      await expect(lastValueFrom(handler.canHandle({}))).resolves.toEqual(true);
-
-    });
-
-    it('should return true if input was not provided', async () => {
-
-      await expect(lastValueFrom(handler.canHandle(undefined))).resolves.toEqual(true);
-
-    });
-
-  });
-
 });

@@ -18,12 +18,6 @@ export class JsonStoreHandler<T extends string, M extends { [t in T]: unknown }>
     private readonly store: TimedTypedKeyValueStore<M>,
   ) { super(); }
 
-  canHandle(context: HttpHandlerContext): Observable<boolean> {
-
-    return of(true);
-
-  }
-
   /**
    * Attempts to fetch the data from the storage
    *

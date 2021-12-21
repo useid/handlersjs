@@ -321,42 +321,4 @@ describe('RoutedHttpRequestHandler', () => {
 
   });
 
-  describe('canHandle', () => {
-
-    it ('should return true when context and request are defined', async () => {
-
-      const httpHandlerContext: HttpHandlerContext = {
-        request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
-      };
-
-      await expect(lastValueFrom(routedHttpRequestHandler.canHandle(httpHandlerContext))).resolves.toEqual(true);
-
-    });
-
-    it ('should return false when context is undefined or null', async () => {
-
-      await expect(lastValueFrom(routedHttpRequestHandler.canHandle(null))).resolves.toEqual(false);
-
-      await expect(lastValueFrom(routedHttpRequestHandler.canHandle(undefined))).resolves.toEqual(false);
-
-    });
-
-    it ('should return false when context.request is undefined or null', async () => {
-
-      const httpHandlerContext1: HttpHandlerContext = {
-        request: null,
-      };
-
-      await expect(lastValueFrom(routedHttpRequestHandler.canHandle(httpHandlerContext1))).resolves.toEqual(false);
-
-      const httpHandlerContext2: HttpHandlerContext = {
-        request: undefined,
-      };
-
-      await expect(lastValueFrom(routedHttpRequestHandler.canHandle(httpHandlerContext2))).resolves.toEqual(false);
-
-    });
-
-  });
-
 });

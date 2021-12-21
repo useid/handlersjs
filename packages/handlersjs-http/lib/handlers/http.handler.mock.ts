@@ -38,16 +38,4 @@ export class MockHttpHandler extends HttpHandler {
 
   }
 
-  /**
-   * Indicates this handler accepts any input.
-   *
-   * @param {HttpHandlerContext} context - the irrelevant incoming context
-   * @returns always `of(true)`
-   */
-  canHandle(context: HttpHandlerContext): Observable<boolean> {
-
-    return context ? of(true) : throwError(() => new Error('Context cannot be null or undefined'));
-
-  }
-
 }

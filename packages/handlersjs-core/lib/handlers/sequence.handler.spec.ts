@@ -52,22 +52,6 @@ describe('SequenceHandler', () => {
 
   });
 
-  describe('canHandle', () => {
-
-    it('should return true if input was provided', async () => {
-
-      await expect(lastValueFrom(pipeThroughOne.canHandle({}))).resolves.toEqual(true);
-
-    });
-
-    it('should return true if input was not provided', async () => {
-
-      await expect(lastValueFrom(pipeThroughOne.canHandle(undefined))).resolves.toEqual(true);
-
-    });
-
-  });
-
   describe('handle', () => {
 
     it('should call the nested handlers handler', async () => {

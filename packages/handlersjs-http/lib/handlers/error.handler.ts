@@ -86,10 +86,4 @@ export class ErrorHandler extends Handler<HttpHandlerContext, HttpHandlerRespons
 
   }
 
-  canHandle(context: HttpHandlerContext): Observable<boolean> {
-
-    return context? of(true) : of(false);
-
-  }
-
 }

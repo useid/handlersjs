@@ -278,48 +278,6 @@ describe('NodeHttpRequestResponseHandler', () => {
 
   });
 
-  describe('canHandle', () => {
-
-    it('should return false if input is null or undefined', async () => {
-
-      await expect(lastValueFrom(handler.canHandle(null))).resolves.toEqual(false);
-
-      await expect(lastValueFrom(handler.canHandle(undefined))).resolves.toEqual(false);
-
-    });
-
-    it('returns false if input.requestStream is null or undefined', async () => {
-
-      streamMock.requestStream = null;
-      expect(streamMock.requestStream).toBeNull();
-      await expect(lastValueFrom(handler.canHandle(streamMock))).resolves.toEqual(false);
-
-      streamMock.requestStream = undefined;
-      expect(streamMock.requestStream).toBeUndefined();
-      await expect(lastValueFrom(handler.canHandle(streamMock))).resolves.toEqual(false);
-
-    });
-
-    it('returns false if input.responseStream is null', async () => {
-
-      streamMock.responseStream = null;
-      expect(streamMock.responseStream).toBeNull();
-      await expect(lastValueFrom(handler.canHandle(streamMock))).resolves.toEqual(false);
-
-      streamMock.responseStream = undefined;
-      expect(streamMock.responseStream).toBeUndefined();
-      await expect(lastValueFrom(handler.canHandle(streamMock))).resolves.toEqual(false);
-
-    });
-
-    it('returns true if input is complete', async () => {
-
-      await expect(lastValueFrom(handler.canHandle(streamMock))).resolves.toEqual(true);
-
-    });
-
-  });
-
   describe('parseBody', () => {
 
     it('should return the body JSON parsed if content type is application/json', async () => {

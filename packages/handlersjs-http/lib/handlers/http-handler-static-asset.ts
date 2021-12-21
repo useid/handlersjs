@@ -18,14 +18,6 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
 
   }
 
-  canHandle(context: HttpHandlerContext): Observable<boolean> {
-
-    this.logger.debug(HttpHandlerStaticAssetService.name, 'Checking canHandle', context.request);
-
-    return of(true);
-
-  }
-
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
     const canHandleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];

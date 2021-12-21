@@ -17,12 +17,6 @@ export class SequenceHandler<T, S> extends Handler<T, S> {
 
   }
 
-  canHandle(input: any): Observable<boolean> {
-
-    return of(true);
-
-  }
-
   handle(input: any): Observable<S> {
 
     let tempInp = of(input);
