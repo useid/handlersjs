@@ -23,7 +23,10 @@
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true
     },
-    "files.eol": "\n"
+    "files.eol": "\n",
+    "cSpell.words": [
+      "handlersjs"
+    ]
   },
   "extensions": {
     "recommendations": [
