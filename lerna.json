@@ -7,16 +7,14 @@
       "ignorePrepublish": true
     },
     "version": {
-      "allowBranch": [
-        "master",
-        "develop"
-      ],
+      "allowBranch": [ "develop" ],
       "conventionalCommits": true,
       "exact": true,
       "forcePublish": true,
       "message": "chore: release %s",
       "granularPathspec": false,
       "tag-version-prefix": "",
+      "preid": "dev",
       "changelogPreset": {
         "name": "conventionalcommits",
         "types": [
