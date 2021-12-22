@@ -1,5 +1,3 @@
-/* eslint-disable no-console -- this is a logger service */
-
 import util from 'util';
 import { transports, createLogger, format, Logger } from 'winston';
 import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
