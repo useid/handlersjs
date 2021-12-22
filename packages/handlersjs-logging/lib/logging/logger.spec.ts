@@ -96,7 +96,7 @@ describe('Logger', () => {
     it('should call log with loggerLevel warn and given parameters', () => {
 
       logger.log = jest.fn();
-      logger.error('typeName', 'message', new HandlerArgumentError('HandlerArgumentError', 1), true);
+      logger.error('typeName', 'message', { error: new HandlerArgumentError('HandlerArgumentError', 1), caught: true });
       expect(logger.log).toHaveBeenCalledWith(LoggerLevel.error, 'typeName', 'message', { 'caught': true, 'error' : new HandlerArgumentError('HandlerArgumentError', 1) });
 
     });

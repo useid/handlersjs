@@ -10,13 +10,13 @@ export abstract class Logger {
   ) {}
 
   /**
-   * Logs an info message
+   * Logs an error message
    *
    * @param typeName The location of the log
    * @param message Message that should be logged
    * @param data Any relevant data that should be logged
    */
-  info(typeName: string, message: string, data?: unknown): void {
+  error(typeName: string, message: string, data?: unknown): void {
 
     if (!typeName) {
 
@@ -30,32 +30,7 @@ export abstract class Logger {
 
     }
 
-    this.log(LoggerLevel.info, typeName, message, data);
-
-  }
-
-  /**
-   * Logs a debug message
-   *
-   * @param typeName The location of the log
-   * @param message Message that should be logged
-   * @param data Any relevant data that should be logged
-   */
-  debug(typeName: string, message: string, data?: unknown): void {
-
-    if (!typeName) {
-
-      throw new HandlerArgumentError('Typename should be set', typeName);
-
-    }
-
-    if (!message) {
-
-      throw new HandlerArgumentError('Message should be set', message);
-
-    }
-
-    this.log(LoggerLevel.debug, typeName, message, data);
+    this.log(LoggerLevel.error, typeName, message, data);
 
   }
 
@@ -85,14 +60,13 @@ export abstract class Logger {
   }
 
   /**
-   * Logs an error message
+   * Logs an info message
    *
    * @param typeName The location of the log
    * @param message Message that should be logged
-   * @param error The error that was thrown
-   * @param caught The error that was caught
+   * @param data Any relevant data that should be logged
    */
-  error(typeName: string, message: string, error?: Error | unknown, caught?: unknown): void {
+  info(typeName: string, message: string, data?: unknown): void {
 
     if (!typeName) {
 
@@ -106,7 +80,82 @@ export abstract class Logger {
 
     }
 
-    this.log(LoggerLevel.error, typeName, message, { error, caught });
+    this.log(LoggerLevel.info, typeName, message, data);
+
+  }
+
+  /**
+   * Logs a verbose message
+   *
+   * @param typeName The location of the log
+   * @param message Message that should be logged
+   * @param data Any relevant data that should be logged
+   */
+  verbose(typeName: string, message: string, data?: unknown): void {
+
+    if (!typeName) {
+
+      throw new HandlerArgumentError('Typename should be set', typeName);
+
+    }
+
+    if (!message) {
+
+      throw new HandlerArgumentError('Message should be set', message);
+
+    }
+
+    this.log(LoggerLevel.verbose, typeName, message, data);
+
+  }
+
+  /**
+   * Logs a debug message
+   *
+   * @param typeName The location of the log
+   * @param message Message that should be logged
+   * @param data Any relevant data that should be logged
+   */
+  debug(typeName: string, message: string, data?: unknown): void {
+
+    if (!typeName) {
+
+      throw new HandlerArgumentError('Typename should be set', typeName);
+
+    }
+
+    if (!message) {
+
+      throw new HandlerArgumentError('Message should be set', message);
+
+    }
+
+    this.log(LoggerLevel.debug, typeName, message, data);
+
+  }
+
+  /**
+   * Logs a silly message
+   *
+   * @param typeName The location of the log
+   * @param message Message that should be logged
+   * @param data Any relevant data that should be logged
+   */
+  silly(typeName: string, message: string, data?: unknown): void {
+
+    if (!typeName) {
+
+      throw new HandlerArgumentError('Typename should be set', typeName);
+
+    }
+
+    if (!message) {
+
+      throw new HandlerArgumentError('Message should be set', message);
+
+    }
+
+    this.log(LoggerLevel.silly, typeName, message, data);
 
   }
 

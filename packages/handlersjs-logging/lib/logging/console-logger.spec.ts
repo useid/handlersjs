@@ -74,7 +74,7 @@ describe('ConsoleLogger', () => {
 
       if (level === 'error') {
 
-        logger[level]('TestService', 'test message', 'test error', 'error');
+        logger[level]('TestService', 'test message', { error: 'test error', caught: 'error' });
         expect(logSpy).toHaveBeenCalledWith(LoggerLevel.error, 'TestService', 'test message', { error: 'test error', caught: 'error' });
 
       } else {
