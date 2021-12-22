@@ -2,12 +2,12 @@
   "name": "@digita-ai/handlersjs-core",
   "version": "0.6.0",
   "description": "",
-  "main": "./dist/public-api.js",
-  "types": "./dist/public-api.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "require": "./dist/public-api.js"
+      "require": "./dist/index.js"
     }
   },
   "directories": {
@@ -83,7 +83,7 @@
       "<rootDir>/.*\\.conf(ig)?.ts",
       "<rootDir>/lib/index.ts",
       "<rootDir>/lib/app.ts",
-      "<rootDir>/lib/public-api.ts",
+      "<rootDir>/lib/index.ts",
       "<rootDir>/.*\\.d.ts",
       "<rootDir>/coverage/"
     ]
