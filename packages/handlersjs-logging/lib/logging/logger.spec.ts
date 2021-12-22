@@ -103,4 +103,40 @@ describe('Logger', () => {
 
   });
 
+  describe('silly', () => {
+
+    it('should error when typename or msg are not provided', () => {
+
+      paramCheck(logger.silly);
+
+    });
+
+    it('should call log with loggerLevel warn and given parameters', () => {
+
+      logger.log = jest.fn();
+      logger.silly('typeName', 'message', 'logData');
+      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.silly, 'typeName', 'message', 'logData');
+
+    });
+
+  });
+
+  describe('verbose', () => {
+
+    it('should error when typename or msg are not provided', () => {
+
+      paramCheck(logger.verbose);
+
+    });
+
+    it('should call log with loggerLevel warn and given parameters', () => {
+
+      logger.log = jest.fn();
+      logger.verbose('typeName', 'message', 'logData');
+      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.verbose, 'typeName', 'message', 'logData');
+
+    });
+
+  });
+
 });
