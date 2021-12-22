@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { mock } from 'jest-mock-extended';
-import { Logger } from '@digita-ai/handlersjs-core';
+import { Logger } from '@digita-ai/handlersjs-logging';
 import { lastValueFrom } from 'rxjs';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { NotFoundHttpError } from '../errors/not-found-http-error';

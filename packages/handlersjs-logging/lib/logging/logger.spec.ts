@@ -1,4 +1,4 @@
-import { HandlerArgumentError } from '../errors/handler-argument-error';
+import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
 import { Logger } from './logger';
 import { LoggerLevel } from './logger-level';
 

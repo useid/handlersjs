@@ -1,6 +1,6 @@
 /* eslint-disable no-console -- this is a logger service */
 
-import { HandlerArgumentError } from '../errors/handler-argument-error';
+import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
 import { LoggerLevel } from './logger-level';
 export abstract class Logger {
 

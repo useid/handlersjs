@@ -1,0 +1,9 @@
+.git
+node_modules
+yarn-error.log
+.env
+dist
+temp
+componentsjs-error-state.json
+public-key.json
+private-key.json
