@@ -29,8 +29,6 @@ describe('main', () => {
     it('should set the global logger', () => {
 
       const get = getLogger();
-      expect(get).toEqual(logger);
-
       const newLogger = new ConsoleLogger(1, 1);
       setLogger(newLogger);
       const newGet = getLogger();

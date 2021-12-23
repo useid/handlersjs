@@ -6,15 +6,12 @@
     "module": "commonjs",
     //
     "types": [
-      "node",
-      "clone",
       "jest",
-      "n3"
     ],
     "inlineSourceMap": false,
     "inlineSources": true,
     "sourceMap": true,
-    "strict": false
+    "strict": true
   },
   "include": [
     "**/*.spec.ts"

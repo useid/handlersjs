@@ -38,9 +38,7 @@
   "license": "ISC",
   "devDependencies": {
     "@digita-ai/typescript-config": "^0.3.2",
-    "@types/clone": "^2.1.1",
     "@types/jest": "^27.0.2",
-    "@types/n3": "1.10.0",
     "componentsjs": "^4.5.0",
     "componentsjs-generator": "^2.6.1",
     "eslint": "^7.25.0",
@@ -54,7 +52,6 @@
   },
   "dependencies": {
     "@digita-ai/handlersjs-core": "^0.6.0",
-    "@types/node": "^16.11.7",
     "rxjs": "^7.4.0"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-logging",
