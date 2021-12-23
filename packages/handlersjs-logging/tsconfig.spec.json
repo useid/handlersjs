@@ -10,7 +10,7 @@
     "inlineSourceMap": false,
     "inlineSources": true,
     "sourceMap": true,
-    "strict": true
+    "strict": false
   },
   "include": [
     "**/*.spec.ts"
