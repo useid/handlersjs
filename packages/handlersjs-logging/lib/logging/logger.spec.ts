@@ -1,4 +1,4 @@
-import { HandlerArgumentError } from '../errors/handler-argument-error';
+import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
 import { Logger } from './logger';
 import { LoggerLevel } from './logger-level';
 
@@ -96,8 +96,44 @@ describe('Logger', () => {
     it('should call log with loggerLevel warn and given parameters', () => {
 
       logger.log = jest.fn();
-      logger.error('typeName', 'message', new HandlerArgumentError('HandlerArgumentError', 1), true);
+      logger.error('typeName', 'message', { error: new HandlerArgumentError('HandlerArgumentError', 1), caught: true });
       expect(logger.log).toHaveBeenCalledWith(LoggerLevel.error, 'typeName', 'message', { 'caught': true, 'error' : new HandlerArgumentError('HandlerArgumentError', 1) });
+
+    });
+
+  });
+
+  describe('silly', () => {
+
+    it('should error when typename or msg are not provided', () => {
+
+      paramCheck(logger.silly);
+
+    });
+
+    it('should call log with loggerLevel warn and given parameters', () => {
+
+      logger.log = jest.fn();
+      logger.silly('typeName', 'message', 'logData');
+      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.silly, 'typeName', 'message', 'logData');
+
+    });
+
+  });
+
+  describe('verbose', () => {
+
+    it('should error when typename or msg are not provided', () => {
+
+      paramCheck(logger.verbose);
+
+    });
+
+    it('should call log with loggerLevel warn and given parameters', () => {
+
+      logger.log = jest.fn();
+      logger.verbose('typeName', 'message', 'logData');
+      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.verbose, 'typeName', 'message', 'logData');
 
     });
 
