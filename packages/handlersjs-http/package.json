@@ -2,12 +2,12 @@
   "name": "@digita-ai/handlersjs-http",
   "version": "0.6.0",
   "description": "",
-  "main": "./dist/public-api.js",
-  "types": "./dist/public-api.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "require": "./dist/public-api.js"
+      "require": "./dist/index.js"
     }
   },
   "directories": {
@@ -59,6 +59,7 @@
   "dependencies": {
     "@digita-ai/handlersjs-core": "0.6.0",
     "@digita-ai/handlersjs-storage": "0.6.0",
+    "@digita-ai/handlersjs-logging": "0.6.0",
     "node-fetch": "^2.6.1",
     "rxjs": "^7.4.0"
   },
@@ -88,7 +89,7 @@
       "<rootDir>/coverage/",
       "<rootDir>/node_modules/",
       "<rootDir>/.*\\.conf(ig)?.ts",
-      "<rootDir>/lib/public-api.ts",
+      "<rootDir>/lib/index.ts",
       "<rootDir>/lib/main.ts"
     ]
   }
