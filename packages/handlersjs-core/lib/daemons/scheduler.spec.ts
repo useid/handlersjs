@@ -8,11 +8,6 @@ describe('Scheduler', () => {
   const task = jest.fn();
   class TestHandler extends Handler<void, void> {
 
-    canHandle(input: void, intermediateOutput?: void): Observable<boolean> {
-
-      return of(true);
-
-    }
     handle(input: void, intermediateOutput?: void): Observable<void> {
 
       task();

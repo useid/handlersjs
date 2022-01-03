@@ -7,15 +7,8 @@ describe('SequenceHandler', () => {
   let pipeThroughOne;
   let pipeThroughTwo;
 
-  const mockHandler: Handler<number, number> = {
-    handle: (input: number) => of(2 * input),
-    canHandle: (input) => of(true),
-  };
-
-  const mockHandler2: Handler<number, number> = {
-    handle: (input: number) => of(4 * input),
-    canHandle: (input) => of(true),
-  };
+  const mockHandler: Handler<number, number> = { handle: (input: number) => of(2 * input) };
+  const mockHandler2: Handler<number, number> = { handle: (input: number) => of(4 * input) };
 
   beforeEach(async () => {
 

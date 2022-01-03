@@ -1,23 +1,23 @@
-import { lastValueFrom, of } from 'rxjs';
+import { lastValueFrom, of, throwError } from 'rxjs';
 import { HandlerArgumentError } from '../errors/handler-argument-error';
-import { WaterfallHandler } from './waterfall.handler';
 import { Handler } from './handler';
+import { WaterfallHandler } from './waterfall.handler';
 
 describe('WaterfallHandler', () => {
 
-  const input = {
-    msg: 'input',
-  };
+  const input = 'input';
+  const output = 'output';
+  const error = 'error';
 
-  const ableHandler = {
-    handle: jest.fn().mockReturnValue(of(input)),
-    canHandle: jest.fn().mockReturnValue(of(true)),
-  };
+  let ableHandler: Handler<string, string>;
+  let unableHandler: Handler<string, string>;
 
-  const unableHandler = {
-    handle: jest.fn().mockReturnValue(of(input)),
-    canHandle: jest.fn().mockReturnValue(of(false)),
-  };
+  beforeEach(() => {
+
+    ableHandler = { handle: jest.fn().mockReturnValue(of(output)) };
+    unableHandler = { handle: jest.fn().mockReturnValue(throwError(() => error)) };
+
+  });
 
   it('should be correctly instantiated', () => {
 
@@ -34,12 +34,14 @@ describe('WaterfallHandler', () => {
 
   describe('handle', () => {
 
-    it('should call the handle of the first nested handler that can handle it', async () => {
+    it('should return the output of the first nested handler that can handle it', async () => {
 
       const handler = new WaterfallHandler([ unableHandler, ableHandler ]);
 
-      await lastValueFrom(handler.handle(input));
+      const result = await lastValueFrom(handler.handle(input));
+
       expect(ableHandler.handle).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(output);
 
     });
 
