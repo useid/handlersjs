@@ -98,7 +98,7 @@ export class RoutedHttpRequestHandler extends HttpHandler {
 
       if (!matchingRouteWithOperation) {
 
-        return of({ body: '', headers: { Allow: allowedMethods.join(', ') }, status: request.method === 'OPTIONS' ? 205 : 405 });
+        return of({ body: '', headers: { Allow: allowedMethods.join(', ') }, status: request.method === 'OPTIONS' ? 204 : 405 });
 
       }
 
