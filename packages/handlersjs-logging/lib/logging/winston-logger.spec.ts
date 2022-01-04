@@ -1,22 +1,38 @@
-import { ConsoleLogger } from './console-logger';
+import { createLogger, Logger } from 'winston';
+import { mock } from 'jest-mock-extended';
+import { WinstonLogger } from './winston-logger';
 import { LoggerLevel } from './logger-level';
 
-jest.mock('console');
+let testLogger: Logger;
 
-describe('ConsoleLogger', () => {
+jest.mock('winston', () => ({
+  createLogger: jest.fn().mockImplementation(() => {
 
-  let logger: ConsoleLogger;
+    testLogger = mock<Logger>();
+
+    return testLogger;
+
+  }),
+  format: {
+    combine: jest.fn(),
+    timestamp: jest.fn(),
+    printf: jest.fn(),
+  },
+  transports: {
+    File: jest.fn(),
+    Console: jest.fn(),
+  },
+}));
+
+describe('WinstonLogger', () => {
+
+  let logger: WinstonLogger;
   const spy = new Map();
   const levels = [ 'info', 'debug', 'warn', 'error' ].map((s) => [ s, s ]);
 
   beforeEach(async () => {
 
-    logger = new ConsoleLogger(6, 6);
-    spy.set('warn', jest.spyOn(console, 'warn').mockImplementation(() => undefined));
-    spy.set('info', jest.spyOn(console, 'info').mockImplementation(() => undefined));
-    spy.set('debug', jest.spyOn(console, 'debug').mockImplementation(() => undefined));
-    spy.set('error', jest.spyOn(console, 'error').mockImplementation(() => undefined));
-    spy.set('log', jest.spyOn(console, 'log').mockImplementation(() => undefined));
+    logger = new WinstonLogger(6, 6);
 
   });
 
@@ -41,12 +57,18 @@ describe('ConsoleLogger', () => {
 
   describe('log', () => {
 
-    it.each([ ...levels, [ 'silly', 'log' ] ])('LoggerLevel.%s should call console.%s', (level, log) => {
+    it.each([ ...levels, [ 'silly', 'log' ] ])('LoggerLevel.%s should call winston logger with appropriate parameters', (level, log) => {
 
       logger.log(LoggerLevel[level], testService, testMessage, data);
-      expect(spy.get(log)).toHaveBeenCalledTimes(1);
-      expect(spy.get(log)).toHaveBeenCalledWith(expect.stringContaining(testService), data);
-      expect(spy.get(log)).toHaveBeenCalledWith(expect.stringContaining(testMessage), data);
+      expect(testLogger.log).toHaveBeenCalledTimes(1);
+
+      expect(testLogger.log).toHaveBeenCalledWith({
+        data,
+        level,
+        message: testMessage,
+        printData: true,
+        typeName: testService,
+      });
 
     });
 
@@ -74,7 +96,7 @@ describe('ConsoleLogger', () => {
 
       if (level === 'error') {
 
-        logger[level]('TestService', 'test message', 'test error', 'error');
+        logger[level]('TestService', 'test message', { error: 'test error', caught: 'error' });
         expect(logSpy).toHaveBeenCalledWith(LoggerLevel.error, 'TestService', 'test message', { error: 'test error', caught: 'error' });
 
       } else {

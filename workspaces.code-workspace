@@ -16,6 +16,10 @@
       "name": "storage",
       "path": "packages/handlersjs-storage"
     },
+    {
+      "name": "logging",
+      "path": "packages/handlersjs-logging"
+    },
   ],
   "settings": {
     "eslint.format.enable": true,
