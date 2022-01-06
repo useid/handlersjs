@@ -134,6 +134,18 @@ describe('RoutedHttpRequestHandler', () => {
 
     });
 
+    it('should return a 204 No Content response on an OPTIONS request', async () => {
+
+      const httpHandlerContext: HttpHandlerContext = {
+        request: { url: new URL('/path2', 'http://example.com'), method: 'OPTIONS', headers: {} },
+      };
+
+      const response = lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+      await expect(response).resolves.toEqual(expect.objectContaining({ status: 204 }));
+      await expect(response).resolves.toEqual(expect.objectContaining({ headers: { Allow: 'POST, PUT' } }));
+
+    });
+
     it('should throw an error when called with null or undefined', async () => {
 
       await expect(lastValueFrom(routedHttpRequestHandler.handle(null)))
