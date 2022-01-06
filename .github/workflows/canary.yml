@@ -21,6 +21,8 @@ jobs:
 
     name: Perform checks
     uses: digita-ai/handlersjs/.github/workflows/checks.yml@develop
+    secrets:
+      GA_TOKEN: ${{ secrets.GA_TOKEN }}
 
   canary:
 
