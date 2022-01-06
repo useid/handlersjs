@@ -14,6 +14,9 @@ on:
       - docs/*
 
   workflow_call:
+    secrets:
+      GA_TOKEN:
+        required: true
 
 jobs:
 
