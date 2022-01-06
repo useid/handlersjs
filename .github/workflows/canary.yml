@@ -1,0 +1,49 @@
+
+name: Publish canary release
+
+on:
+
+  pull_request:
+  
+    types: [closed]
+  
+    branches:
+      - develop
+
+env:
+
+  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GH_TOKEN: ${{ secrets.GA_TOKEN }}
+
+jobs:
+
+  checks:
+
+    name: Perform checks
+    uses: digita-ai/handlersjs/.github/workflows/checks.yml@${{ env.GITHUB_SHA }}
+
+  canary:
+
+    name: Publish canary release
+    needs: checks
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+
+    steps:
+    
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+          registry-url: https://npm.pkg.github.com
+  
+      - run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
+
+      - run: npm run build:all
+
+      - run: npx lerna publish --canary minor --preid dev --dist-tag dev --yes
