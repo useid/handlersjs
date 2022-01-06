@@ -20,7 +20,7 @@ jobs:
   checks:
 
     name: Perform checks
-    uses: digita-ai/handlersjs/.github/workflows/checks.yml@${{ env.GITHUB_SHA }}
+    uses: digita-ai/handlersjs/.github/workflows/checks.yml@${{env.GITHUB_SHA}}
 
   canary:
 
