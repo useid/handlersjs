@@ -1,14 +1,9 @@
 
-name: Publish canary release
+name: Publish graduated release
 
 on:
 
-  pull_request:
-  
-    types: [closed]
-  
-    branches:
-      - develop
+  workflow_dispatch:
 
 jobs:
 
@@ -17,9 +12,9 @@ jobs:
     name: Perform checks
     uses: digita-ai/handlersjs/.github/workflows/checks.yml@develop
 
-  canary:
+  prerelease:
 
-    name: Publish canary release
+    name: Publish graduated release
     needs: checks
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
@@ -42,7 +37,7 @@ jobs:
       - run: npm run build:all
 
       - name: Publish package
-        run: npx lerna publish --canary minor --preid dev --dist-tag dev --yes
+        run: npx lerna publish --conventional-commits --conventional-graduate --yes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
