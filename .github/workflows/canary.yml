@@ -49,7 +49,7 @@ jobs:
       - run: npm run build:all
 
       - name: Publish package
-        run: npx lerna publish --canary minor --preid dev --dist-tag dev --yes
+        run: npx lerna publish --canary minor --repository https://npm.pkg.github.com --preid dev --dist-tag dev --yes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
