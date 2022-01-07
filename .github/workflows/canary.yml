@@ -22,7 +22,6 @@ jobs:
     name: Publish canary release
     needs: checks
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
 
     steps:
     
