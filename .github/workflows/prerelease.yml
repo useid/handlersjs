@@ -1,0 +1,43 @@
+
+name: Publish release candidate
+
+on:
+
+  workflow_dispatch:
+
+jobs:
+
+  checks:
+
+    name: Perform checks
+    uses: digita-ai/handlersjs/.github/workflows/checks.yml@develop
+
+  prerelease:
+
+    name: Publish release candidate
+    needs: checks
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+
+    steps:
+    
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+          registry-url: https://npm.pkg.github.com
+  
+      - run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: npm run build:all
+
+      - name: Publish package
+        run: npx lerna publish --conventional-commits --conventional-prerelease --preid rc --dist-tag rc --yes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
