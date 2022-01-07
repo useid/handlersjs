@@ -6,9 +6,6 @@
     "bootstrap": {
       "ignorePrepublish": true
     },
-    "publish": {
-      "repository": "https://npm.pkg.github.com"
-    },
     "version": {
       "allowBranch": [ "develop" ],
       "conventionalCommits": true,
