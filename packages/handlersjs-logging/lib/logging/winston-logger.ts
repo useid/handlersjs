@@ -13,11 +13,12 @@ export class WinstonLogger extends DGTLogger {
   private logger: Logger;
 
   constructor(
+    protected readonly label: string,
     protected readonly minimumLevel: LoggerLevel,
     protected readonly minimumLevelPrintData: LoggerLevel,
   ) {
 
-    super(minimumLevel, minimumLevelPrintData);
+    super(label, minimumLevel, minimumLevelPrintData);
 
     this.logger = createLogger({
       format: format.combine(
@@ -33,17 +34,11 @@ export class WinstonLogger extends DGTLogger {
 
   }
 
-  log(level: LoggerLevel, typeName: string, message: string, data?: unknown): void {
+  log(level: LoggerLevel, message: string, data?: unknown): void {
 
     if (level === null || level === undefined) {
 
-      throw new HandlerArgumentError('Argument level should be set', typeName);
-
-    }
-
-    if (!typeName) {
-
-      throw new HandlerArgumentError('Argument typeName should be set', typeName);
+      throw new HandlerArgumentError('Argument level should be set', this.label);
 
     }
 
@@ -58,7 +53,7 @@ export class WinstonLogger extends DGTLogger {
 
     if (level <= this.minimumLevel) {
 
-      this.logger.log({ level: logLevel, message, typeName, data, printData });
+      this.logger.log({ level: logLevel, message, typeName: this.label, data, printData });
 
     }
 
