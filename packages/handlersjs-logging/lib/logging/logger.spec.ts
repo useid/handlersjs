@@ -6,7 +6,7 @@ describe('Logger', () => {
 
   class MockLogger extends Logger {
 
-    log(level: LoggerLevel, typeName: string, message: string, data?: unknown): void {
+    log(level: LoggerLevel, message: string, data?: unknown): void {
 
       throw new Error('Method not implemented.');
 
@@ -14,7 +14,7 @@ describe('Logger', () => {
 
     constructor(minimumLevel: LoggerLevel, minimumLevelPrintData: LoggerLevel) {
 
-      super(minimumLevel, minimumLevelPrintData);
+      super('test-logger', minimumLevel, minimumLevelPrintData);
 
     }
 
@@ -22,12 +22,10 @@ describe('Logger', () => {
 
   const logger = new MockLogger(LoggerLevel.info, LoggerLevel.info);
 
-  const paramCheck = (logFunction: (typeName: string, msg: string) => void) => {
+  const paramCheck = (logFunction: (msg: string) => void) => {
 
-    expect(() => logFunction(undefined, 'msg')).toThrow('Typename should be set');
-    expect(() => logFunction(null, 'msg')).toThrow('Typename should be set');
-    expect(() => logFunction('string', undefined)).toThrow('Message should be set');
-    expect(() => logFunction('string', null)).toThrow('Message should be set');
+    expect(() => logFunction(undefined)).toThrow('Message should be set');
+    expect(() => logFunction(null)).toThrow('Message should be set');
 
   };
 
@@ -42,8 +40,8 @@ describe('Logger', () => {
     it('should call log with loggerLevel info and given parameters', () => {
 
       logger.log = jest.fn();
-      logger.info('typeName', 'message', 'logData');
-      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.info, 'typeName', 'message', 'logData');
+      logger.info('message', 'logData');
+      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.info, 'message', 'logData');
 
     });
 
@@ -60,8 +58,8 @@ describe('Logger', () => {
     it('should call log with loggerLevel debug and given parameters', () => {
 
       logger.log = jest.fn();
-      logger.debug('typeName', 'message', 'logData');
-      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.debug, 'typeName', 'message', 'logData');
+      logger.debug('message', 'logData');
+      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.debug, 'message', 'logData');
 
     });
 
@@ -78,8 +76,8 @@ describe('Logger', () => {
     it('should call log with loggerLevel warn and given parameters', () => {
 
       logger.log = jest.fn();
-      logger.warn('typeName', 'message', 'logData');
-      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.warn, 'typeName', 'message', 'logData');
+      logger.warn('message', 'logData');
+      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.warn, 'message', 'logData');
 
     });
 
@@ -96,8 +94,8 @@ describe('Logger', () => {
     it('should call log with loggerLevel warn and given parameters', () => {
 
       logger.log = jest.fn();
-      logger.error('typeName', 'message', { error: new HandlerArgumentError('HandlerArgumentError', 1), caught: true });
-      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.error, 'typeName', 'message', { 'caught': true, 'error' : new HandlerArgumentError('HandlerArgumentError', 1) });
+      logger.error('message', { error: new HandlerArgumentError('HandlerArgumentError', 1), caught: true });
+      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.error, 'message', { 'caught': true, 'error' : new HandlerArgumentError('HandlerArgumentError', 1) });
 
     });
 
@@ -114,8 +112,8 @@ describe('Logger', () => {
     it('should call log with loggerLevel warn and given parameters', () => {
 
       logger.log = jest.fn();
-      logger.silly('typeName', 'message', 'logData');
-      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.silly, 'typeName', 'message', 'logData');
+      logger.silly('message', 'logData');
+      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.silly, 'message', 'logData');
 
     });
 
@@ -132,8 +130,8 @@ describe('Logger', () => {
     it('should call log with loggerLevel warn and given parameters', () => {
 
       logger.log = jest.fn();
-      logger.verbose('typeName', 'message', 'logData');
-      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.verbose, 'typeName', 'message', 'logData');
+      logger.verbose('message', 'logData');
+      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.verbose, 'message', 'logData');
 
     });
 

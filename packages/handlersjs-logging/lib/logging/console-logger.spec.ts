@@ -11,7 +11,7 @@ describe('ConsoleLogger', () => {
 
   beforeEach(async () => {
 
-    logger = new ConsoleLogger(6, 6);
+    logger = new ConsoleLogger('test-logger', 6, 6);
     spy.set('warn', jest.spyOn(console, 'warn').mockImplementation(() => undefined));
     spy.set('info', jest.spyOn(console, 'info').mockImplementation(() => undefined));
     spy.set('debug', jest.spyOn(console, 'debug').mockImplementation(() => undefined));
@@ -35,7 +35,6 @@ describe('ConsoleLogger', () => {
 
   });
 
-  const testService = 'TestService';
   const testMessage = 'TestMessage';
   const data = { data: 'data' };
 
@@ -43,16 +42,14 @@ describe('ConsoleLogger', () => {
 
     it.each([ ...levels, [ 'silly', 'log' ] ])('LoggerLevel.%s should call console.%s', (level, log) => {
 
-      logger.log(LoggerLevel[level], testService, testMessage, data);
+      logger.log(LoggerLevel[level], testMessage, data);
       expect(spy.get(log)).toHaveBeenCalledTimes(1);
-      expect(spy.get(log)).toHaveBeenCalledWith(expect.stringContaining(testService), data);
       expect(spy.get(log)).toHaveBeenCalledWith(expect.stringContaining(testMessage), data);
 
     });
 
     const params = {
       level: LoggerLevel.info,
-      typeName: ' TestService',
       message: 'test message',
     };
 
@@ -60,7 +57,7 @@ describe('ConsoleLogger', () => {
 
       const testArgs = { ...params };
       testArgs[keyToBeNull] = undefined;
-      expect(() => logger.log(testArgs.level, testArgs.typeName, testArgs.message)).toThrow(`${keyToBeNull} should be set`);
+      expect(() => logger.log(testArgs.level, testArgs.message)).toThrow(`${keyToBeNull} should be set`);
 
     });
 
@@ -74,13 +71,13 @@ describe('ConsoleLogger', () => {
 
       if (level === 'error') {
 
-        logger[level]('TestService', 'test message', { error: 'test error', caught: 'error' });
-        expect(logSpy).toHaveBeenCalledWith(LoggerLevel.error, 'TestService', 'test message', { error: 'test error', caught: 'error' });
+        logger[level]('TestService', { error: 'test error', caught: 'error' });
+        expect(logSpy).toHaveBeenCalledWith(LoggerLevel.error, 'TestService', { error: 'test error', caught: 'error' });
 
       } else {
 
-        logger[level]('TestService', 'test message', 'test data');
-        expect(logSpy).toHaveBeenCalledWith(LoggerLevel[level], 'TestService', 'test message', 'test data');
+        logger[level]('TestService', 'test data');
+        expect(logSpy).toHaveBeenCalledWith(LoggerLevel[level], 'TestService', 'test data');
 
       }
 
