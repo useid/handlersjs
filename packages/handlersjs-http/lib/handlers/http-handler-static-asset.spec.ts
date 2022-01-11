@@ -1,6 +1,5 @@
 import { join } from 'path';
-import { mock } from 'jest-mock-extended';
-import { Logger, setLogger } from '@digita-ai/handlersjs-logging';
+import { ConsoleLoggerFactory, setLoggerFactory } from '@digita-ai/handlersjs-logging';
 import { lastValueFrom } from 'rxjs';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { NotFoundHttpError } from '../errors/not-found-http-error';
@@ -18,7 +17,7 @@ jest.mock('fs/promises', () => ({
 
 describe('HttpHandlerStaticAssetService', () => {
 
-  setLogger(mock<Logger>());
+  setLoggerFactory(new ConsoleLoggerFactory());
 
   const service: HttpHandlerStaticAssetService = new HttpHandlerStaticAssetService('test-directory/', 'text/plain');
 

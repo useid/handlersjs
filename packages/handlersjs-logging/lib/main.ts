@@ -1,6 +1,6 @@
 import { Logger } from './logging/logger';
 import { LoggerFactory } from './logging/logger-factory';
-import { LoggerLevel } from 'logging/logger-level';
+import { LoggerLevel } from './logging/logger-level';
 
 let logger: Logger;
 let loggerFactory: LoggerFactory;

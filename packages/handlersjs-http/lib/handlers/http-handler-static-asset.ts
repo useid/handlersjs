@@ -2,7 +2,7 @@ import { readFile } from 'fs/promises';
 import { join, isAbsolute } from 'path';
 import { from, Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Logger, getLogger } from '@digita-ai/handlersjs-logging';
+import { Logger, getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
@@ -12,7 +12,7 @@ import { ForbiddenHttpError } from '../errors/forbidden-http-error';
 
 export class HttpHandlerStaticAssetService extends HttpHandler {
 
-  private logger: Logger = getLogger();
+  private logger: Logger = getLoggerFor(this, 4, 4);
 
   constructor(private path: string, private contentType: string) {
 
@@ -22,7 +22,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
 
   canHandle(context: HttpHandlerContext): Observable<boolean> {
 
-    this.logger.debug(HttpHandlerStaticAssetService.name, 'Checking canHandle', context.request);
+    this.logger.debug(HttpHandlerStaticAssetService.name, context.request);
 
     return of(true);
 

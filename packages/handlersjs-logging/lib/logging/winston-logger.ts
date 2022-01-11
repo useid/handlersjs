@@ -1,4 +1,4 @@
-import util from 'util';
+import * as util from 'util';
 import { transports, createLogger, format, Logger } from 'winston';
 import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
 import { TransformableInfo } from 'logform';

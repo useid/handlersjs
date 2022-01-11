@@ -1,4 +1,4 @@
-import { createLogger, Logger } from 'winston';
+import { Logger } from 'winston';
 import { mock } from 'jest-mock-extended';
 import { WinstonLogger } from './winston-logger';
 import { LoggerLevel } from './logger-level';
