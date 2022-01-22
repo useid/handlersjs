@@ -1,38 +1,22 @@
-import { Logger } from 'winston';
-import { mock } from 'jest-mock-extended';
-import { WinstonLogger } from './winston-logger';
-import { LoggerLevel } from './logger-level';
+import { LoggerLevel } from '../models/logger-level';
+import { ConsoleLogger } from './console-logger';
 
-let testLogger: Logger;
+jest.mock('console');
 
-jest.mock('winston', () => ({
-  createLogger: jest.fn().mockImplementation(() => {
+describe('ConsoleLogger', () => {
 
-    testLogger = mock<Logger>();
-
-    return testLogger;
-
-  }),
-  format: {
-    combine: jest.fn(),
-    timestamp: jest.fn(),
-    printf: jest.fn(),
-  },
-  transports: {
-    File: jest.fn(),
-    Console: jest.fn(),
-  },
-}));
-
-describe('WinstonLogger', () => {
-
-  let logger: WinstonLogger;
+  let logger: ConsoleLogger;
   const spy = new Map();
   const levels = [ 'info', 'debug', 'warn', 'error' ].map((s) => [ s, s ]);
 
   beforeEach(async () => {
 
-    logger = new WinstonLogger('test-logger', 6, 6);
+    logger = new ConsoleLogger('test-logger', 6, 6);
+    spy.set('warn', jest.spyOn(console, 'warn').mockImplementation(() => undefined));
+    spy.set('info', jest.spyOn(console, 'info').mockImplementation(() => undefined));
+    spy.set('debug', jest.spyOn(console, 'debug').mockImplementation(() => undefined));
+    spy.set('error', jest.spyOn(console, 'error').mockImplementation(() => undefined));
+    spy.set('log', jest.spyOn(console, 'log').mockImplementation(() => undefined));
 
   });
 
@@ -41,7 +25,7 @@ describe('WinstonLogger', () => {
     // clear spies
     jest.clearAllMocks();
 
-    for (const [ key, value ] of Object.entries(spy)) { value.mockReset(); }
+    for (const value of Object.values(spy)) { value.mockReset(); }
 
   });
 
@@ -56,18 +40,11 @@ describe('WinstonLogger', () => {
 
   describe('log', () => {
 
-    it.each([ ...levels, [ 'silly', 'log' ] ])('LoggerLevel.%s should call winston logger with appropriate parameters', (level, log) => {
+    it.each([ ...levels, [ 'silly', 'log' ] ])('LoggerLevel.%s should call console.%s', (level, log) => {
 
       logger.log(LoggerLevel[level], testMessage, data);
-      expect(testLogger.log).toHaveBeenCalledTimes(1);
-
-      expect(testLogger.log).toHaveBeenCalledWith({
-        data,
-        level,
-        message: testMessage,
-        printData: true,
-        typeName: 'test-logger',
-      });
+      expect(spy.get(log)).toHaveBeenCalledTimes(1);
+      expect(spy.get(log)).toHaveBeenCalledWith(expect.stringContaining(testMessage), data);
 
     });
 

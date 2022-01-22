@@ -1,16 +1,16 @@
 import * as util from 'util';
-import { transports, createLogger, format, Logger } from 'winston';
+import { transports, createLogger, format, Logger as WLogger } from 'winston';
 import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
 import { TransformableInfo } from 'logform';
-import { Logger as DGTLogger } from './logger';
-import { LoggerLevel } from './logger-level';
+import { Logger } from '../models/logger';
+import { LoggerLevel } from '../models/logger-level';
 
 /**
  * Winston-based logger service
  */
-export class WinstonLogger extends DGTLogger {
+export class WinstonLogger extends Logger {
 
-  private logger: Logger;
+  private logger: WLogger;
 
   constructor(
     protected readonly label: string,

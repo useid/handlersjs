@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/dot-notation */
-import { ConsoleLogger } from './logging/console-logger';
-import { ConsoleLoggerFactory } from './logging/console-logger-factory';
-import { WinstonLogger } from './logging/winston-logger';
-import { WinstonLoggerFactory } from './logging/winston-logger-factory';
+import { ConsoleLogger } from './loggers/console-logger';
+import { ConsoleLoggerFactory } from './factories/console-logger-factory';
+import { WinstonLogger } from './loggers/winston-logger';
+import { WinstonLoggerFactory } from './factories/winston-logger-factory';
 import { getLogger, getLoggerFor, setLogger, setLoggerFactory } from './main';
 
 describe('main', () => {

@@ -1,5 +1,4 @@
 import { join } from 'path';
-import { ConsoleLoggerFactory, setLoggerFactory } from '@digita-ai/handlersjs-logging';
 import { lastValueFrom } from 'rxjs';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { NotFoundHttpError } from '../errors/not-found-http-error';
@@ -17,9 +16,7 @@ jest.mock('fs/promises', () => ({
 
 describe('HttpHandlerStaticAssetService', () => {
 
-  setLoggerFactory(new ConsoleLoggerFactory());
-
-  const service: HttpHandlerStaticAssetService = new HttpHandlerStaticAssetService('test-directory/', 'text/plain');
+  const service: HttpHandlerStaticAssetService = new HttpHandlerStaticAssetService('test/', 'text/plain');
 
   let context: HttpHandlerContext;
 
@@ -109,7 +106,7 @@ describe('HttpHandlerStaticAssetService', () => {
 
     it('should return file content when file is found with an absolute path', async() => {
 
-      const absolutePath = join(__dirname, '../../test-directory/');
+      const absolutePath = join(__dirname, '../../test/');
       const absoluteService = new HttpHandlerStaticAssetService(absolutePath, 'text/plain');
 
       context.request.parameters.filename = 'test.txt';

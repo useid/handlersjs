@@ -1,6 +1,5 @@
 import * as path from 'path';
 import { ComponentsManager } from 'componentsjs';
-import { setLoggerFactory, ConsoleLoggerFactory } from '@digita-ai/handlersjs-logging';
 import { NodeHttpServer } from './servers/node/node-http-server';
 
 export const launch: (variables: Record<string, any>) => Promise<void> = async (variables: Record<string, any>) => {
@@ -19,8 +18,6 @@ export const launch: (variables: Record<string, any>) => Promise<void> = async (
   });
 
   await manager.configRegistry.register(configPath);
-
-  setLoggerFactory(new ConsoleLoggerFactory());
 
   const server: NodeHttpServer = await manager.instantiate('urn:handlersjs-http:default:NodeHttpServer', { variables });
   server.start();

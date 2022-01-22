@@ -1,6 +1,6 @@
-import { Logger } from './logging/logger';
-import { LoggerFactory } from './logging/logger-factory';
-import { LoggerLevel } from './logging/logger-level';
+import { Logger } from './models/logger';
+import { LoggerFactory } from './models/logger-factory';
+import { LoggerLevel } from './models/logger-level';
 
 let logger: Logger;
 let loggerFactory: LoggerFactory;
@@ -30,7 +30,7 @@ export const setLogger = (newLogger: Logger): void => {
  * @param loggable - A class instance or a class string name.
  */
 export const getLoggerFor = (
-  loggable: string | Instance,
+  loggable: string | { constructor: { name: string } },
   minimumLevel: LoggerLevel,
   minimumLevelPrintData: LoggerLevel
 ): Logger => {
@@ -51,9 +51,3 @@ export const setLoggerFactory = (newLoggerFactory: LoggerFactory): void => {
 
 };
 
-/**
- * Helper interface to identify class instances.
- */
-interface Instance {
-  constructor: { name: string };
-}

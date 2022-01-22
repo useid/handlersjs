@@ -1,5 +1,6 @@
 import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
 import { LoggerLevel } from './logger-level';
+
 export abstract class Logger {
 
   constructor(

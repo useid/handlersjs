@@ -54,7 +54,7 @@
   "dependencies": {
     "@types/node": "^16.11.7",
     "clone": "^2.1.2",
-    "rxjs": "^7.4.0"
+    "rxjs": "^7.5.1"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-storage",
   "lsd:components": "dist/components/components.jsonld",
@@ -63,7 +63,6 @@
   },
   "lsd:importPaths": {
     "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-storage/^0.0.0/components/": "dist/components/",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-storage/^0.0.0/config/": "config/",
     "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-storage/^0.0.0/dist/": "dist/"
   },
   "jest": {
