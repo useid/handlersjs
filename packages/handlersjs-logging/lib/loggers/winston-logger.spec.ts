@@ -1,7 +1,7 @@
-import { createLogger, Logger } from 'winston';
+import { Logger } from 'winston';
 import { mock } from 'jest-mock-extended';
+import { LoggerLevel } from '../models/logger-level';
 import { WinstonLogger } from './winston-logger';
-import { LoggerLevel } from './logger-level';
 
 let testLogger: Logger;
 
@@ -32,7 +32,7 @@ describe('WinstonLogger', () => {
 
   beforeEach(async () => {
 
-    logger = new WinstonLogger(6, 6);
+    logger = new WinstonLogger('test-logger', 6, 6);
 
   });
 
@@ -41,7 +41,7 @@ describe('WinstonLogger', () => {
     // clear spies
     jest.clearAllMocks();
 
-    for (const [ key, value ] of Object.entries(spy)) { value.mockReset(); }
+    for (const value of Object.values(spy)) { value.mockReset(); }
 
   });
 
@@ -51,7 +51,6 @@ describe('WinstonLogger', () => {
 
   });
 
-  const testService = 'TestService';
   const testMessage = 'TestMessage';
   const data = { data: 'data' };
 
@@ -59,7 +58,7 @@ describe('WinstonLogger', () => {
 
     it.each([ ...levels, [ 'silly', 'log' ] ])('LoggerLevel.%s should call winston logger with appropriate parameters', (level, log) => {
 
-      logger.log(LoggerLevel[level], testService, testMessage, data);
+      logger.log(LoggerLevel[level], testMessage, data);
       expect(testLogger.log).toHaveBeenCalledTimes(1);
 
       expect(testLogger.log).toHaveBeenCalledWith({
@@ -67,14 +66,13 @@ describe('WinstonLogger', () => {
         level,
         message: testMessage,
         printData: true,
-        typeName: testService,
+        typeName: 'test-logger',
       });
 
     });
 
     const params = {
       level: LoggerLevel.info,
-      typeName: ' TestService',
       message: 'test message',
     };
 
@@ -82,7 +80,7 @@ describe('WinstonLogger', () => {
 
       const testArgs = { ...params };
       testArgs[keyToBeNull] = undefined;
-      expect(() => logger.log(testArgs.level, testArgs.typeName, testArgs.message)).toThrow(`${keyToBeNull} should be set`);
+      expect(() => logger.log(testArgs.level, testArgs.message)).toThrow(`${keyToBeNull} should be set`);
 
     });
 
@@ -96,13 +94,13 @@ describe('WinstonLogger', () => {
 
       if (level === 'error') {
 
-        logger[level]('TestService', 'test message', { error: 'test error', caught: 'error' });
-        expect(logSpy).toHaveBeenCalledWith(LoggerLevel.error, 'TestService', 'test message', { error: 'test error', caught: 'error' });
+        logger[level]('TestService', { error: 'test error', caught: 'error' });
+        expect(logSpy).toHaveBeenCalledWith(LoggerLevel.error, 'TestService', { error: 'test error', caught: 'error' });
 
       } else {
 
-        logger[level]('TestService', 'test message', 'test data');
-        expect(logSpy).toHaveBeenCalledWith(LoggerLevel[level], 'TestService', 'test message', 'test data');
+        logger[level]('TestService', 'test data');
+        expect(logSpy).toHaveBeenCalledWith(LoggerLevel[level], 'TestService', 'test data');
 
       }
 

@@ -6,11 +6,11 @@
     "bootstrap": {
       "ignorePrepublish": true
     },
+    "publish": {
+      "registry": "https://npm.pkg.github.com"
+    },
     "version": {
-      "allowBranch": [
-        "master",
-        "develop"
-      ],
+      "allowBranch": [ "develop" ],
       "conventionalCommits": true,
       "exact": true,
       "forcePublish": true,
