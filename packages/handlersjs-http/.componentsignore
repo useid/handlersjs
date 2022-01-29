@@ -5,5 +5,7 @@
   "HttpHandlerOperationSecurityType",
   "HttpHandlerResponse",
   "Logger",
-  "TimedTypedKeyValueStore"
+  "TimedTypedKeyValueStore",
+  "URL",
+  "Date"
 ]
