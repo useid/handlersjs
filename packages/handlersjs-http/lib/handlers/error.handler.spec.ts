@@ -22,10 +22,7 @@ const context: HttpHandlerContext = {
 
 describe('error_handler', () => {
 
-  const nestedHttpHandler = {
-    canHandle: jest.fn().mockReturnValue(of(true)),
-    handle: jest.fn().mockReturnValue(throwError(response)),
-  };
+  const nestedHttpHandler = { handle: jest.fn().mockReturnValue(throwError(() => response)) };
 
   const errorHandlerTrue = new ErrorHandler(nestedHttpHandler, true);
 

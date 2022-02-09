@@ -7,21 +7,11 @@ type HandlerSequenceTwo<A, B, C> = [ Handler<A, B>, Handler<B, C> ];
 
 describe('TypedPipeThroughHandler', () => {
 
-  const nestedHandler = { handle: jest.fn(), canHandle: jest.fn() };
-  const handlers: HandlerSequenceOne<unknown, unknown> = [ nestedHandler ];
-
   let pipeThroughOne;
   let pipeThroughTwo;
 
-  const mockHandler: Handler<number, number> = {
-    handle: (input: number) => of(2 * input),
-    canHandle: (input) => of(true),
-  };
-
-  const mockHandler2: Handler<number, number> = {
-    handle: (input: number) => of(4 * input),
-    canHandle: (input) => of(true),
-  };
+  const mockHandler: Handler<number, number> = { handle: (input: number) => of(2 * input) };
+  const mockHandler2: Handler<number, number> = { handle: (input: number) => of(4 * input) };
 
   const handlersOne: HandlerSequenceOne<number, number> = [ mockHandler ];
   const handlersTwo: HandlerSequenceTwo<number, number, number> = [ mockHandler, mockHandler2 ];

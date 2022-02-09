@@ -1,6 +1,6 @@
 import { readFile } from 'fs/promises';
 import { join, isAbsolute } from 'path';
-import { from, Observable, of, throwError } from 'rxjs';
+import { from, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -19,7 +19,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
-    const canHandleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];
+    const possibleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];
 
     if (!context.request?.headers?.accept) {
 
@@ -29,7 +29,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
 
     const reqHeaders = context.request.headers.accept.split(',').map((accept) => accept.split(';')[0]);
 
-    if (!reqHeaders.some((contentType) => canHandleAcceptHeaders.includes(contentType.trim()))) {
+    if (!reqHeaders.some((contentType) => possibleAcceptHeaders.includes(contentType.trim()))) {
 
       return throwError(() => new UnsupportedMediaTypeHttpError('Content type not supported'));
 

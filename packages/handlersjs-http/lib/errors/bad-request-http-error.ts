@@ -26,7 +26,6 @@ import { HttpError } from './http-error';
 
 /**
  * An error thrown when incoming data is not supported.
- * Probably because an {@link AsyncHandler} returns false on the canHandle call.
  */
 export class BadRequestHttpError extends HttpError {
 

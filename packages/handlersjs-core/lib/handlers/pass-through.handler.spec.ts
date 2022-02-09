@@ -12,10 +12,7 @@ describe('PassThroughHandler', () => {
     msg: 'output',
   };
 
-  const nestedHandler: Handler<unknown, unknown> = {
-    handle: jest.fn().mockReturnValue(of(nestedOutput)),
-    canHandle: jest.fn(),
-  };
+  const nestedHandler: Handler<unknown, unknown> = { handle: jest.fn().mockReturnValue(of(nestedOutput)) };
 
   const handler = new PassThroughHandler(nestedHandler);
 
