@@ -37,21 +37,4 @@ describe('MockHttpHandler', () => {
 
   });
 
-  describe('canHandle', () => {
-
-    it('should return true if context is not undefined', async () => {
-
-      await expect(lastValueFrom(handler.canHandle(context))).resolves.toEqual(true);
-
-    });
-
-    it('should throw an error when called with null or undefined', async () => {
-
-      await expect(lastValueFrom(handler.canHandle(null))).rejects.toThrow('Context cannot be null or undefined');
-      await expect(lastValueFrom(handler.canHandle(undefined))).rejects.toThrow('Context cannot be null or undefined');
-
-    });
-
-  });
-
 });

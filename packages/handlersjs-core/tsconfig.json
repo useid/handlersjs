@@ -9,8 +9,8 @@
       "node"
     ]
   },
-  "include": [ 
-      "lib" 
+  "include": [
+      "lib"
   ],
   "exclude": [
       "dist",

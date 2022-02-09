@@ -374,14 +374,4 @@ describe('SyncService', () => {
 
   });
 
-  describe('canHandle()', () => {
-
-    it('should return true', async () => {
-
-      await expect(lastValueFrom(syncService.canHandle())).resolves.toBe(true);
-
-    });
-
-  });
-
 });

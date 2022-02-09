@@ -24,8 +24,6 @@ describe('HttpCorsRequestHandler', () => {
 
     handler = {
       handle: jest.fn().mockReturnValue(of({ headers: mockResponseHeaders, status: 200, body: 'handler done' } as HttpHandlerResponse)),
-      safeHandle: jest.fn(),
-      canHandle: jest.fn().mockReturnValue(of(true)),
     };
 
     context = {
@@ -60,16 +58,6 @@ describe('HttpCorsRequestHandler', () => {
     it('should be correctly instantiated', () => {
 
       expect(service).toBeTruthy();
-
-    });
-
-    describe('canHandle()', () => {
-
-      it('should always return true', async() => {
-
-        await expect(lastValueFrom(service.canHandle(undefined))).resolves.toBe(true);
-
-      });
 
     });
 

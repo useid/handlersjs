@@ -1,5 +1,5 @@
 import * as util from 'util';
-import { transports, createLogger, format, Logger as WLogger } from 'winston';
+import { transports, createLogger, format, Logger as WLogger, level as WLevel } from 'winston';
 import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
 import { TransformableInfo } from 'logform';
 import { Logger } from '../models/logger';
@@ -25,7 +25,7 @@ export class WinstonLogger extends Logger {
         format.timestamp(),
         format.printf(this.formatLog),
       ),
-      level: LoggerLevel[this.minimumLevel],
+      level: LoggerLevel[this.minimumLevel] as WLevel,
       transports: [
         new transports.File({ filename: 'api-error.log', level: 'error' }),
         new transports.Console(),
@@ -53,7 +53,7 @@ export class WinstonLogger extends Logger {
 
     if (level <= this.minimumLevel) {
 
-      this.logger.log({ level: logLevel, message, typeName: this.label, data, printData });
+      this.logger.log({ level: logLevel as WLevel, message, typeName: this.label, data, printData });
 
     }
 

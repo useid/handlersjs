@@ -48,7 +48,7 @@ export const statusCodes: { [code: number]: string } = {
   511: 'Network Authentication Required',
 };
 
-export class ErrorHandler extends Handler<HttpHandlerContext, HttpHandlerResponse> {
+export class ErrorHandler implements Handler<HttpHandlerContext, HttpHandlerResponse> {
 
   /**
    * Creates an {ErrorHandler} that catches errors and returns an error response to the given handler.
@@ -59,8 +59,6 @@ export class ErrorHandler extends Handler<HttpHandlerContext, HttpHandlerRespons
     private nestedHandler: HttpHandler,
     private showUpstreamError: boolean = false
   ) {
-
-    super();
 
     if (!nestedHandler) {
 
@@ -83,12 +81,6 @@ export class ErrorHandler extends Handler<HttpHandlerContext, HttpHandlerRespons
           : statusCodes[error?.status] ?? statusCodes[500],
       }))
     );
-
-  }
-
-  canHandle(context: HttpHandlerContext): Observable<boolean> {
-
-    return context? of(true) : of(false);
 
   }
 

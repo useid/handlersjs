@@ -115,15 +115,4 @@ describe('JsonStoreHandler', () => {
 
   });
 
-  describe('canHandle()', () => {
-
-    it('can always handle a request', async () => {
-
-      const canHandle = await lastValueFrom(jsonStoreHandler.canHandle(requestContext));
-      expect(canHandle).toEqual(true);
-
-    });
-
-  });
-
 });

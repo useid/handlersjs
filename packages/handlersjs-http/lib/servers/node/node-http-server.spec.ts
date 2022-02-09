@@ -17,11 +17,7 @@ describe('NodeHttpServer', () => {
 
   beforeEach(() => {
 
-    nestedHttpHandler = {
-      canHandle: jest.fn(),
-      handle: jest.fn(),
-      safeHandle: jest.fn(),
-    };
+    nestedHttpHandler = { handle: jest.fn() };
 
     handler = new NodeHttpRequestResponseHandler(nestedHttpHandler);
     handler.handle = jest.fn().mockReturnValueOnce(of());

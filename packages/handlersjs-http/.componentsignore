@@ -1,11 +1,6 @@
 [
   "Error",
-  "Handler",
-  "HandlerError",
-  "HttpHandlerOperationSecurityType",
-  "HttpHandlerResponse",
-  "Logger",
-  "TimedTypedKeyValueStore",
+  "Date",
   "URL",
-  "Date"
+  "TimedTypedKeyValueStore"
 ]

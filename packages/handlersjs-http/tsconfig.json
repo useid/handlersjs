@@ -7,8 +7,8 @@
     //
     "types": []
   },
-  "include": [ 
-      "lib" 
+  "include": [
+      "lib"
   ],
   "exclude": [
       "dist",
