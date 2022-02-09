@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/handlersjs-http",
-  "version": "0.6.0",
+  "version": "0.7.1",
   "description": "",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -41,6 +41,7 @@
   "devDependencies": {
     "@digita-ai/typescript-config": "^0.3.2",
     "@types/jest": "^27.0.2",
+    "@types/node": "^14.14.41",
     "@types/n3": "1.10.0",
     "@types/node-fetch": "^2.5.11",
     "componentsjs": "^4.5.0",
@@ -57,11 +58,10 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
-    "@digita-ai/handlersjs-core": "0.6.0",
-    "@digita-ai/handlersjs-storage": "0.6.0",
-    "@digita-ai/handlersjs-logging": "0.6.0",
+    "@digita-ai/handlersjs-core": "0.7.1",
+    "@digita-ai/handlersjs-storage": "0.7.1",
     "node-fetch": "^2.6.1",
-    "rxjs": "^7.4.0"
+    "rxjs": "^7.5.1"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http",
   "lsd:components": "dist/components/components.jsonld",
@@ -79,9 +79,9 @@
     "coverageThreshold": {
       "global": {
         "statements": 98.14,
-        "branches": 96.02,
-        "lines": 99.11,
-        "functions": 96.33
+        "branches": 96.06,
+        "functions": 96.33,
+        "lines": 99.11
       }
     },
     "coveragePathIgnorePatterns": [
