@@ -1,10 +1,6 @@
 [
   "Error",
-  "HandlerError",
-  "HttpHandlerOperationSecurityType",
-  "HttpHandlerResponse",
-  "Logger",
-  "TimedTypedKeyValueStore",
-  "JsonStoreHandler",
-  "SyncService"
+  "Date",
+  "URL",
+  "TimedTypedKeyValueStore"
 ]
