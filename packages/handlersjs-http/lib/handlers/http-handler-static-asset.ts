@@ -2,7 +2,6 @@ import { readFile } from 'fs/promises';
 import { join, isAbsolute } from 'path';
 import { from, Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Logger, getLogger } from '@digita-ai/handlersjs-logging';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
@@ -11,8 +10,6 @@ import { UnsupportedMediaTypeHttpError } from '../errors/unsupported-media-type-
 import { ForbiddenHttpError } from '../errors/forbidden-http-error';
 
 export class HttpHandlerStaticAssetService extends HttpHandler {
-
-  private logger: Logger = getLogger();
 
   constructor(private path: string, private contentType: string) {
 

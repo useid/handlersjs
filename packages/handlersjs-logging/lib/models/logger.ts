@@ -1,10 +1,10 @@
-/* eslint-disable no-console -- this is a logger service */
-
 import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
 import { LoggerLevel } from './logger-level';
+
 export abstract class Logger {
 
   constructor(
+    protected readonly label: string,
     protected readonly minimumLevel: LoggerLevel,
     protected readonly minimumLevelPrintData: LoggerLevel,
   ) {}
@@ -12,17 +12,10 @@ export abstract class Logger {
   /**
    * Logs an error message
    *
-   * @param typeName The location of the log
    * @param message Message that should be logged
    * @param data Any relevant data that should be logged
    */
-  error(typeName: string, message: string, data?: unknown): void {
-
-    if (!typeName) {
-
-      throw new HandlerArgumentError('Typename should be set', typeName);
-
-    }
+  error(message: string, data?: unknown): void {
 
     if (!message) {
 
@@ -30,24 +23,17 @@ export abstract class Logger {
 
     }
 
-    this.log(LoggerLevel.error, typeName, message, data);
+    this.log(LoggerLevel.error, message, data);
 
   }
 
   /**
    * Logs a warning message
    *
-   * @param typeName The location of the log
    * @param message Message that should be logged
    * @param data Any relevant data that should be logged
    */
-  warn(typeName: string, message: string, data?: unknown): void {
-
-    if (!typeName) {
-
-      throw new HandlerArgumentError('Typename should be set', typeName);
-
-    }
+  warn(message: string, data?: unknown): void {
 
     if (!message) {
 
@@ -55,24 +41,17 @@ export abstract class Logger {
 
     }
 
-    this.log(LoggerLevel.warn, typeName, message, data);
+    this.log(LoggerLevel.warn, message, data);
 
   }
 
   /**
    * Logs an info message
    *
-   * @param typeName The location of the log
    * @param message Message that should be logged
    * @param data Any relevant data that should be logged
    */
-  info(typeName: string, message: string, data?: unknown): void {
-
-    if (!typeName) {
-
-      throw new HandlerArgumentError('Typename should be set', typeName);
-
-    }
+  info(message: string, data?: unknown): void {
 
     if (!message) {
 
@@ -80,24 +59,17 @@ export abstract class Logger {
 
     }
 
-    this.log(LoggerLevel.info, typeName, message, data);
+    this.log(LoggerLevel.info, message, data);
 
   }
 
   /**
    * Logs a verbose message
    *
-   * @param typeName The location of the log
    * @param message Message that should be logged
    * @param data Any relevant data that should be logged
    */
-  verbose(typeName: string, message: string, data?: unknown): void {
-
-    if (!typeName) {
-
-      throw new HandlerArgumentError('Typename should be set', typeName);
-
-    }
+  verbose(message: string, data?: unknown): void {
 
     if (!message) {
 
@@ -105,24 +77,17 @@ export abstract class Logger {
 
     }
 
-    this.log(LoggerLevel.verbose, typeName, message, data);
+    this.log(LoggerLevel.verbose, message, data);
 
   }
 
   /**
    * Logs a debug message
    *
-   * @param typeName The location of the log
    * @param message Message that should be logged
    * @param data Any relevant data that should be logged
    */
-  debug(typeName: string, message: string, data?: unknown): void {
-
-    if (!typeName) {
-
-      throw new HandlerArgumentError('Typename should be set', typeName);
-
-    }
+  debug(message: string, data?: unknown): void {
 
     if (!message) {
 
@@ -130,24 +95,17 @@ export abstract class Logger {
 
     }
 
-    this.log(LoggerLevel.debug, typeName, message, data);
+    this.log(LoggerLevel.debug, message, data);
 
   }
 
   /**
    * Logs a silly message
    *
-   * @param typeName The location of the log
    * @param message Message that should be logged
    * @param data Any relevant data that should be logged
    */
-  silly(typeName: string, message: string, data?: unknown): void {
-
-    if (!typeName) {
-
-      throw new HandlerArgumentError('Typename should be set', typeName);
-
-    }
+  silly(message: string, data?: unknown): void {
 
     if (!message) {
 
@@ -155,7 +113,7 @@ export abstract class Logger {
 
     }
 
-    this.log(LoggerLevel.silly, typeName, message, data);
+    this.log(LoggerLevel.silly, message, data);
 
   }
 
@@ -163,10 +121,9 @@ export abstract class Logger {
    * Logs a message
    *
    * @param level Severity level of the log
-   * @param typeName The location of the log
    * @param message Message that should be logged
    * @param data Any relevant data that should be logged
    */
-  abstract log(level: LoggerLevel, typeName: string, message: string, data?: unknown): void;
+  abstract log(level: LoggerLevel, message: string, data?: unknown): void;
 
 }
