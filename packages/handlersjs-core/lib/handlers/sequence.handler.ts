@@ -5,13 +5,11 @@ import { Handler } from './handler';
 
 export type PipeThroughHandler<T, S> = SequenceHandler<T, S>;
 
-export class SequenceHandler<T, S> extends Handler<T, S> {
+export class SequenceHandler<T, S> implements Handler<T, S> {
 
   constructor(
     public handlers: Handler<any, any>[],
   ) {
-
-    super();
 
     if (!handlers) { throw new HandlerArgumentError('Argument handlers should be set.', handlers); }
 

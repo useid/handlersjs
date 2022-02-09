@@ -11,7 +11,7 @@ import { HttpHandlerRoute } from '../models/http-handler-route';
  *
  * @class
  */
-export class RoutedHttpRequestHandler extends HttpHandler {
+export class RoutedHttpRequestHandler implements HttpHandler {
 
   private pathToRouteMap: Map<string, { controller: HttpHandlerController; route: HttpHandlerRoute }[]>;
 
@@ -21,8 +21,6 @@ export class RoutedHttpRequestHandler extends HttpHandler {
    * @param {HttpHandlerController[]} handlerControllerList - a list of HttpHandlerController objects
    */
   constructor(private handlerControllerList: HttpHandlerController[], private defaultHandler?: HttpHandler) {
-
-    super();
 
     if (!handlerControllerList) {
 

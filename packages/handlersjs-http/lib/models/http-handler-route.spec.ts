@@ -1,4 +1,4 @@
-import { HttpHandlerOperation, HttpHandlerOperationHeader, HttpHandlerOperationMedia, HttpHandlerOperationMediaPayload, HttpHandlerOperationResponse, HttpHandlerOperationSecurityType, HttpHandlerRoute } from './http-handler-route';
+import { HttpHandlerOperation, HttpHandlerOperationHeader, HttpHandlerOperationMedia, HttpHandlerOperationMediaPayload, HttpHandlerOperationResponse, HttpHandlerRoute } from './http-handler-route';
 
 describe('HttpHandlerRoute', () => {
 

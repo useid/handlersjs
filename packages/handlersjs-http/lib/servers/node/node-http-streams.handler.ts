@@ -4,4 +4,5 @@ import { NodeHttpStreams } from './node-http-streams.model';
 /**
  * A {Handler} that handles the IncomingMessage and ServerResponse of a {NodeHttpStreams} object.
  */
-export abstract class NodeHttpStreamsHandler extends Handler<NodeHttpStreams> { }
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface NodeHttpStreamsHandler extends Handler<NodeHttpStreams> {}

@@ -9,13 +9,9 @@ import { NotFoundHttpError } from '../errors/not-found-http-error';
 import { UnsupportedMediaTypeHttpError } from '../errors/unsupported-media-type-http-error';
 import { ForbiddenHttpError } from '../errors/forbidden-http-error';
 
-export class HttpHandlerStaticAssetService extends HttpHandler {
+export class HttpHandlerStaticAssetService implements HttpHandler {
 
-  constructor(private path: string, private contentType: string) {
-
-    super();
-
-  }
+  constructor(private path: string, private contentType: string) { }
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 

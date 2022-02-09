@@ -6,7 +6,7 @@ jest.useFakeTimers();
 describe('Scheduler', () => {
 
   const task = jest.fn();
-  class TestHandler extends Handler<void, void> {
+  class TestHandler implements Handler<void, void> {
 
     handle(input: void, intermediateOutput?: void): Observable<void> {
 

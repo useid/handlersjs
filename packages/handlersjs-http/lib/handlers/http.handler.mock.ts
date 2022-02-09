@@ -6,7 +6,7 @@ import { HttpHandlerResponse } from '../models/http-handler-response';
 /**
  * A mock of an HttpHandler used for tests
  */
-export class MockHttpHandler extends HttpHandler {
+export class MockHttpHandler implements HttpHandler {
 
   /**
    * Returns a mock response: ```

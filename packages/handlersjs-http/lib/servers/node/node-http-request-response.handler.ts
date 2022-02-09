@@ -11,7 +11,7 @@ import { NodeHttpStreams } from './node-http-streams.model';
  * A {NodeHttpStreamsHandler} reading the request stream into a {HttpHandlerRequest},
  * passing it through a {HttpHandler} and writing the resulting {HttpHandlerResponse} to the response stream.
  */
-export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
+export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
   /**
    * Creates a {NodeHttpRequestResponseHandler} passing requests through the given handler.
@@ -19,8 +19,6 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
    * @param {HttpHandler} httpHandler - the handler through which to pass incoming requests.
    */
   constructor(private httpHandler: HttpHandler) {
-
-    super();
 
     if (!httpHandler) {
 
