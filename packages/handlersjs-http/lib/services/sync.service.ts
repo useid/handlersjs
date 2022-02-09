@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import { from, Observable, of } from 'rxjs';
 
 export class SyncService<T, S extends string, P extends string, M extends {
-  [s in S]: T[] } & { [p in P]: string[] }> extends Handler<void, void> {
+  [s in S]: T[] } & { [p in P]: string[] }> implements Handler<void, void> {
 
   latestSync: Date | undefined = undefined;
 
@@ -21,8 +21,6 @@ export class SyncService<T, S extends string, P extends string, M extends {
     private readonly store: TimedTypedKeyValueStore<M>,
     private readonly endpoint?: string
   ) {
-
-    super();
 
     if (!storage) { throw new Error('A storage must be provided'); }
 
@@ -66,12 +64,6 @@ export class SyncService<T, S extends string, P extends string, M extends {
     }));
 
     await this.store.set(this.storage, [ ... new Set([ ...storage, ...fetchedValues.flat() ]) ] as M[S]);
-
-  }
-
-  canHandle(input: void): Observable<boolean> {
-
-    return of(true);
 
   }
 

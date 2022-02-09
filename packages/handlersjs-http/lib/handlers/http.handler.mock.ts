@@ -6,7 +6,7 @@ import { HttpHandlerResponse } from '../models/http-handler-response';
 /**
  * A mock of an HttpHandler used for tests
  */
-export class MockHttpHandler extends HttpHandler {
+export class MockHttpHandler implements HttpHandler {
 
   /**
    * Returns a mock response: ```
@@ -35,18 +35,6 @@ export class MockHttpHandler extends HttpHandler {
     };
 
     return of(response);
-
-  }
-
-  /**
-   * Indicates this handler accepts any input.
-   *
-   * @param {HttpHandlerContext} context - the irrelevant incoming context
-   * @returns always `of(true)`
-   */
-  canHandle(context: HttpHandlerContext): Observable<boolean> {
-
-    return context ? of(true) : throwError(() => new Error('Context cannot be null or undefined'));
 
   }
 

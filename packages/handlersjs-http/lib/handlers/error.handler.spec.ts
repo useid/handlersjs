@@ -22,11 +22,7 @@ const context: HttpHandlerContext = {
 
 describe('error_handler', () => {
 
-  const nestedHttpHandler = {
-    canHandle: jest.fn().mockReturnValue(of(true)),
-    handle: jest.fn().mockReturnValue(throwError(response)),
-    safeHandle: jest.fn().mockReturnValue(of(response)),
-  };
+  const nestedHttpHandler = { handle: jest.fn().mockReturnValue(throwError(() => response)) };
 
   const errorHandlerTrue = new ErrorHandler(nestedHttpHandler, true);
 
@@ -137,23 +133,6 @@ describe('error_handler', () => {
       }));
 
       expect(resp).toEqual({ body: 'upstream response body', status: 400, headers: { location: 'http://test.be', 'access-control-allow-origin': '*' } });
-
-    });
-
-  });
-
-  describe('canHandle', () => {
-
-    it('should return true when context is received', async () => {
-
-      await expect(lastValueFrom(errorHandlerTrue.canHandle(context))).resolves.toEqual(true);
-
-    });
-
-    it('should return false when response is not received', async () => {
-
-      await expect(lastValueFrom(errorHandlerTrue.canHandle(undefined))).resolves.toEqual(false);
-      await expect(lastValueFrom(errorHandlerTrue.canHandle(null))).resolves.toEqual(false);
 
     });
 

@@ -11,7 +11,7 @@ import { NodeHttpStreams } from './node-http-streams.model';
  * A {NodeHttpStreamsHandler} reading the request stream into a {HttpHandlerRequest},
  * passing it through a {HttpHandler} and writing the resulting {HttpHandlerResponse} to the response stream.
  */
-export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
+export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
   /**
    * Creates a {NodeHttpRequestResponseHandler} passing requests through the given handler.
@@ -19,8 +19,6 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
    * @param {HttpHandler} httpHandler - the handler through which to pass incoming requests.
    */
   constructor(private httpHandler: HttpHandler) {
-
-    super();
 
     if (!httpHandler) {
 
@@ -54,6 +52,24 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
    * @returns an {Observable<void>} for completion detection
    */
   handle(nodeHttpStreams: NodeHttpStreams): Observable<void> {
+
+    if (!nodeHttpStreams) {
+
+      return throwError(() => new Error('node http streams object cannot be null or undefined.'));
+
+    }
+
+    if (!nodeHttpStreams.requestStream) {
+
+      return throwError(() => new Error('request stream cannot be null or undefined.'));
+
+    }
+
+    if (!nodeHttpStreams.responseStream) {
+
+      return throwError(() => new Error('response stream cannot be null or undefined.'));
+
+    }
 
     const url = nodeHttpStreams.requestStream.url;
 
@@ -161,18 +177,6 @@ export class NodeHttpRequestResponseHandler extends NodeHttpStreamsHandler {
 
       }),
     );
-
-  }
-
-  /**
-   * Indicates this handler accepts every NodeHttpStreams pair as input.
-   *
-   * @param {NodeHttpStreams} input - the incoming streams
-   * @returns always `of(true)`
-   */
-  canHandle(input: NodeHttpStreams): Observable<boolean> {
-
-    return input && input.requestStream && input.responseStream ? of(true) : of(false);
 
   }
 

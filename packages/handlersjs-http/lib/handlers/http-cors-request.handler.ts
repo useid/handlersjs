@@ -13,23 +13,13 @@ export interface HttpCorsOptions {
   credentials?: boolean;
   maxAge?: number;
 }
-export class HttpCorsRequestHandler extends HttpHandler {
+export class HttpCorsRequestHandler implements HttpHandler {
 
   constructor(
     private handler: HttpHandler,
     private options?: HttpCorsOptions,
     private passThroughOptions: boolean = false,
-  ) {
-
-    super();
-
-  }
-
-  canHandle(context: HttpHandlerContext): Observable<boolean> {
-
-    return of(true);
-
-  }
+  ) { }
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 

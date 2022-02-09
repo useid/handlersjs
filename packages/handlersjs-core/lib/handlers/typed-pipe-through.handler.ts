@@ -8,7 +8,7 @@ type HandlerSequence2<A, B, C> = [ Handler<A, B>, Handler<B, C> ];
 type HandlerSequence3<A, B, C, D> = [ Handler<A, B>, Handler<B, C>, Handler<C, D> ];
 type HandlerSequence4<A, B, C, D, E> = [ Handler<A, B>, Handler<B, C>, Handler<C, D>, Handler<D, E> ];
 
-export class TypedPipeThroughHandler<A, B, C, D, E> extends Handler<A, E> {
+export class TypedPipeThroughHandler<A, B, C, D, E> implements Handler<A, E> {
 
   constructor(
     public handlers: HandlerSequence1<A, E> |
@@ -17,15 +17,7 @@ export class TypedPipeThroughHandler<A, B, C, D, E> extends Handler<A, E> {
     HandlerSequence4<A, B, C, D, E>,
   ) {
 
-    super();
-
     if (!handlers) { throw new HandlerArgumentError('Argument handlers should be set.', handlers); }
-
-  }
-
-  canHandle(input: A): Observable<boolean> {
-
-    return of(true);
 
   }
 

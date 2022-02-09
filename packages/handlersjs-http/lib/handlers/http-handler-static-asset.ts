@@ -1,6 +1,6 @@
 import { readFile } from 'fs/promises';
 import { join, isAbsolute } from 'path';
-import { from, Observable, of, throwError } from 'rxjs';
+import { from, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -9,23 +9,13 @@ import { NotFoundHttpError } from '../errors/not-found-http-error';
 import { UnsupportedMediaTypeHttpError } from '../errors/unsupported-media-type-http-error';
 import { ForbiddenHttpError } from '../errors/forbidden-http-error';
 
-export class HttpHandlerStaticAssetService extends HttpHandler {
+export class HttpHandlerStaticAssetService implements HttpHandler {
 
-  constructor(private path: string, private contentType: string) {
-
-    super();
-
-  }
-
-  canHandle(context: HttpHandlerContext): Observable<boolean> {
-
-    return of(true);
-
-  }
+  constructor(private path: string, private contentType: string) { }
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
-    const canHandleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];
+    const possibleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];
 
     if (!context.request?.headers?.accept) {
 
@@ -35,7 +25,7 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
 
     const reqHeaders = context.request.headers.accept.split(',').map((accept) => accept.split(';')[0]);
 
-    if (!reqHeaders.some((contentType) => canHandleAcceptHeaders.includes(contentType.trim()))) {
+    if (!reqHeaders.some((contentType) => possibleAcceptHeaders.includes(contentType.trim()))) {
 
       return throwError(() => new UnsupportedMediaTypeHttpError('Content type not supported'));
 

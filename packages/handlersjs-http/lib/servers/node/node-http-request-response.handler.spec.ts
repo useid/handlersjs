@@ -16,11 +16,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
   beforeEach(async () => {
 
-    nestedHttpHandler = {
-      canHandle: jest.fn(),
-      handle: jest.fn().mockReturnValueOnce(of({ body: 'mockBody', headers: { mockKey: 'mockValue' }, status: 200 })),
-      safeHandle: jest.fn(),
-    } as HttpHandler;
+    nestedHttpHandler = { handle: jest.fn().mockReturnValueOnce(of({ body: 'mockBody', headers: { mockKey: 'mockValue' }, status: 200 })) };
 
     handler = new NodeHttpRequestResponseHandler(nestedHttpHandler);
 
@@ -274,48 +270,6 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength('Internal Server Error', 'utf-8').toString() });
       expect(res.write).toHaveBeenCalledWith('Internal Server Error');
-
-    });
-
-  });
-
-  describe('canHandle', () => {
-
-    it('should return false if input is null or undefined', async () => {
-
-      await expect(lastValueFrom(handler.canHandle(null))).resolves.toEqual(false);
-
-      await expect(lastValueFrom(handler.canHandle(undefined))).resolves.toEqual(false);
-
-    });
-
-    it('returns false if input.requestStream is null or undefined', async () => {
-
-      streamMock.requestStream = null;
-      expect(streamMock.requestStream).toBeNull();
-      await expect(lastValueFrom(handler.canHandle(streamMock))).resolves.toEqual(false);
-
-      streamMock.requestStream = undefined;
-      expect(streamMock.requestStream).toBeUndefined();
-      await expect(lastValueFrom(handler.canHandle(streamMock))).resolves.toEqual(false);
-
-    });
-
-    it('returns false if input.responseStream is null', async () => {
-
-      streamMock.responseStream = null;
-      expect(streamMock.responseStream).toBeNull();
-      await expect(lastValueFrom(handler.canHandle(streamMock))).resolves.toEqual(false);
-
-      streamMock.responseStream = undefined;
-      expect(streamMock.responseStream).toBeUndefined();
-      await expect(lastValueFrom(handler.canHandle(streamMock))).resolves.toEqual(false);
-
-    });
-
-    it('returns true if input is complete', async () => {
-
-      await expect(lastValueFrom(handler.canHandle(streamMock))).resolves.toEqual(true);
 
     });
 

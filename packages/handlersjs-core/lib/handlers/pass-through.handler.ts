@@ -1,29 +1,19 @@
-import { from, Observable, of, throwError } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
 import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { Handler } from './handler';
 
-export class PassThroughHandler<T, S> extends Handler<T, S> {
+export class PassThroughHandler<T> implements Handler<T, T> {
 
-  constructor(public handler: Handler<T, S>) {
-
-    super();
+  constructor(public handler: Handler<T, any>) {
 
     if (!handler) { throw new HandlerArgumentError('Argument handler should be set.', handler); }
 
   }
 
-  canHandle(input: T, intermediateOutput: S): Observable<boolean> {
+  handle(input: T): Observable<T> {
 
-    return of(true);
-
-  }
-
-  handle(input: T, intermediateOutput: S): Observable<S> {
-
-    return from(this.handler.handle(input, intermediateOutput)).pipe(
-      mapTo(intermediateOutput),
-    );
+    return from(this.handler.handle(input)).pipe(mapTo(input));
 
   }
 
