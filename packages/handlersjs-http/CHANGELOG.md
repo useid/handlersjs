@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.0](https://github.com/digita-ai/handlersjs/compare/v0.7.1...v0.8.0) (2022-02-11)
+
+
+### **Features**
+
+* refactor handler architecture ([#136](https://github.com/digita-ai/handlersjs/issues/136)) ([ee3e464](https://github.com/digita-ai/handlersjs/commit/ee3e4643e0c2cf281cca26dfdd8dc9fff4a6ca58))
+
+
+
 ### [0.7.1](https://github.com/digita-ai/handlersjs/compare/v0.7.0...v0.7.1) (2022-01-23)
 
 **Note:** Version bump only for package @digita-ai/handlersjs-http
