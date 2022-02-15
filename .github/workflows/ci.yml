@@ -46,7 +46,10 @@ jobs:
         with:
           node-version: 14
 
-      - run: npm run bootstrap
+      - name: Install dependencies
+        run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
 
       - run: npm run build:all
 
