@@ -45,8 +45,12 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14
+          registry-url: https://npm.pkg.github.com
 
-      - run: npm run bootstrap
+      - name: Install dependencies
+        run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
 
       - run: npm run build:all
 
