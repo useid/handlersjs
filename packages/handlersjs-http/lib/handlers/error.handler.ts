@@ -1,5 +1,4 @@
 import { Observable, of, throwError } from 'rxjs';
-import { Handler } from '@digita-ai/handlersjs-core';
 import { catchError } from 'rxjs/operators';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpHandler } from '../models/http-handler';
