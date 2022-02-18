@@ -48,7 +48,7 @@ export const statusCodes: { [code: number]: string } = {
   511: 'Network Authentication Required',
 };
 
-export class ErrorHandler implements Handler<HttpHandlerContext, HttpHandlerResponse> {
+export class ErrorHandler implements HttpHandler {
 
   /**
    * Creates an {ErrorHandler} that catches errors and returns an error response to the given handler.
