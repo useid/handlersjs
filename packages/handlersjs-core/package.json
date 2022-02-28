@@ -54,7 +54,7 @@
   "dependencies": {
     "@types/node": "^16.11.7",
     "clone": "^2.1.2",
-    "rxjs": "^7.5.1"
+    "rxjs": "^7.5.4"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core",
   "lsd:components": "dist/components/components.jsonld",
