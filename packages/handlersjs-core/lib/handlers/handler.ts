@@ -1,7 +1,7 @@
 import type { Observable } from 'rxjs';
 
-export interface Handler<T = void, S = void> {
+export abstract class Handler<T = void, S = void> {
 
-  handle(input: T): Observable<S>;
+  abstract handle(input: T): Observable<S>;
 
 }
