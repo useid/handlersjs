@@ -37,6 +37,8 @@ export class MethodNotAllowedHttpError extends HttpError {
 
   static isInstance(error: unknown): error is MethodNotAllowedHttpError {
 
+    this.logger.info(`Checking if ${error} is an instance of ${this.name}: `, HttpError.isInstance(error) && error.statusCode === 405);
+
     return HttpError.isInstance(error) && error.statusCode === 405;
 
   }

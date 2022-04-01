@@ -37,6 +37,8 @@ export class ConflictHttpError extends HttpError {
 
   static isInstance(error: unknown): error is ConflictHttpError {
 
+    this.logger.info(`Checking if ${error} is an instance of ${this.name}: `, HttpError.isInstance(error) && error.statusCode === 409);
+
     return HttpError.isInstance(error) && error.statusCode === 409;
 
   }

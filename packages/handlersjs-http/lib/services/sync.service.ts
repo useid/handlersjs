@@ -1,4 +1,5 @@
 import { Handler } from '@digita-ai/handlersjs-core';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { TimedTypedKeyValueStore } from '@digita-ai/handlersjs-storage';
 import fetch from 'node-fetch';
 import { from, Observable, of } from 'rxjs';
@@ -7,6 +8,7 @@ export class SyncService<T, S extends string, P extends string, M extends {
   [s in S]: T[] } & { [p in P]: string[] }> implements Handler<void, void> {
 
   latestSync: Date | undefined = undefined;
+  private logger = getLoggerFor(this, 5, 5);
 
   /**
    *
@@ -37,25 +39,33 @@ export class SyncService<T, S extends string, P extends string, M extends {
    */
   private async sync(): Promise<void> {
 
+    this.logger.info('Syncing...');
+
+    this.logger.info('Retrieving storage');
     const storage: T[] = await this.store.get(this.storage) ?? [];
 
+    this.logger.info('Retrieving peers');
     const peers: string[] = await this.store.get(this.peers) ?? [];
 
     const options = this.latestSync ? {
       headers: { 'If-Modified-Since': this.latestSync.toUTCString() },
     } : undefined;
 
+    this.logger.info('Updating time of latest synchronization');
     this.latestSync = new Date();
 
     const fetchedValues: T[][] = await Promise.all(([ ... peers ]).map(async (host) => {
 
       try {
 
+        this.logger.info(`Fetching from ${host}`);
         const httpResponse = await fetch(`${host}${this.endpoint ? '/' + this.endpoint : ''}`, options);
 
         return httpResponse.status === 200 ? await httpResponse.json() : [];
 
       } catch (error) {
+
+        this.logger.error('Failed to fetch values from peer: ', error);
 
         return [];
 
@@ -63,11 +73,15 @@ export class SyncService<T, S extends string, P extends string, M extends {
 
     }));
 
+    this.logger.info('Saving values to storage', [ ...storage, ...fetchedValues.flat() ]);
+
     await this.store.set(this.storage, [ ... new Set([ ...storage, ...fetchedValues.flat() ]) ] as M[S]);
 
   }
 
   handle(input: void): Observable<void> {
+
+    this.logger.info('Calling handle');
 
     return from(this.sync());
 

@@ -37,6 +37,8 @@ export class UnauthorizedHttpError extends HttpError {
 
   static isInstance(error: unknown): error is UnauthorizedHttpError {
 
+    this.logger.info(`Checking if ${error} is an instance of ${this.name}: `, HttpError.isInstance(error) && error.statusCode === 401);
+
     return HttpError.isInstance(error) && error.statusCode === 401;
 
   }
