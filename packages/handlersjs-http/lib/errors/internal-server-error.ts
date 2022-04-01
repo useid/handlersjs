@@ -37,9 +37,11 @@ export class InternalServerError extends HttpError {
 
   static isInstance(error: unknown): error is InternalServerError {
 
-    this.logger.info(`Checking if ${error} is an instance of ${this.name}: `, HttpError.isInstance(error) && error.statusCode === 500);
+    const errorIsInstance = HttpError.isInstance(error) && error.statusCode === 500;
 
-    return HttpError.isInstance(error) && error.statusCode === 500;
+    this.logger.info(`Checking if ${error} is an instance of ${this.name}: `, errorIsInstance);
+
+    return errorIsInstance;
 
   }
 

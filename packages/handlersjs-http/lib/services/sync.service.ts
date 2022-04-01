@@ -73,9 +73,11 @@ export class SyncService<T, S extends string, P extends string, M extends {
 
     }));
 
-    this.logger.info('Saving values to storage', [ ...storage, ...fetchedValues.flat() ]);
+    const storedValues = [ ...storage, ...fetchedValues.flat() ];
 
-    await this.store.set(this.storage, [ ... new Set([ ...storage, ...fetchedValues.flat() ]) ] as M[S]);
+    this.logger.info('Saving values to storage', storedValues);
+
+    await this.store.set(this.storage, [ ... new Set(storedValues) ] as M[S]);
 
   }
 

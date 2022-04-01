@@ -37,9 +37,11 @@ export class NotFoundHttpError extends HttpError {
 
   static isInstance(error: unknown): error is NotFoundHttpError {
 
-    this.logger.info(`Checking if ${error} is an instance of NotFoundHttpError: `, HttpError.isInstance(error) && error.statusCode === 404);
+    const errorIsInstance = HttpError.isInstance(error) && error.statusCode === 404;
 
-    return HttpError.isInstance(error) && error.statusCode === 404;
+    this.logger.info(`Checking if ${error} is an instance of NotFoundHttpError: `, errorIsInstance);
+
+    return errorIsInstance;
 
   }
 
