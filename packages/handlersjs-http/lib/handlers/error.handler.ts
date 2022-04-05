@@ -83,7 +83,7 @@ export class ErrorHandler implements HttpHandler {
     return this.nestedHandler.handle(context).pipe(
       catchError((error) => {
 
-        this.logger.error('The following error was received: ', error);
+        this.logger.error('Error occured: ', error);
 
         return of({
           status: statusCodes[error?.status] ? error.status : 500,

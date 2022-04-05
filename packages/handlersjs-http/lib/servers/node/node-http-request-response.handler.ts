@@ -36,11 +36,11 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
     switch (contentType) {
 
       case 'application/json':
-        this.logger.info('Parsing body as JSON', contentType);
+        this.logger.info('Parsing body as JSON');
 
         return JSON.parse(body);
       // case 'application/x-www-form-urlencoded':
-      //   this.logger.info('Parsing body as form data', contentType);
+      //   this.logger.info('Parsing body as form data');
       //   return JSON.parse(`{"${decodeURIComponent(body).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`);
       default:
         return body;
@@ -142,7 +142,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
       }),
       catchError((error) => {
 
-        this.logger.debug('Response contains an error: ', error);
+        this.logger.debug('Internal server error: ', error);
 
         return of({ headers: {}, ...error, body: 'Internal Server Error', status: 500 });
 

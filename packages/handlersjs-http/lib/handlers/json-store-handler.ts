@@ -72,7 +72,7 @@ export class JsonStoreHandler<T extends string, M extends { [t in T]: unknown }>
 
           if (hasUpdate) return this.tryProvideData();
 
-          this.logger.info('No data was not modified ', this.data);
+          this.logger.info('No data was modified ', this.data);
 
           return of({ body: '', headers: {}, status: 304 });
 

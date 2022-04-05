@@ -84,7 +84,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
       // If there are different numbers of segments, then the route does not match the URL.
       if (routeSegments.length !== pathSegments.length) {
 
-        this.logger.warn('Route does not match URL: ', { route, path });
+        this.logger.warn('No path with the same amount of segments was found: ', { route, path });
 
         return false;
 
@@ -92,7 +92,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
 
       // If each segment in the url matches the corresponding segment in the route path,
       // or the route path segment starts with a ':' then the route is matched.
-      this.logger.info('Route matched ', route);
+      this.logger.info('Route matched ', { route, path });
 
       return routeSegments.every((seg, i) => seg === pathSegments[i] || seg[0] === ':');
 
@@ -109,7 +109,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
 
       if (!matchingRouteWithOperation) {
 
-        this.logger.info('No matching route found for operation');
+        this.logger.info(`Operation not supported. Supported operations: ${allowedMethods}`);
 
         return of({ body: '', headers: { Allow: allowedMethods.join(', ') }, status: request.method === 'OPTIONS' ? 204 : 405 });
 
