@@ -1,5 +1,5 @@
 import { getLoggerFor } from '@digita-ai/handlersjs-logging';
-import { Observable, of } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -80,27 +80,22 @@ export class HttpCorsRequestHandler implements HttpHandler {
           ... response,
           headers: cleanHeaders(response.headers),
         })),
-        map((response) => {
+        tap((response) => this.logger.info('Configuring CORS headers for response', response)),
+        map((response) => ({
+          ... response,
+          headers: {
 
-          this.logger.info('Configuring CORS headers for response', response);
-
-          return ({
-            ... response,
-            headers: {
-
-              ... response.headers,
-              ... allowOrigin && ({
-                ... (allowOrigin !== '*') && { 'vary': 'origin' },
-                'access-control-allow-origin': allowOrigin,
-                'access-control-allow-methods': (allowMethods ?? routeMethods ?? allMethods).join(', '),
-                ... (allowHeadersOrRequested) && { 'access-control-allow-headers': allowHeadersOrRequested },
-                ... (credentials) && { 'access-control-allow-credentials': 'true' },
-                'access-control-max-age': (maxAge ?? -1).toString(),
-              }),
-            },
-          });
-
-        }),
+            ... response.headers,
+            ... allowOrigin && ({
+              ... (allowOrigin !== '*') && { 'vary': 'origin' },
+              'access-control-allow-origin': allowOrigin,
+              'access-control-allow-methods': (allowMethods ?? routeMethods ?? allMethods).join(', '),
+              ... (allowHeadersOrRequested) && { 'access-control-allow-headers': allowHeadersOrRequested },
+              ... (credentials) && { 'access-control-allow-credentials': 'true' },
+              'access-control-max-age': (maxAge ?? -1).toString(),
+            }),
+          },
+        })),
       );
 
     } else {
@@ -110,24 +105,19 @@ export class HttpCorsRequestHandler implements HttpHandler {
       this.logger.info('Processing CORS request', noCorsRequestContext);
 
       return this.handler.handle(noCorsRequestContext).pipe(
-        map((response) => {
-
-          this.logger.info('Configuring CORS headers for response', response);
-
-          return ({
-            ... response,
-            headers: {
-              ... response.headers,
-              ... allowOrigin && ({
-                'access-control-allow-origin': allowOrigin,
-                ... (allowOrigin !== '*') && { 'vary': 'origin' },
-                ... (credentials) && { 'access-control-allow-credentials': 'true' },
-                ... (exposeHeaders) && { 'access-control-expose-headers': exposeHeaders.join(',') },
-              }),
-            },
-          });
-
-        }),
+        tap((response) => this.logger.info('Configuring CORS headers for response', response)),
+        map((response) => ({
+          ... response,
+          headers: {
+            ... response.headers,
+            ... allowOrigin && ({
+              'access-control-allow-origin': allowOrigin,
+              ... (allowOrigin !== '*') && { 'vary': 'origin' },
+              ... (credentials) && { 'access-control-allow-credentials': 'true' },
+              ... (exposeHeaders) && { 'access-control-expose-headers': exposeHeaders.join(',') },
+            }),
+          },
+        })),
       );
 
     }

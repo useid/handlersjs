@@ -69,8 +69,8 @@ export class NodeHttpServer extends Server {
 
     });
 
-    this.logger.info(`The server is listening on ${this.host}:${this.port}`);
     this.server.listen(this.port, this.host);
+    this.logger.info(`The server is listening on ${this.host}:${this.port}`);
 
     return subject;
 
