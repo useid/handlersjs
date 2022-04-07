@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.8.6](https://github.com/digita-ai/handlersjs/compare/v0.8.5...v0.8.6) (2022-04-07)
+
+
+### **Bug Fixes**
+
+* build error for imported logger ([#188](https://github.com/digita-ai/handlersjs/issues/188)) ([8e3d373](https://github.com/digita-ai/handlersjs/commit/8e3d373991b2b297784f2427d70c64bcbaf932a1))
+
+
+
 ### [0.8.5](https://github.com/digita-ai/handlersjs/compare/v0.8.4...v0.8.5) (2022-03-02)
 
 
