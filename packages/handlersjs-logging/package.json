@@ -51,7 +51,8 @@
   "dependencies": {
     "@digita-ai/handlersjs-core": "0.8.6",
     "@types/node": "^17.0.8",
-    "rxjs": "^7.5.4"
+    "rxjs": "^7.5.4",
+    "winston": "^3.7.2"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-logging",
   "lsd:components": "dist/components/components.jsonld",
