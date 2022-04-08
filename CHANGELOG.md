@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.0](https://github.com/digita-ai/handlersjs/compare/v0.8.6...v0.9.0) (2022-04-08)
+
+
+### **Features**
+
+* create basic StatusHandler ([#190](https://github.com/digita-ai/handlersjs/issues/190)) ([9c75ad7](https://github.com/digita-ai/handlersjs/commit/9c75ad7aef22920f9683b056c4066957e5e816dc))
+
+
+
 ### [0.8.6](https://github.com/digita-ai/handlersjs/compare/v0.8.5...v0.8.6) (2022-04-07)
 
 
