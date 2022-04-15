@@ -1,14 +1,12 @@
 {
   "name": "@digita-ai/handlersjs-logging",
-  "version": "0.8.5",
+  "version": "0.9.0",
   "description": "",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
-    ".": {
-      "require": "./dist/index.js"
-    }
+    ".": "./dist/index.js"
   },
   "directories": {
     "lib": "lib"
@@ -51,9 +49,10 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
-    "@digita-ai/handlersjs-core": "0.8.5",
+    "@digita-ai/handlersjs-core": "0.9.0",
     "@types/node": "^17.0.8",
-    "rxjs": "^7.5.4"
+    "rxjs": "^7.5.4",
+    "winston": "^3.7.2"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-logging",
   "lsd:components": "dist/components/components.jsonld",
