@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.9.2](https://github.com/digita-ai/handlersjs/compare/v0.9.1...v0.9.2) (2022-04-22)
+
+
+### **Bug Fixes**
+
+* ignore charset when parsing json body ([#193](https://github.com/digita-ai/handlersjs/issues/193)) ([aa82b92](https://github.com/digita-ai/handlersjs/commit/aa82b9244ee3ae79eb03727d4100192c772ab8a5))
+
+
+
 ### [0.9.1](https://github.com/digita-ai/handlersjs/compare/v0.9.0...v0.9.1) (2022-04-21)
 
 **Note:** Version bump only for package @digita-ai/handlersjs-http
