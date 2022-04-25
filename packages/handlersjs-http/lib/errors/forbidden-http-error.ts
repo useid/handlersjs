@@ -37,7 +37,11 @@ export class ForbiddenHttpError extends HttpError {
 
   static isInstance(error: unknown): error is ForbiddenHttpError {
 
-    return HttpError.isInstance(error) && error.statusCode === 403;
+    const errorIsInstance = HttpError.isInstance(error) && error.statusCode === 403;
+
+    this.logger.info(`Checking if ${error} is an instance of ${this.name}: `, errorIsInstance);
+
+    return errorIsInstance;
 
   }
 

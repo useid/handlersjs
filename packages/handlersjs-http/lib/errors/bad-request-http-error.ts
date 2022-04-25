@@ -42,7 +42,11 @@ export class BadRequestHttpError extends HttpError {
 
   static isInstance(error: unknown): error is BadRequestHttpError {
 
-    return HttpError.isInstance(error) && error.statusCode === 400;
+    const errorIsInstance = HttpError.isInstance(error) && error.statusCode === 400;
+
+    this.logger.info(`Checking if ${error} is an instance of ${this.name}: `, errorIsInstance);
+
+    return errorIsInstance;
 
   }
 

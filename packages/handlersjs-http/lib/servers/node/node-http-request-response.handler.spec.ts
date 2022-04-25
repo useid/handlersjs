@@ -61,6 +61,37 @@ describe('NodeHttpRequestResponseHandler', () => {
 
   describe('handle', () => {
 
+    it('throws when streams is null/undefined', async () => {
+
+      await expect(lastValueFrom(handler.handle(null))).rejects.toThrow('node http streams object cannot be null or undefined.');
+      await expect(lastValueFrom(handler.handle(undefined))).rejects.toThrow('node http streams object cannot be null or undefined.');
+
+    });
+
+    it('throws when request stream is null/undefined', async () => {
+
+      streamMock.requestStream = null;
+      expect(streamMock.requestStream).toBeNull();
+      await expect(lastValueFrom(handler.handle(streamMock))).rejects.toThrow('request stream cannot be null or undefined.');
+
+      streamMock.requestStream = undefined;
+      expect(streamMock.requestStream).toBeUndefined();
+      await expect(lastValueFrom(handler.handle(streamMock))).rejects.toThrow('request stream cannot be null or undefined.');
+
+    });
+
+    it('throws when response stream is null/undefined', async () => {
+
+      streamMock.responseStream = null;
+      expect(streamMock.responseStream).toBeNull();
+      await expect(lastValueFrom(handler.handle(streamMock))).rejects.toThrow('response stream cannot be null or undefined.');
+
+      streamMock.responseStream = undefined;
+      expect(streamMock.responseStream).toBeUndefined();
+      await expect(lastValueFrom(handler.handle(streamMock))).rejects.toThrow('response stream cannot be null or undefined.');
+
+    });
+
     it('throws when url is null/undefined', async () => {
 
       streamMock.requestStream.url = null;

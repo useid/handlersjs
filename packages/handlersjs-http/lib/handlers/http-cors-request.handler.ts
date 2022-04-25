@@ -1,4 +1,5 @@
-import { Observable, of } from 'rxjs';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
+import { Observable, of, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -14,6 +15,8 @@ export interface HttpCorsOptions {
   maxAge?: number;
 }
 export class HttpCorsRequestHandler implements HttpHandler {
+
+  private logger = getLoggerFor(this, 5, 5);
 
   constructor(
     private handler: HttpHandler,
@@ -61,8 +64,12 @@ export class HttpCorsRequestHandler implements HttpHandler {
 
       /* Preflight Request */
 
+      this.logger.info('Processing preflight request', noCorsRequestContext);
+
       const routeMethods = context.route?.operations.map((op) => op.method);
       const allMethods = [ 'GET', 'HEAD', 'PUT', 'POST', 'DELETE', 'PATCH' ];
+
+      this.passThroughOptions ? this.logger.info('Handling context: ', noCorsRequestContext) : this.logger.info('No content found, returning 204 response for preflight request');
 
       const initialOptions = this.passThroughOptions
         ? this.handler.handle(noCorsRequestContext)
@@ -73,6 +80,7 @@ export class HttpCorsRequestHandler implements HttpHandler {
           ... response,
           headers: cleanHeaders(response.headers),
         })),
+        tap((response) => this.logger.info('Configuring CORS headers for response', response)),
         map((response) => ({
           ... response,
           headers: {
@@ -94,7 +102,10 @@ export class HttpCorsRequestHandler implements HttpHandler {
 
       /* CORS Request */
 
+      this.logger.info('Processing CORS request', noCorsRequestContext);
+
       return this.handler.handle(noCorsRequestContext).pipe(
+        tap((response) => this.logger.info('Configuring CORS headers for response', response)),
         map((response) => ({
           ... response,
           headers: {

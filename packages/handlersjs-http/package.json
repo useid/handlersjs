@@ -77,12 +77,15 @@
   "jest": {
     "preset": "@digita-ai/jest-config",
     "displayName": "http",
+    "setupFiles": [
+      "<rootDir>/test/setup.ts"
+    ],
     "coverageThreshold": {
       "global": {
-        "statements": 96.96,
-        "branches": 96.06,
-        "functions": 96.33,
-        "lines": 97.83
+        "statements": 98.92,
+        "branches": 97.75,
+        "functions": 99.15,
+        "lines": 99.05
       }
     },
     "coveragePathIgnorePatterns": [

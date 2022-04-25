@@ -1,3 +1,4 @@
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { map, switchMap, toArray, catchError } from 'rxjs/operators';
 import { HttpHandler } from '../../models/http-handler';
@@ -8,15 +9,17 @@ import { NodeHttpStreamsHandler } from './node-http-streams.handler';
 import { NodeHttpStreams } from './node-http-streams.model';
 
 /**
- * A {NodeHttpStreamsHandler} reading the request stream into a {HttpHandlerRequest},
- * passing it through a {HttpHandler} and writing the resulting {HttpHandlerResponse} to the response stream.
+ * A { NodeHttpStreamsHandler } reading the request stream into a { HttpHandlerRequest },
+ * passing it through a { HttpHandler } and writing the resulting { HttpHandlerResponse } to the response stream.
  */
 export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
+  private logger = getLoggerFor(this, 5, 5);
+
   /**
-   * Creates a {NodeHttpRequestResponseHandler} passing requests through the given handler.
+   * Creates a { NodeHttpRequestResponseHandler } passing requests through the given handler.
    *
-   * @param {HttpHandler} httpHandler - the handler through which to pass incoming requests.
+   * @param { HttpHandler } httpHandler - the handler through which to pass incoming requests.
    */
   constructor(private httpHandler: HttpHandler) {
 
@@ -48,15 +51,17 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
   /**
    * Reads the requestStream of its NodeHttpStreams pair into a HttpHandlerRequest,
-   * creates a HttpHandlerContext from it, passes it through the {HttpHandler},
+   * creates a HttpHandlerContext from it, passes it through the { HttpHandler },
    * and writes the result to the responseStream.
    *
-   * @param {NodeHttpStreams} noteHttpStreams - the incoming set of Node.js HTTP read and write streams
-   * @returns an {Observable<void>} for completion detection
+   * @param { NodeHttpStreams } noteHttpStreams - the incoming set of Node.js HTTP read and write streams
+   * @returns an { Observable<void> } for completion detection
    */
   handle(nodeHttpStreams: NodeHttpStreams): Observable<void> {
 
     if (!nodeHttpStreams) {
+
+      this.logger.verbose('No node http streams received');
 
       return throwError(() => new Error('node http streams object cannot be null or undefined.'));
 
@@ -64,11 +69,15 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!nodeHttpStreams.requestStream) {
 
+      this.logger.verbose('No request stream received', nodeHttpStreams);
+
       return throwError(() => new Error('request stream cannot be null or undefined.'));
 
     }
 
     if (!nodeHttpStreams.responseStream) {
+
+      this.logger.verbose('No response stream received', nodeHttpStreams);
 
       return throwError(() => new Error('response stream cannot be null or undefined.'));
 
@@ -78,6 +87,8 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!url) {
 
+      this.logger.verbose('No url received', nodeHttpStreams.requestStream);
+
       return throwError(() => new Error('url of the request cannot be null or undefined.'));
 
     }
@@ -86,11 +97,15 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!method) {
 
+      this.logger.verbose('No method received', nodeHttpStreams.requestStream);
+
       return throwError(() => new Error('method of the request cannot be null or undefined.'));
 
     }
 
     if (!nodeHttpStreams.requestStream.headers) {
+
+      this.logger.verbose('No request headers received', nodeHttpStreams.requestStream);
 
       return throwError(() => new Error('headers of the request cannot be null or undefined.'));
 
@@ -118,8 +133,20 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
         return { request: httpHandlerRequest };
 
       }),
-      switchMap((context: HttpHandlerContext) => this.httpHandler.handle(context)),
-      catchError((error) => of({ headers: {}, ...error, body: 'Internal Server Error', status: 500 })),
+      switchMap((context: HttpHandlerContext) => {
+
+        this.logger.info('Handling request ', context);
+
+        return this.httpHandler.handle(context);
+
+      }),
+      catchError((error) => {
+
+        this.logger.debug('Internal server error: ', error);
+
+        return of({ headers: {}, ...error, body: 'Internal Server Error', status: 500 });
+
+      }),
       switchMap((response) => {
 
         const contentTypeHeader = response.headers['content-type'];
@@ -141,6 +168,8 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
           && charsetString !== 'binary'
           && charsetString !== 'hex'
         ) {
+
+          this.logger.warn('Unsupported charset', charsetString);
 
           return throwError(() => new Error('The specified charset is not supported'));
 
