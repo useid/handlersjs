@@ -33,17 +33,17 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
   private parseBody(body: string, contentType?: string): string | { [key: string]: string } {
 
-    switch (contentType) {
+    // TODO: parse x-www-form-urlencoded body
+    // case 'application/':
+    //   return JSON.parse(`{"${decodeURIComponent(body).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`);
 
-      case 'application/json':
-        this.logger.info('Parsing body as JSON');
+    if (contentType?.startsWith('application/json')) {
 
-        return JSON.parse(body);
-      // case 'application/x-www-form-urlencoded':
-      //   this.logger.info('Parsing body as form data');
-      //   return JSON.parse(`{"${decodeURIComponent(body).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`);
-      default:
-        return body;
+      return JSON.parse(body);
+
+    } else {
+
+      return body;
 
     }
 
