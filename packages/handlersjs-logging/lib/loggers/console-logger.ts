@@ -1,8 +1,8 @@
 /* eslint-disable no-console -- this is a logger service */
 
-import { HandlerArgumentError } from '../errors/handler-argument-error';
-import { Logger } from './logger';
-import { LoggerLevel } from './logger-level';
+import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
+import { Logger } from '../models/logger';
+import { LoggerLevel } from '../models/logger-level';
 
 /**
  * JavaScript console-based logger service
@@ -10,11 +10,12 @@ import { LoggerLevel } from './logger-level';
 export class ConsoleLogger extends Logger {
 
   constructor(
+    protected readonly label: string,
     protected readonly minimumLevel: LoggerLevel,
     protected readonly minimumLevelPrintData: LoggerLevel,
   ) {
 
-    super(minimumLevel, minimumLevelPrintData);
+    super(label, minimumLevel, minimumLevelPrintData);
 
   }
 
@@ -22,21 +23,14 @@ export class ConsoleLogger extends Logger {
    * Logs a message at the specified level
    *
    * @param { LoggerLevel } level - The logging level (severity) of the message.
-   * @param { string } typeName - The name of the type of the log message.
    * @param { string } message - The message to log.
    * @param { unknown } data (optional) - Additional data to log.
    */
-  log(level: LoggerLevel, typeName: string, message: string, data?: unknown): void {
+  log(level: LoggerLevel, message: string, data?: unknown): void {
 
     if (level === null || level === undefined) {
 
-      throw new HandlerArgumentError('level should be set', typeName);
-
-    }
-
-    if (!typeName) {
-
-      throw new HandlerArgumentError('typeName should be set', typeName);
+      throw new HandlerArgumentError('level should be set', this.label);
 
     }
 
@@ -50,7 +44,7 @@ export class ConsoleLogger extends Logger {
 
     if (level <= this.minimumLevel) {
 
-      const logMessage = `[${timestamp} ${typeName}] ${message}`;
+      const logMessage = `[${timestamp} ${this.label}] ${message}`;
       const logData = level > this.minimumLevelPrintData ? '' : data||'';
       const log = [ logMessage, logData ];
 

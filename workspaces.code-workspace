@@ -12,6 +12,14 @@
       "name": "http",
       "path": "packages/handlersjs-http"
     },
+    {
+      "name": "storage",
+      "path": "packages/handlersjs-storage"
+    },
+    {
+      "name": "logging",
+      "path": "packages/handlersjs-logging"
+    },
   ],
   "settings": {
     "eslint.format.enable": true,
@@ -19,7 +27,10 @@
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true
     },
-    "files.eol": "\n"
+    "files.eol": "\n",
+    "cSpell.words": [
+      "handlersjs"
+    ]
   },
   "extensions": {
     "recommendations": [

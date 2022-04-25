@@ -1,4 +1,5 @@
-import { Observable, of } from 'rxjs';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
+import { Observable, of, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -17,7 +18,9 @@ export interface HttpCorsOptions {
 /**
  * A { HttpHandler } that handles CORS requests.
  */
-export class HttpCorsRequestHandler extends HttpHandler {
+export class HttpCorsRequestHandler implements HttpHandler {
+
+  private logger = getLoggerFor(this, 5, 5);
 
   /**
    * Creates a { HttpCorsRequestHandler }.
@@ -30,20 +33,7 @@ export class HttpCorsRequestHandler extends HttpHandler {
     private handler: HttpHandler,
     private options?: HttpCorsOptions,
     private passThroughOptions: boolean = false,
-  ) {
-
-    super();
-
-  }
-
-  /**
-   * Confirms whether the handler can handle the context.
-   */
-  canHandle(context: HttpHandlerContext): Observable<boolean> {
-
-    return of(true);
-
-  }
+  ) { }
 
   /**
    * Cleans the headers on the request and checks if it's a preflight request or not and handles it accordingly.
@@ -91,8 +81,12 @@ export class HttpCorsRequestHandler extends HttpHandler {
 
       /* Preflight Request */
 
+      this.logger.info('Processing preflight request', noCorsRequestContext);
+
       const routeMethods = context.route?.operations.map((op) => op.method);
       const allMethods = [ 'GET', 'HEAD', 'PUT', 'POST', 'DELETE', 'PATCH' ];
+
+      this.passThroughOptions ? this.logger.info('Handling context: ', noCorsRequestContext) : this.logger.info('No content found, returning 204 response for preflight request');
 
       const initialOptions = this.passThroughOptions
         ? this.handler.handle(noCorsRequestContext)
@@ -103,6 +97,7 @@ export class HttpCorsRequestHandler extends HttpHandler {
           ... response,
           headers: cleanHeaders(response.headers),
         })),
+        tap((response) => this.logger.info('Configuring CORS headers for response', response)),
         map((response) => ({
           ... response,
           headers: {
@@ -124,7 +119,10 @@ export class HttpCorsRequestHandler extends HttpHandler {
 
       /* CORS Request */
 
+      this.logger.info('Processing CORS request', noCorsRequestContext);
+
       return this.handler.handle(noCorsRequestContext).pipe(
+        tap((response) => this.logger.info('Configuring CORS headers for response', response)),
         map((response) => ({
           ... response,
           headers: {

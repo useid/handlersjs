@@ -1,41 +1,27 @@
-import { of } from 'rxjs';
-import { WaterfallHandler } from './waterfall.handler';
+import { lastValueFrom, of, throwError } from 'rxjs';
+import { HandlerArgumentError } from '../errors/handler-argument-error';
 import { Handler } from './handler';
+import { WaterfallHandler } from './waterfall.handler';
 
 describe('WaterfallHandler', () => {
 
-  const input = {
-    msg: 'input',
-  };
+  const input = 'input';
+  const output = 'output';
+  const error = 'error';
 
-  const intermediateOutput = {
-    msg: 'output',
-  };
+  let ableHandler: Handler<string, string>;
+  let unableHandler: Handler<string, string>;
 
-  const nestedHandler = {
-    handle: jest.fn().mockReturnValue(of(input)),
-    canHandle: jest.fn().mockReturnValue(of(true)),
-    safeHandle: jest.fn().mockReturnValue(of(intermediateOutput)),
-  };
+  beforeEach(() => {
 
-  const nestedHandler2 = {
-    handle: jest.fn().mockReturnValue(of(input)),
-    canHandle: jest.fn().mockReturnValue(of(true)),
-    safeHandle: jest.fn().mockReturnValue(of(intermediateOutput)),
-  };
+    ableHandler = { handle: jest.fn().mockReturnValue(of(output)) };
+    unableHandler = { handle: jest.fn().mockReturnValue(throwError(() => error)) };
 
-  const nestedHandler3 = {
-    handle: jest.fn().mockReturnValue(of(input)),
-    canHandle: jest.fn().mockReturnValue(of(true)),
-    safeHandle: jest.fn().mockReturnValue(of(intermediateOutput)),
-  };
-
-  const handlers: Handler<unknown, unknown>[] = [ nestedHandler, nestedHandler2, nestedHandler3 ];
-  const handler = new WaterfallHandler(handlers);
+  });
 
   it('should be correctly instantiated', () => {
 
-    const newHandler = new WaterfallHandler(handlers);
+    const newHandler = new WaterfallHandler([ ableHandler ]);
     expect(newHandler).toBeTruthy();
 
   });
@@ -46,40 +32,32 @@ describe('WaterfallHandler', () => {
 
   });
 
-  describe('canHandle', () => {
-
-    it('should return true if input  was provided', async () => {
-
-      await expect(handler.canHandle(input, intermediateOutput).toPromise()).resolves.toEqual(true);
-
-    });
-
-  });
-
   describe('handle', () => {
 
-    it('should call the handle of the first nested handler that can handle it', async () => {
+    it('should return the output of the first nested handler that can handle it', async () => {
 
-      nestedHandler.canHandle = jest.fn().mockReturnValue(of(false));
-      await handler.handle(input, undefined).toPromise();
-      expect(nestedHandler2.handle).toHaveBeenCalledTimes(1);
+      const handler = new WaterfallHandler([ unableHandler, ableHandler ]);
 
-    });
+      const result = await lastValueFrom(handler.handle(input));
 
-    it('should return the input and generated output if no intermediate output was provided', async () => {
-
-      nestedHandler.canHandle = jest.fn().mockReturnValue(of(true));
-      await handler.handle(input, undefined).toPromise();
-      expect(nestedHandler2.handle).toHaveBeenCalledWith(input, { body: null, status: 200, headers: {} });
+      expect(ableHandler.handle).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(output);
 
     });
 
-    it('should return intermediateOutput if no handlerToExecute was found', async () => {
+    it('should not call further nested handlers if an earlier one can handle the input', async () => {
 
-      nestedHandler.canHandle = jest.fn().mockReturnValue(of(false));
-      nestedHandler2.canHandle = jest.fn().mockReturnValue(of(false));
-      nestedHandler3.canHandle = jest.fn().mockReturnValue(of(false));
-      expect(handler.handle(input, intermediateOutput).toPromise()).resolves.toEqual(intermediateOutput);
+      const handler = new WaterfallHandler([ ableHandler, unableHandler ]);
+
+      await lastValueFrom(handler.handle(input));
+      expect(unableHandler.handle).not.toHaveBeenCalled();
+
+    });
+
+    it('should throw an error if no handlerToExecute was found', async () => {
+
+      const handler = new WaterfallHandler([ unableHandler ]);
+      expect(lastValueFrom(handler.handle(input))).rejects.toThrow(new HandlerArgumentError('No handler can handle the input.', input));
 
     });
 

@@ -1,4 +1,5 @@
 import { Observable, of, throwError } from 'rxjs';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerResponse } from '../models/http-handler-response';
@@ -6,7 +7,9 @@ import { HttpHandlerResponse } from '../models/http-handler-response';
 /**
  * A mock of an HttpHandler used for tests
  */
-export class MockHttpHandler extends HttpHandler {
+export class MockHttpHandler implements HttpHandler {
+
+  private logger = getLoggerFor(this, 5, 5);
 
   /**
    * Returns a mock response: ```
@@ -17,12 +20,14 @@ export class MockHttpHandler extends HttpHandler {
    * }
    * ```
    *
-   * @param {HttpHandlerContext} context - an irrelevant incoming context
-   * @returns The mocked response.
+   * @param { HttpHandlerContext } context - an irrelevant incoming context
+   * @returns { Observable<HttpHandlerResponse> } - the mock response
    */
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
     if (!context) {
+
+      this.logger.verbose('No context provided');
 
       return throwError(() => new Error('Context cannot be null or undefined'));
 
@@ -35,18 +40,6 @@ export class MockHttpHandler extends HttpHandler {
     };
 
     return of(response);
-
-  }
-
-  /**
-   * Indicates this handler accepts any input.
-   *
-   * @param {HttpHandlerContext} context - the irrelevant incoming context
-   * @returns always `of(true)`
-   */
-  canHandle(context: HttpHandlerContext): Observable<boolean> {
-
-    return context ? of(true) : throwError(() => new Error('Context cannot be null or undefined'));
 
   }
 

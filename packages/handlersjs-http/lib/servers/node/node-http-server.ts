@@ -1,5 +1,6 @@
 import { createServer, IncomingMessage, ServerResponse, Server as NodeServer } from 'http';
 import { Subject } from 'rxjs';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { Server } from '../../util/server';
 import { NodeHttpStreams } from './node-http-streams.model';
 import { NodeHttpStreamsHandler } from './node-http-streams.handler';
@@ -10,13 +11,15 @@ import { NodeHttpStreamsHandler } from './node-http-streams.handler';
 export class NodeHttpServer extends Server {
 
   private server: NodeServer;
+  private logger = getLoggerFor(this, 5, 5);
 
   /**
-   * Creates a { NodeHttpServer } listening on `http://``host``:``port`, passing requests through the given {NodeHttpStreamsHandler}.
+   * Creates a { NodeHttpServer } listening on `http://``host``:``port`, passing requests through the given { NodeHttpStreamsHandler }.
    *
-   * @param { string } host - the host name on which to listen
+   * @param { string } host- the host name on which to listen
    * @param { number } port - the port number on which to listen
    * @param { NodeHttpStreamsHandler } nodeHttpStreamsHandler - the handler handling incoming requests
+   * @constructor
    */
   constructor(protected host: string, protected port: number, private nodeHttpStreamsHandler: NodeHttpStreamsHandler){
 
@@ -46,7 +49,7 @@ export class NodeHttpServer extends Server {
 
   /**
    * @override
-   * {@inheritDoc Server.start}
+   * { @inheritDoc Server.start }
    */
   start() {
 
@@ -54,6 +57,7 @@ export class NodeHttpServer extends Server {
 
     this.server.on(('error'), (err: unknown) => {
 
+      this.logger.debug(`The server ran into a problem: `, err);
       subject.error(new Error(`The server ran into a problem: ${err}`));
 
     });
@@ -66,6 +70,7 @@ export class NodeHttpServer extends Server {
     });
 
     this.server.listen(this.port, this.host);
+    this.logger.info(`The server is listening on ${this.host}:${this.port}`);
 
     return subject;
 
@@ -73,7 +78,7 @@ export class NodeHttpServer extends Server {
 
   /**
    * @override
-   * {@inheritDoc Server.start}
+   * { @inheritDoc Server.start }
    */
   stop() {
 
@@ -81,6 +86,7 @@ export class NodeHttpServer extends Server {
 
     this.server.on(('error'), (err: unknown) => {
 
+      this.logger.debug(`The server ran into a problem: `, err);
       subject.error(new Error(`The server ran into a problem: ${err}`));
 
     });
@@ -92,6 +98,7 @@ export class NodeHttpServer extends Server {
 
     });
 
+    this.logger.info(`The server is closing`);
     this.server.close();
 
     return subject;
@@ -103,19 +110,21 @@ export class NodeHttpServer extends Server {
    * can send requests. It combines the IncomingMessage and ServerResponse into
    * a NodeHttpStreams and passes it through the handler.
    *
-   * @param {IncomingMessage} req - the Node.js HTTP callback's request stream
-   * @param {ServerResponse} res - the Node.js HTTP callback's response stream
+   * @param { IncomingMessage } req - the Node.js HTTP callback's request stream
+   * @param { ServerResponse } res - the Node.js HTTP callback's response stream
    */
   serverHelper(req: IncomingMessage, res: ServerResponse): void {
 
     if (!req) {
 
+      this.logger.verbose('No request received');
       throw new Error('request must be defined.');
 
     }
 
     if (!res) {
 
+      this.logger.verbose('No response received');
       throw new Error('response must be defined.');
 
     }

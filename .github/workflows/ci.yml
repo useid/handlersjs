@@ -45,8 +45,12 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14
+          registry-url: https://npm.pkg.github.com
 
-      - run: npm run bootstrap
+      - name: Install dependencies
+        run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
 
       - run: npm run build:all
 
@@ -89,7 +93,10 @@ jobs:
           node-version: 14
           registry-url: https://npm.pkg.github.com/
   
-      - run: npm run bootstrap
+      - name: Install dependencies
+        run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
 
       - run: npm run build:all
 
@@ -98,6 +105,14 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - run: npm publish packages/handlersjs-http
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - run: npm publish packages/handlersjs-storage
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - run: npm publish packages/handlersjs-logging
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 

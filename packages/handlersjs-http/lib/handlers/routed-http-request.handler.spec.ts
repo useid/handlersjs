@@ -1,5 +1,5 @@
 import { Handler } from '@digita-ai/handlersjs-core';
-import { of } from 'rxjs';
+import { lastValueFrom, of } from 'rxjs';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerController } from '../models/http-handler-controller';
@@ -8,8 +8,6 @@ import { RoutedHttpRequestHandler } from './routed-http-request.handler';
 
 const getMockedHttpHandler = (): HttpHandler => ({
   handle: jest.fn().mockReturnValue(of({ status: 200, headers: {} })),
-  canHandle: jest.fn(),
-  safeHandle: jest.fn(),
 });
 
 const getMockedHttpHandlerAndRoute = (route: string): { handler: HttpHandler; route: HttpHandlerRoute } => {
@@ -21,11 +19,9 @@ const getMockedHttpHandlerAndRoute = (route: string): { handler: HttpHandler; ro
 
 };
 
-const getMockPreresponseHandler = () => ({
+const getMockPreresponseHandler: () => Handler<HttpHandlerContext, HttpHandlerContext> = () => ({
   handle: jest.fn().mockImplementation((input) => of(input)),
-  canHandle: jest.fn(),
-  safeHandle: jest.fn(),
-} as Handler<HttpHandlerContext, HttpHandlerContext>);
+});
 
 describe('RoutedHttpRequestHandler', () => {
 
@@ -102,7 +98,7 @@ describe('RoutedHttpRequestHandler', () => {
         request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
       };
 
-      await routedHttpRequestHandler.handle(httpHandlerContext).toPromise();
+      await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
       expect(mockHttpHandler.handle).toHaveBeenCalledTimes(1);
 
     });
@@ -117,7 +113,7 @@ describe('RoutedHttpRequestHandler', () => {
       // this test it does not exist so the error response is created.
       const handler = new RoutedHttpRequestHandler(handlerControllerList, undefined);
 
-      await expect(handler.handle(httpHandlerContext).toPromise())
+      await expect(lastValueFrom(handler.handle(httpHandlerContext)))
         .resolves.toEqual(expect.objectContaining({ status: 404 }));
 
     });
@@ -128,18 +124,30 @@ describe('RoutedHttpRequestHandler', () => {
         request: { url: new URL('/path2', 'http://example.com'), method: 'GET', headers: {} },
       };
 
-      const response = routedHttpRequestHandler.handle(httpHandlerContext).toPromise();
+      const response = lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
       await expect(response).resolves.toEqual(expect.objectContaining({ status: 405 }));
+      await expect(response).resolves.toEqual(expect.objectContaining({ headers: { Allow: 'POST, PUT' } }));
+
+    });
+
+    it('should return a 204 No Content response on an OPTIONS request', async () => {
+
+      const httpHandlerContext: HttpHandlerContext = {
+        request: { url: new URL('/path2', 'http://example.com'), method: 'OPTIONS', headers: {} },
+      };
+
+      const response = lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+      await expect(response).resolves.toEqual(expect.objectContaining({ status: 204 }));
       await expect(response).resolves.toEqual(expect.objectContaining({ headers: { Allow: 'POST, PUT' } }));
 
     });
 
     it('should throw an error when called with null or undefined', async () => {
 
-      await expect(routedHttpRequestHandler.handle(null).toPromise())
+      await expect(lastValueFrom(routedHttpRequestHandler.handle(null)))
         .rejects.toThrow('context must be defined.');
 
-      await expect(routedHttpRequestHandler.handle(undefined).toPromise())
+      await expect(lastValueFrom(routedHttpRequestHandler.handle(undefined)))
         .rejects.toThrow('context must be defined.');
 
     });
@@ -150,14 +158,14 @@ describe('RoutedHttpRequestHandler', () => {
         request: null,
       };
 
-      await expect(routedHttpRequestHandler.handle(httpHandlerContext1).toPromise())
+      await expect(lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext1)))
         .rejects.toThrow('context.request must be defined.');
 
       const httpHandlerContext2: HttpHandlerContext = {
         request: undefined,
       };
 
-      await expect(routedHttpRequestHandler.handle(httpHandlerContext2).toPromise())
+      await expect(lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext2)))
         .rejects.toThrow('context.request must be defined.');
 
     });
@@ -180,7 +188,7 @@ describe('RoutedHttpRequestHandler', () => {
       Object.keys(pathsAndRoutes).forEach(async (key) => {
 
         const ctx: HttpHandlerContext = { request: { url: new URL(key, 'http://example.com'), method: 'GET', headers: {} } };
-        await routedHttpRequestHandler.handle(ctx).toPromise();
+        await lastValueFrom(routedHttpRequestHandler.handle(ctx));
 
       });
 
@@ -245,7 +253,7 @@ describe('RoutedHttpRequestHandler', () => {
       Object.keys(pathsAndRoutes).forEach(async (key) => {
 
         const ctx: HttpHandlerContext = { request: { url: new URL(key, 'http://example.com'), method: 'GET', headers: {} } };
-        await routedHttpRequestHandler.handle(ctx).toPromise();
+        await lastValueFrom(routedHttpRequestHandler.handle(ctx));
 
       });
 
@@ -265,7 +273,7 @@ describe('RoutedHttpRequestHandler', () => {
         request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
       };
 
-      await routedHttpRequestHandler.handle(httpHandlerContext).toPromise();
+      await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
       expect(preresponseHandler.handle).toHaveBeenCalledTimes(1);
       expect(mockHttpHandler.handle).toHaveBeenCalledTimes(1);
 
@@ -277,7 +285,7 @@ describe('RoutedHttpRequestHandler', () => {
         request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
       };
 
-      await routedHttpRequestHandler.handle(httpHandlerContext).toPromise();
+      await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
       expect(preresponseHandler.handle).toHaveBeenCalledTimes(1);
 
       expect(preresponseHandler.handle).toHaveBeenCalledWith(
@@ -298,7 +306,7 @@ describe('RoutedHttpRequestHandler', () => {
         request: { url: new URL('/path1', 'http://example.com'), method: 'OPTIONS', headers: {} },
       };
 
-      const response = await routedHttpRequestHandler.handle(httpHandlerContext).toPromise();
+      const response = await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
       expect(response.headers).toEqual(expect.objectContaining({ Allow: 'GET, OPTIONS' }));
 
     });
@@ -307,8 +315,6 @@ describe('RoutedHttpRequestHandler', () => {
 
       const defaultHandler: HttpHandler = {
         handle: jest.fn().mockReturnValueOnce(of({ body: 'defaultHandler mockBody', headers: {}, status:200 })),
-        canHandle: jest.fn(),
-        safeHandle: jest.fn(),
       };
 
       const defaultRoutedHttpRequestHandler = new RoutedHttpRequestHandler(handlerControllerList, defaultHandler);
@@ -317,46 +323,8 @@ describe('RoutedHttpRequestHandler', () => {
         request: { url: new URL('/pathWontMatch', 'http://example.com'), method: 'GET', headers: {} },
       };
 
-      await expect(defaultRoutedHttpRequestHandler.handle(httpHandlerContext).toPromise()).resolves.toEqual({ body: 'defaultHandler mockBody', headers: {}, status:200 });
+      await expect(lastValueFrom(defaultRoutedHttpRequestHandler.handle(httpHandlerContext))).resolves.toEqual({ body: 'defaultHandler mockBody', headers: {}, status:200 });
       expect(defaultHandler.handle).toHaveBeenCalledTimes(1);
-
-    });
-
-  });
-
-  describe('canHandle', () => {
-
-    it ('should return true when context and request are defined', async () => {
-
-      const httpHandlerContext: HttpHandlerContext = {
-        request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
-      };
-
-      await expect(routedHttpRequestHandler.canHandle(httpHandlerContext).toPromise()).resolves.toEqual(true);
-
-    });
-
-    it ('should return false when context is undefined or null', async () => {
-
-      await expect(routedHttpRequestHandler.canHandle(null).toPromise()).resolves.toEqual(false);
-
-      await expect(routedHttpRequestHandler.canHandle(undefined).toPromise()).resolves.toEqual(false);
-
-    });
-
-    it ('should return false when context.request is undefined or null', async () => {
-
-      const httpHandlerContext1: HttpHandlerContext = {
-        request: null,
-      };
-
-      await expect(routedHttpRequestHandler.canHandle(httpHandlerContext1).toPromise()).resolves.toEqual(false);
-
-      const httpHandlerContext2: HttpHandlerContext = {
-        request: undefined,
-      };
-
-      await expect(routedHttpRequestHandler.canHandle(httpHandlerContext2).toPromise()).resolves.toEqual(false);
 
     });
 

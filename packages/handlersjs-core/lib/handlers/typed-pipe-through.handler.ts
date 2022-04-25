@@ -11,7 +11,7 @@ type HandlerSequence4<A, B, C, D, E> = [ Handler<A, B>, Handler<B, C>, Handler<C
 /**
  * A { Handler<A, E> } that pipes the input, including the correct typing, through a HandlerSequence.
  */
-export class TypedPipeThroughHandler<A, B, C, D, E> extends Handler<A, E> {
+export class TypedPipeThroughHandler<A, B, C, D, E> implements Handler<A, E> {
 
   /**
    * Creates a { TypedPipeThroughHandler<A, B, C, D, E> }.
@@ -25,18 +25,7 @@ export class TypedPipeThroughHandler<A, B, C, D, E> extends Handler<A, E> {
     HandlerSequence4<A, B, C, D, E>,
   ) {
 
-    super();
-
     if (!handlers) { throw new HandlerArgumentError('Argument handlers should be set.', handlers); }
-
-  }
-
-  /**
-   * Confirms if the handler can handle the input.
-   */
-  canHandle(input: A): Observable<boolean> {
-
-    return of(true);
 
   }
 

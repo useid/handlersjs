@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import { lastValueFrom, Observable, of } from 'rxjs';
 import { Handler } from '../handlers/handler';
 import { Scheduler } from './scheduler';
 jest.useFakeTimers();
@@ -6,13 +6,8 @@ jest.useFakeTimers();
 describe('Scheduler', () => {
 
   const task = jest.fn();
-  class TestHandler extends Handler<void, void> {
+  class TestHandler implements Handler<void, void> {
 
-    canHandle(input: void, intermediateOutput?: void): Observable<boolean> {
-
-      return of(true);
-
-    }
     handle(input: void, intermediateOutput?: void): Observable<void> {
 
       task();
@@ -50,7 +45,7 @@ describe('Scheduler', () => {
   afterEach(async () => {
 
     // always stop the scheduler, ignore if an error "Scheduler wasn't running" is thrown
-    await scheduler.stop().toPromise().catch((e) => undefined);
+    await lastValueFrom(scheduler.stop()).catch((e) => undefined);
 
   });
 
@@ -64,17 +59,15 @@ describe('Scheduler', () => {
 
     it('will schedule the task when started', async () => {
 
-      // scheduler.start().subscribe(async () => expect(await isRunning()).toBe(false));
-
-      await scheduler.start().toPromise();
+      await lastValueFrom(scheduler.start());
       await expectIsRunning();
 
     });
 
     it('can not start when it was already running', async() => {
 
-      await scheduler.start().toPromise();
-      await expect(scheduler.start().toPromise()).rejects.toThrow('Scheduler was already running');
+      await lastValueFrom(scheduler.start());
+      await expect(lastValueFrom(scheduler.start())).rejects.toThrow('Scheduler was already running');
 
     });
 
@@ -84,8 +77,8 @@ describe('Scheduler', () => {
 
     it('should stop correctly', async() => {
 
-      await scheduler.start().toPromise();
-      await scheduler.stop().toPromise();
+      await lastValueFrom(scheduler.start());
+      await lastValueFrom(scheduler.stop());
 
       await expectIsNotRunning();
 
@@ -93,9 +86,9 @@ describe('Scheduler', () => {
 
     it('can restart after being stopped', async () => {
 
-      await scheduler.start().toPromise();
-      await scheduler.stop().toPromise();
-      await scheduler.start().toPromise();
+      await lastValueFrom(scheduler.start());
+      await lastValueFrom(scheduler.stop());
+      await lastValueFrom(scheduler.start());
 
       await expectIsRunning();
 
@@ -103,7 +96,7 @@ describe('Scheduler', () => {
 
     it('can not stop when it wasn\'t running', async () => {
 
-      await expect(scheduler.stop().toPromise()).rejects.toThrow('Scheduler wasn\'t running');
+      await expect(lastValueFrom(scheduler.stop())).rejects.toThrow('Scheduler wasn\'t running');
 
     });
 
