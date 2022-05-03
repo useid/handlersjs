@@ -178,11 +178,11 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
         // If the body is not a string or a buffer, for example an object, stringify it. This is needed
         // to use Buffer.byteLength and to eventually write the body to the response.
         // Functions will result in 'undefined' which is desired behavior
-        const body: string | Buffer = response.body ? typeof response.body === 'string' || response.body instanceof Buffer ? response.body : JSON.stringify(response.body) : undefined;
+        const body: string | Buffer = response.body !== undefined && response.body !== null ? typeof response.body === 'string' || response.body instanceof Buffer ? response.body : JSON.stringify(response.body) : undefined;
 
         const extraHeaders = {
-          ... (body && !response.headers['content-type'] && !response.headers['Content-Type'] && typeof response.body !== 'string' && !(response.body instanceof Buffer)) && { 'content-type': 'application/json' },
-          ... (body) && { 'content-length': Buffer.byteLength(body, charsetString).toString() },
+          ... (body !== undefined && body !== null && !response.headers['content-type'] && !response.headers['Content-Type'] && typeof response.body !== 'string' && !(response.body instanceof Buffer)) && { 'content-type': 'application/json' },
+          ... (body !== undefined && body !== null) && { 'content-length': Buffer.byteLength(body, charsetString).toString() },
         };
 
         return of({
@@ -199,7 +199,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
         nodeHttpStreams.responseStream.writeHead(response.status, response.headers);
 
-        if (response.body) {
+        if (response.body !== undefined && response.body !== null) {
 
           nodeHttpStreams.responseStream.write(response.body);
 
