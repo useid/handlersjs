@@ -219,7 +219,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     });
 
-    it('should return the response body when the body equals to false', async () => {
+    it('should return the response body when the body is equal to false', async () => {
 
       const body = false;
 
