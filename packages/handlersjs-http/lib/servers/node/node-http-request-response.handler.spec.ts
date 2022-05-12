@@ -354,4 +354,28 @@ describe('NodeHttpRequestResponseHandler', () => {
 
   });
 
+  describe('parseResponseBody', () => {
+
+    it('should return the body if content type is application/json and body is string', async () => {
+
+      const body = '{"name":"name","surname":"surname"}';
+
+      const parsed = (handler as any).parseResponseBody(body, 'application/json');
+
+      expect(parsed).toEqual(body);
+
+    });
+
+    it('should return the stringified body if content type is application/json and body is object', async () => {
+
+      const body = { name: 'name', surname: 'surname' };
+
+      const parsed = (handler as any).parseResponseBody(body, 'application/json');
+
+      expect(parsed).toEqual(JSON.stringify(body));
+
+    });
+
+  });
+
 });

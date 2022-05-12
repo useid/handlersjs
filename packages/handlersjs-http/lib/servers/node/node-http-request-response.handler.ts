@@ -37,9 +37,27 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
     // case 'application/':
     //   return JSON.parse(`{"${decodeURIComponent(body).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`);
 
+    this.logger.info('Parsing request body', { body, contentType });
+
     if (contentType?.startsWith('application/json')) {
 
       return JSON.parse(body);
+
+    } else {
+
+      return body;
+
+    }
+
+  }
+
+  private parseResponseBody(body: string, contentType?: string) {
+
+    this.logger.info('Parsing response body', { body, contentType });
+
+    if (contentType?.startsWith('application/json')) {
+
+      return typeof body === 'string' ? body : JSON.stringify(body);
 
     } else {
 
@@ -201,7 +219,10 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
         if (response.body !== undefined && response.body !== null) {
 
-          nodeHttpStreams.responseStream.write(response.body);
+          const contentTypeHeader = response.headers['content-type'] || response.headers['Content-Type'];
+
+          const body = this.parseResponseBody(response.body, contentTypeHeader);
+          nodeHttpStreams.responseStream.write(body);
 
         }
 
