@@ -85,12 +85,15 @@ export class ErrorHandler implements HttpHandler {
 
         this.logger.error('Error occurred: ', error);
 
+        const status = error?.statusCode ?? error.status;
+        const message = error?.message ?? error.body;
+
         return of({
-          status: statusCodes[error?.status] ? error.status : 500,
+          status: statusCodes[status] ? status : 500,
           headers: error?.headers ?? {},
           body: this.showUpstreamError
-            ? error?.body ?? error
-            : statusCodes[error?.status] ?? statusCodes[500],
+            ? message ?? error
+            : statusCodes[status] ?? statusCodes[500],
         });
 
       })
