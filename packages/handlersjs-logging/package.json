@@ -37,8 +37,8 @@
   "devDependencies": {
     "@digita-ai/typescript-config": "^0.3.2",
     "@types/jest": "^27.0.2",
-    "componentsjs": "5.0.0-beta.7",
-    "componentsjs-generator": "3.0.0-beta.7",
+    "componentsjs": "^5.2.0",
+    "componentsjs-generator": "^3.0.3",
     "eslint": "^7.25.0",
     "jest": "^27.3.1",
     "jest-coverage-thresholds-bumper": "^1.0.1",
