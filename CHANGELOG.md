@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/digita-ai/handlersjs/compare/v0.10.0...v0.11.0) (2022-05-24)
+
+
+### **Features**
+
+* bump versions for componentsjs(-generator) ([#202](https://github.com/digita-ai/handlersjs/issues/202)) ([f4ac28e](https://github.com/digita-ai/handlersjs/commit/f4ac28edfb97bc0ac7df477742ac85f195d51dcd))
+
+
+
+## [0.10.0](https://github.com/digita-ai/handlersjs/compare/v0.9.2...v0.10.0) (2022-05-19)
+
+
+### **Features**
+
+* add console logger to http package ([#186](https://github.com/digita-ai/handlersjs/issues/186)) ([1e6280d](https://github.com/digita-ai/handlersjs/commit/1e6280de97c3df9844f0ce7165b5533b3f81a5ea))
+
+
+### **Bug Fixes**
+
+* can't return false as a body ([#196](https://github.com/digita-ai/handlersjs/issues/196)) ([ad0d662](https://github.com/digita-ai/handlersjs/commit/ad0d6627ceee9c9abf010672b827bc09304e71d0))
+
+
+
 ### [0.9.2](https://github.com/digita-ai/handlersjs/compare/v0.9.1...v0.9.2) (2022-04-22)
 
 
