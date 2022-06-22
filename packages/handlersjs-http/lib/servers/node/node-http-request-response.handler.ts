@@ -1,10 +1,12 @@
 import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { map, switchMap, toArray, catchError } from 'rxjs/operators';
+import { BadRequestHttpError } from '../../errors/bad-request-http-error';
 import { HttpHandler } from '../../models/http-handler';
 import { HttpHandlerContext } from '../../models/http-handler-context';
 import { HttpHandlerRequest } from '../../models/http-handler-request';
 import { HttpMethods } from '../../models/http-method';
+import { statusCodes } from '../../handlers/error.handler';
 import { NodeHttpStreamsHandler } from './node-http-streams.handler';
 import { NodeHttpStreams } from './node-http-streams.model';
 
@@ -41,13 +43,19 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (contentType?.startsWith('application/json')) {
 
-      return JSON.parse(body);
+      try {
 
-    } else {
+        return JSON.parse(body);
 
-      return body;
+      } catch(error: any) {
+
+        throw new BadRequestHttpError(error.message);
+
+      }
 
     }
+
+    return body;
 
   }
 
@@ -160,9 +168,12 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
       }),
       catchError((error) => {
 
-        this.logger.debug('Internal server error: ', error);
+        const status = error?.statusCode ?? error.status;
+        const message = error?.message ?? error.body;
 
-        return of({ headers: {}, ...error, body: 'Internal Server Error', status: 500 });
+        this.logger.debug(`${error.name}:`, error);
+
+        return of({ headers: {}, ... error, body: message ?? 'Internal Server Error', status: statusCodes[status] ? status : 500 });
 
       }),
       switchMap((response) => {
