@@ -33,6 +33,7 @@ describe('HttpCorsRequestHandler', () => {
         headers: {
           accept: 'text/plain',
           origin: 'http://test.de',
+          ['access-control-request-headers']: 'GET',
         },
       },
     };
@@ -66,14 +67,18 @@ describe('HttpCorsRequestHandler', () => {
       // Check 'noCorsRequestContext' and 'cleanHeaders'
       it('should not pass CORS headers to the child handler.handle', async() => {
 
-        const noCorsHeaderContext = { ...context, request: { ...context.request, headers: { accept: 'text/plain' } } };
-
-        await lastValueFrom(service.handle(noCorsHeaderContext));
+        await lastValueFrom(service.handle(context));
 
         expect(handler.handle).toHaveBeenCalledTimes(1);
-        const expectedToBeCalledWith = { ...context, request: { headers:  cleanHeaders(noCorsHeaderContext.request.headers), method: 'GET', url: new URL('http://example.com') } };
 
-        expect(handler.handle).toHaveBeenCalledWith(expectedToBeCalledWith);
+        expect(handler.handle).toHaveBeenCalledWith(expect.objectContaining({
+          request: expect.objectContaining({
+            headers: {
+              accept: context.request.headers.accept,
+              origin: context.request.headers.origin,
+            },
+          }),
+        }));
 
       });
 
