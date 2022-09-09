@@ -2,7 +2,6 @@ import { lastValueFrom, of } from 'rxjs';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
-import { cleanHeaders } from '../util/clean-headers';
 import { HttpCorsOptions, HttpCorsRequestHandler } from './http-cors-request.handler';
 
 describe('HttpCorsRequestHandler', () => {
@@ -33,7 +32,7 @@ describe('HttpCorsRequestHandler', () => {
         headers: {
           accept: 'text/plain',
           origin: 'http://test.de',
-          ['access-control-request-headers']: 'GET',
+          ['access-control-request-method']: 'GET',
         },
       },
     };
