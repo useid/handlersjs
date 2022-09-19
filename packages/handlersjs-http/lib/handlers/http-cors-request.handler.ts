@@ -33,7 +33,6 @@ export class HttpCorsRequestHandler implements HttpHandler {
     const cleanRequestHeaders = cleanHeaders(requestHeaders);
 
     const {
-      ['origin']: requestedOrigin,
       /* eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructuring for removal */
       ['access-control-request-method']: requestedMethod,
       ['access-control-request-headers']: requestedHeaders,
@@ -49,6 +48,8 @@ export class HttpCorsRequestHandler implements HttpHandler {
         },
       },
     };
+
+    const { origin: requestedOrigin } = cleanRequestHeaders;
 
     const allowOrigin = origins
       ? origins.includes(requestedOrigin)
