@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.12.1](https://github.com/digita-ai/handlersjs/compare/v0.12.0...v0.12.1) (2022-09-26)
+
+
+### **Bug Fixes**
+
+* response body parsing ([#211](https://github.com/digita-ai/handlersjs/issues/211)) ([88016c9](https://github.com/digita-ai/handlersjs/commit/88016c9157c534934f22d13ce40ab906831a32d0))
+
+
+
 ## [0.12.0](https://github.com/digita-ai/handlersjs/compare/v0.11.0...v0.12.0) (2022-09-19)
 
 
