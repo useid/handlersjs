@@ -59,7 +59,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
   }
 
-  private parseResponseBody(body: string | Buffer, contentType?: string) {
+  private parseResponseBody(body: unknown, contentType?: string) {
 
     this.logger.info('Parsing response body', { body, contentType });
 
