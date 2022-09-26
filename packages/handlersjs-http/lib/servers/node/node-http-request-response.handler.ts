@@ -59,13 +59,13 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
   }
 
-  private parseResponseBody(body: string, contentType?: string) {
+  private parseResponseBody(body: string | Buffer, contentType?: string) {
 
     this.logger.info('Parsing response body', { body, contentType });
 
     if (contentType?.startsWith('application/json')) {
 
-      return typeof body === 'string' ? body : JSON.stringify(body);
+      return typeof body === 'string' || body instanceof Buffer ? body : JSON.stringify(body);
 
     } else {
 
