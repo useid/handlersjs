@@ -60,39 +60,21 @@ jobs:
       - run: npm run test:ci
 
   snyk:
-    name: Run Snyk checks
+    name: Snyk Vulnerability Checks
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Extract tag
-        id: extract-tag
-        run: echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
-
-      - name: Check tag
-        run: echo ${{ steps.extract-tag.outputs.tag }}
-
-      - name: Extract branch
-        id: extract-branch
-        run: echo "::set-output name=branch::${GITHUB_REF/refs\/heads\//}"
-
-      - name: Check branch
-        run: echo ${{ steps.extract-branch.outputs.branch }}
-
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 14
-          registry-url: https://npm.pkg.github.com
-
-      - name: Install dependencies
-        run: npm run bootstrap
+      - uses: actions/checkout@master
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        continue-on-error: true # To make sure that SARIF upload gets called
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
-
-      - run: npm i -g snyk
-      - run: snyk test
-      - run: snyk code test
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --sarif-file-output=snyk.sarif
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk.sarif
 
   release:
     name: Create release
