@@ -13,6 +13,7 @@ on:
       - test/*
       - chore/*
       - build/*
+      - snyk-*
 
     tags:
       - '*'
@@ -57,6 +58,23 @@ jobs:
       - run: npm run lint:all
 
       - run: npm run test:ci
+
+  snyk:
+    name: Run Snyk checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+          registry-url: https://npm.pkg.github.com
+
+      - name: Install dependencies
+        run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
+
+      - run: snyk test
 
   release:
     name: Create release
