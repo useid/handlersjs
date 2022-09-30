@@ -64,6 +64,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v2
+
+      - name: Extract tag
+        id: extract-tag
+        run: echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
+
+      - name: Check tag
+        run: echo ${{ steps.extract-tag.outputs.tag }}
+
+      - name: Extract branch
+        id: extract-branch
+        run: echo "::set-output name=branch::${GITHUB_REF/refs\/heads\//}"
+
+      - name: Check branch
+        run: echo ${{ steps.extract-branch.outputs.branch }}
+
       - uses: actions/setup-node@v1
         with:
           node-version: 14
