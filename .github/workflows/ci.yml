@@ -90,7 +90,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
 
+      - run: npm i -g snyk
       - run: snyk test
+      - run: snyk code test
 
   release:
     name: Create release
