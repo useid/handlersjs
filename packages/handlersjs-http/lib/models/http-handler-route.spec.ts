@@ -69,12 +69,22 @@ describe('HttpHandlerRoute', () => {
 
   describe('HttpHandlerRoute', () => {
 
+    class testClass extends HttpHandlerRoute { }
+
     it('should be instantiated correctly', () => {
 
-      class testClass extends HttpHandlerRoute { }
       const object = new testClass(undefined, 'path', undefined);
       expect(object).toBeDefined();
       expect(object).toBeTruthy();
+
+    });
+
+    it('should accept an optional poweredBy parameter', () => {
+
+      const object = new testClass(undefined, 'path', undefined, 'yabat.be');
+      expect(object).toBeDefined();
+      expect(object).toBeTruthy();
+      expect(object.poweredBy).toEqual('yabat.be');
 
     });
 

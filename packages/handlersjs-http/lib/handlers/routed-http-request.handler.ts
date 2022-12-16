@@ -131,6 +131,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
           headers: {
             ... response.headers,
             ... (request.method === 'OPTIONS') && { Allow: allowedMethods.join(', ') },
+            ... (matchingRouteWithOperation.route.poweredBy) && { 'x-powered-by': matchingRouteWithOperation.route.poweredBy },
           },
         }))
       );

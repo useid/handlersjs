@@ -30,6 +30,8 @@ describe('RoutedHttpRequestHandler', () => {
   let mockHttpHandler: HttpHandler;
   let preresponseHandler: Handler<HttpHandlerContext, HttpHandlerContext>;
 
+  const poweredBy = 'yabat.be';
+
   beforeEach(() => {
 
     mockHttpHandler = getMockedHttpHandler();
@@ -49,6 +51,7 @@ describe('RoutedHttpRequestHandler', () => {
           } ],
           path: '/path1',
           handler: mockHttpHandler,
+          poweredBy, 
         } ],
       },
       {
@@ -325,6 +328,17 @@ describe('RoutedHttpRequestHandler', () => {
 
       await expect(lastValueFrom(defaultRoutedHttpRequestHandler.handle(httpHandlerContext))).resolves.toEqual({ body: 'defaultHandler mockBody', headers: {}, status:200 });
       expect(defaultHandler.handle).toHaveBeenCalledTimes(1);
+
+    });
+
+    it('should add x-powered-by header to the response when specified in the matched route', async() => {
+
+      const httpHandlerContext: HttpHandlerContext = {
+        request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
+      };
+
+      const response = await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+      expect(response.headers).toEqual(expect.objectContaining({ 'x-powered-by': poweredBy }));
 
     });
 
