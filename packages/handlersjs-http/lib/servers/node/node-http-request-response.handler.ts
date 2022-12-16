@@ -23,7 +23,10 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
    *
    * @param { HttpHandler } httpHandler - the handler through which to pass incoming requests.
    */
-  constructor(private httpHandler: HttpHandler) {
+  constructor(
+    private httpHandler: HttpHandler,
+    private hsts: { maxAge: number; includeSubDomains: boolean } = { maxAge: 7200, includeSubDomains: true },
+  ) {
 
     if (!httpHandler) {
 
@@ -212,6 +215,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
         const extraHeaders = {
           ... (body !== undefined && body !== null && !response.headers['content-type'] && !response.headers['Content-Type'] && typeof response.body !== 'string' && !(response.body instanceof Buffer)) && { 'content-type': 'application/json' },
           ... (body !== undefined && body !== null) && { 'content-length': Buffer.byteLength(body, charsetString).toString() },
+          'strict-transport-security': `max-age=${this.hsts.maxAge}${this.hsts.includeSubDomains ? '; includeSubDomains' : ''}`,
         };
 
         return of({
