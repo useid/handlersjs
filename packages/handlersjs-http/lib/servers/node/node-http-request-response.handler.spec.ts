@@ -154,6 +154,7 @@ describe('NodeHttpRequestResponseHandler', () => {
     it('should write the headers to response stream', async () => {
 
       await lastValueFrom(handler.handle(streamMock));
+
       expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(
         200,
         expect.objectContaining({
@@ -349,6 +350,7 @@ describe('NodeHttpRequestResponseHandler', () => {
     it('should write strict-transport-security header to the response', async () => {
 
       await lastValueFrom(handler.handle(streamMock));
+
       expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(
         200,
         expect.objectContaining({
@@ -359,11 +361,14 @@ describe('NodeHttpRequestResponseHandler', () => {
     });
 
     it('should write strict-transport-security header to the response, but not include "includeSubDomains" if specified', async () => {
+
       handler = new NodeHttpRequestResponseHandler(
         nestedHttpHandler,
         { includeSubDomains: false, maxAge: 5000 },
       );
+
       await lastValueFrom(handler.handle(streamMock));
+
       expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(
         200,
         expect.objectContaining({

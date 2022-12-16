@@ -120,7 +120,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
       const requestWithParams = Object.assign(request, { parameters });
       const newContext = { request: requestWithParams, route: matchingRouteWithOperation.route };
       const preResponseHandler = matchingRouteWithOperation.controller.preResponseHandler;
-      const matchingOperation = matchingRouteWithOperation.route.operations.find(op => op.method === request.method);
+      const matchingOperation = matchingRouteWithOperation.route.operations.find((op) => op.method === request.method);
 
       return (preResponseHandler
         ? preResponseHandler.handle(newContext)
