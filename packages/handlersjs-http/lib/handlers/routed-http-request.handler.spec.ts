@@ -342,6 +342,31 @@ describe('RoutedHttpRequestHandler', () => {
 
     });
 
+    it('should not add date header by default', async() => {
+
+      const httpHandlerContext: HttpHandlerContext = {
+        request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
+      };
+
+      const response = await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+      expect(response.headers.date).toBeUndefined();
+
+    });
+
+    it('should add date header to the response when specified in the matched route operation', async() => {
+
+      handlerControllerList[0].routes[0].operations[0].addDateHeader = true;
+      routedHttpRequestHandler = new RoutedHttpRequestHandler(handlerControllerList);
+
+      const httpHandlerContext: HttpHandlerContext = {
+        request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
+      };
+
+      const response = await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+      expect(response.headers).toEqual(expect.objectContaining({ date: expect.any(String) }));
+
+    });
+
   });
 
 });
