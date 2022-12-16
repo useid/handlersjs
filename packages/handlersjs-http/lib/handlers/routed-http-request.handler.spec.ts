@@ -31,6 +31,7 @@ describe('RoutedHttpRequestHandler', () => {
   let preresponseHandler: Handler<HttpHandlerContext, HttpHandlerContext>;
 
   const poweredBy = 'yabat.be';
+  const vary = [ 'Accept', 'Authorization', 'Origin' ];
 
   beforeEach(() => {
 
@@ -45,13 +46,14 @@ describe('RoutedHttpRequestHandler', () => {
           operations: [ {
             method: 'GET',
             publish: true,
+            vary,
           }, {
             method: 'OPTIONS',
             publish: false,
           } ],
           path: '/path1',
           handler: mockHttpHandler,
-          poweredBy, 
+          poweredBy,
         } ],
       },
       {
@@ -364,6 +366,17 @@ describe('RoutedHttpRequestHandler', () => {
 
       const response = await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
       expect(response.headers).toEqual(expect.objectContaining({ date: expect.any(String) }));
+
+    });
+
+    it('should add vary header to the response when specified in the matched route', async() => {
+
+      const httpHandlerContext: HttpHandlerContext = {
+        request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
+      };
+
+      const response = await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+      expect(response.headers).toEqual(expect.objectContaining({ 'vary': vary.join(', ') }));
 
     });
 

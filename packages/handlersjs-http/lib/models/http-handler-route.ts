@@ -46,6 +46,7 @@ export abstract class HttpHandlerOperation {
     public responses?: HttpHandlerOperationResponse[],
     public security?: HttpHandlerOperationSecurityType,
     public addDateHeader?: boolean,
+    public vary?: string[],
   ) {}
 
 }
