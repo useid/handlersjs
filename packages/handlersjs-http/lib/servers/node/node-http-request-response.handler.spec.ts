@@ -265,6 +265,7 @@ describe('NodeHttpRequestResponseHandler', () => {
         200,
         expect.objectContaining({
           'content-length': Buffer.byteLength(body, 'utf-8').toString(),
+          'content-type': 'text/html;',
         }),
       );
 
@@ -281,6 +282,7 @@ describe('NodeHttpRequestResponseHandler', () => {
         200,
         expect.objectContaining({
           'content-length': Buffer.byteLength(body, 'utf-8').toString(),
+          'content-type': 'text/html;',
         }),
       );
 
@@ -367,7 +369,7 @@ describe('NodeHttpRequestResponseHandler', () => {
         'handlers.js',
         { includeSubDomains: true, maxAge: 7200 },
       );
-      
+
       await lastValueFrom(handler.handle(streamMock));
 
       expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(
