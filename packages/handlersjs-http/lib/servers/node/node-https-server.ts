@@ -1,0 +1,163 @@
+import { createServer as createHttpsServer, Server as HttpsServer } from 'https';
+import { IncomingMessage, ServerResponse, createServer as createHttpServer, Server as HttpServer } from 'http';
+import { readFileSync } from 'fs';
+import { Subject } from 'rxjs';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
+import { Server } from '../../util/server';
+import { NodeHttpStreams } from './node-http-streams.model';
+import { NodeHttpStreamsHandler } from './node-http-streams.handler';
+
+/**
+ * A { Server } implemented with [Node.js HTTP]{@link https://nodejs.org/api/http.html}, handling requests through a { NodeHttpStreamsHandler }.
+ */
+export class NodeHttpServer extends Server {
+
+  private server: HttpsServer | HttpServer;
+  private logger = getLoggerFor(this, 5, 5);
+
+  /**
+   * Creates a { NodeHttpServer } listening on `http://``host``:``port`, passing requests through the given { NodeHttpStreamsHandler }.
+   *
+   * @param { string } host- the host name on which to listen
+   * @param { number } port - the port number on which to listen
+   * @param { NodeHttpStreamsHandler } nodeHttpStreamsHandler - the handler handling incoming requests
+   * @constructor
+   */
+  constructor(
+    protected host: string,
+    protected port: number,
+    private nodeHttpStreamsHandler: NodeHttpStreamsHandler,
+    private tls?: {
+      key: string;
+      cert: string;
+    }
+  ){
+
+    super((tls ? 'https' : 'http'), host, port);
+
+    if (!host) {
+
+      throw new Error('A host must be provided');
+
+    }
+
+    if (!port) {
+
+      throw new Error('A port must be provided');
+
+    }
+
+    if (!nodeHttpStreamsHandler) {
+
+      throw new Error('A handler must be provided');
+
+    }
+
+    const options = tls ? {
+      key: readFileSync(tls.key),
+      cert: readFileSync(tls.cert),
+    } : {};
+
+    // https.createServer(options, function (req, res) {
+
+    //   res.writeHead(200);
+    //   res.end('hello world\n');
+
+    // }).listen(8000);
+
+    this.server = (tls ? createHttpsServer : createHttpServer)(options, this.serverHelper.bind(this));
+
+  }
+
+  /**
+   * @override
+   * { @inheritDoc Server.start }
+   */
+  start(): Subject<this> {
+
+    const subject = new Subject<this>();
+
+    this.server.on(('error'), (err: unknown) => {
+
+      this.logger.debug(`The server ran into a problem: `, err);
+      subject.error(new Error(`The server ran into a problem: ${err}`));
+
+    });
+
+    this.server.on('listening', () => {
+
+      subject.next(this);
+      subject.complete();
+
+    });
+
+    this.server.listen(this.port, this.host);
+    this.logger.info(`The server is listening on ${this.host}:${this.port}`);
+
+    return subject;
+
+  }
+
+  /**
+   * @override
+   * { @inheritDoc Server.start }
+   */
+  stop(): Subject<this> {
+
+    const subject = new Subject<this>();
+
+    this.server.on(('error'), (err: unknown) => {
+
+      this.logger.debug(`The server ran into a problem: `, err);
+      subject.error(new Error(`The server ran into a problem: ${err}`));
+
+    });
+
+    this.server.on('close', () => {
+
+      subject.next(this);
+      subject.complete();
+
+    });
+
+    this.logger.info(`The server is closing`);
+    this.server.close();
+
+    return subject;
+
+  }
+
+  /**
+   * Helper function that provides a callback through which the Node.js HTTP server
+   * can send requests. It combines the IncomingMessage and ServerResponse into
+   * a NodeHttpStreams and passes it through the handler.
+   *
+   * @param { IncomingMessage } req - the Node.js HTTP callback's request stream
+   * @param { ServerResponse } res - the Node.js HTTP callback's response stream
+   */
+  serverHelper(req: IncomingMessage, res: ServerResponse): void {
+
+    if (!req) {
+
+      this.logger.verbose('No request received');
+      throw new Error('request must be defined.');
+
+    }
+
+    if (!res) {
+
+      this.logger.verbose('No response received');
+      throw new Error('response must be defined.');
+
+    }
+
+    const nodeHttpStreams: NodeHttpStreams = {
+      requestStream: req,
+      responseStream: res,
+    };
+
+    this.nodeHttpStreamsHandler.handle(nodeHttpStreams).subscribe();
+
+  }
+
+}
