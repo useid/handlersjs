@@ -79,15 +79,6 @@ describe('HttpHandlerRoute', () => {
 
     });
 
-    it('should accept an optional poweredBy parameter', () => {
-
-      const object = new testClass(undefined, 'path', undefined, 'yabat.be');
-      expect(object).toBeDefined();
-      expect(object).toBeTruthy();
-      expect(object.poweredBy).toEqual('yabat.be');
-
-    });
-
   });
 
 });

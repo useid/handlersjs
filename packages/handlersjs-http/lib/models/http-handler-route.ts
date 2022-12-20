@@ -57,7 +57,6 @@ export abstract class HttpHandlerRoute<C extends HttpHandlerContext = HttpHandle
     public operations: HttpHandlerOperation[],
     public path: string,
     public handler: HttpHandler<C>,
-    public poweredBy?: string,
   ) {}
 
 }

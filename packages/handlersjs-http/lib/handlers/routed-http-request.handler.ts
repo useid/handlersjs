@@ -132,7 +132,6 @@ export class RoutedHttpRequestHandler implements HttpHandler {
           headers: {
             ... response.headers,
             ... (request.method === 'OPTIONS') && { Allow: allowedMethods.join(', ') },
-            ... (matchingRouteWithOperation.route.poweredBy) && { 'x-powered-by': matchingRouteWithOperation.route.poweredBy },
             ... (matchingOperation?.addDateHeader) && { date: new Date().toUTCString() },
             ... (matchingOperation?.vary) && { vary: matchingOperation.vary.join(', ') },
           },
