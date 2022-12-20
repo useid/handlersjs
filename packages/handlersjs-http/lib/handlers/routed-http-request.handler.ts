@@ -101,7 +101,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
     const matchingRoutes = match ? this.pathToRouteMap.get(match) : undefined;
 
     if (matchingRoutes?.length) {
-      
+
       const matchingRouteWithOperation = matchingRoutes
         .map((r) => ({ ...r, operation: r.route.operations.find((op) => op.method === request.method) }))
         .find((r) => r.operation);
