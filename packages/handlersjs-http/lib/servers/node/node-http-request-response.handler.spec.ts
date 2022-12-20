@@ -347,10 +347,24 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     });
 
+    it('should add a x-powered-by response header', async () => {
+
+      await lastValueFrom(handler.handle(streamMock));
+
+      expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(
+        200,
+        expect.objectContaining({
+          'x-powered-by': 'handlers.js',
+        }),
+      );
+
+    });
+
     it('should write strict-transport-security header to the response', async () => {
 
       handler = new NodeHttpRequestResponseHandler(
         nestedHttpHandler,
+        'handlers.js',
         { includeSubDomains: true, maxAge: 7200 },
       );
       
@@ -369,6 +383,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       handler = new NodeHttpRequestResponseHandler(
         nestedHttpHandler,
+        'handlers.js',
         { includeSubDomains: false, maxAge: 5000 },
       );
 
