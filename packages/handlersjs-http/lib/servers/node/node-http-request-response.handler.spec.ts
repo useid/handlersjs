@@ -349,6 +349,11 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     it('should write strict-transport-security header to the response', async () => {
 
+      handler = new NodeHttpRequestResponseHandler(
+        nestedHttpHandler,
+        { includeSubDomains: true, maxAge: 7200 },
+      );
+      
       await lastValueFrom(handler.handle(streamMock));
 
       expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(
