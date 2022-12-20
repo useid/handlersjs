@@ -101,9 +101,10 @@ export class RoutedHttpRequestHandler implements HttpHandler {
     const matchingRoutes = match ? this.pathToRouteMap.get(match) : undefined;
 
     if (matchingRoutes?.length) {
-
-      const matchingRouteWithOperation = matchingRoutes.find((r) =>
-        r.route.operations.map((op) => op.method).includes(request.method));
+      
+      const matchingRouteWithOperation = matchingRoutes
+        .map((r) => ({ ...r, operation: r.route.operations.find((op) => op.method === request.method) }))
+        .find((r) => r.operation);
 
       const allowedMethods = matchingRoutes.flatMap((r) => r.route.operations.map((op) => op.method));
 
@@ -120,7 +121,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
       const requestWithParams = Object.assign(request, { parameters });
       const newContext = { request: requestWithParams, route: matchingRouteWithOperation.route };
       const preResponseHandler = matchingRouteWithOperation.controller.preResponseHandler;
-      const matchingOperation = matchingRouteWithOperation.route.operations.find((op) => op.method === request.method);
+      const matchingOperation = matchingRouteWithOperation.operation;
 
       return (preResponseHandler
         ? preResponseHandler.handle(newContext)
