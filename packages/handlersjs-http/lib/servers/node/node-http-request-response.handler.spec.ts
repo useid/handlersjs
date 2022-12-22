@@ -25,7 +25,6 @@ describe('NodeHttpRequestResponseHandler', () => {
       url: 'http://localhost:3000/test?works=yes',
       method: 'GET',
       buffer,
-
     });
 
     res = new mockhttp.Response();
@@ -155,7 +154,14 @@ describe('NodeHttpRequestResponseHandler', () => {
     it('should write the headers to response stream', async () => {
 
       await lastValueFrom(handler.handle(streamMock));
-      expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(200, { mockKey: 'mockValue', 'content-length': Buffer.byteLength('mockBody', 'utf-8').toString() });
+
+      expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(
+        200,
+        expect.objectContaining({
+          mockKey: 'mockValue',
+          'content-length': Buffer.byteLength('mockBody', 'utf-8').toString(),
+        }),
+      );
 
     });
 
@@ -189,7 +195,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await lastValueFrom(handler.handle(streamMock));
 
-      expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body, 'utf-8').toString() });
+      expect(res.writeHead).toHaveBeenCalledWith(200, expect.objectContaining({ 'content-length': Buffer.byteLength(body, 'utf-8').toString() }));
       expect(res.write).toHaveBeenCalledWith(body);
       expect(res.end).toHaveBeenCalledTimes(1);
 
@@ -202,7 +208,14 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await lastValueFrom(handler.handle(streamMock));
 
-      expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body, 'base64').toString(), 'content-type': 'text/html; charset=base64' });
+      expect(res.writeHead).toHaveBeenCalledWith(
+        200,
+        expect.objectContaining({
+          'content-length': Buffer.byteLength(body, 'base64').toString(),
+          'content-type': 'text/html; charset=base64',
+        }),
+      );
+
       expect(res.write).toHaveBeenCalledWith(body);
       expect(res.end).toHaveBeenCalledTimes(1);
 
@@ -214,7 +227,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await lastValueFrom(handler.handle(streamMock));
 
-      expect(res.writeHead).toHaveBeenCalledWith(200, { mockKey: 'mockValue' });
+      expect(res.writeHead).toHaveBeenCalledWith(200, expect.objectContaining({ mockKey: 'mockValue' }));
       expect(res.write).toHaveBeenCalledTimes(0);
       expect(res.end).toHaveBeenCalledTimes(1);
 
@@ -248,7 +261,13 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await lastValueFrom(handler.handle(streamMock));
 
-      expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body, 'utf-8').toString(), 'content-type': 'text/html;' });
+      expect(res.writeHead).toHaveBeenCalledWith(
+        200,
+        expect.objectContaining({
+          'content-length': Buffer.byteLength(body, 'utf-8').toString(),
+          'content-type': 'text/html;',
+        }),
+      );
 
     });
 
@@ -259,7 +278,13 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await lastValueFrom(handler.handle(streamMock));
 
-      expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body, 'utf-8').toString(), 'content-type': 'text/html;' });
+      expect(res.writeHead).toHaveBeenCalledWith(
+        200,
+        expect.objectContaining({
+          'content-length': Buffer.byteLength(body, 'utf-8').toString(),
+          'content-type': 'text/html;',
+        }),
+      );
 
     });
 
@@ -270,7 +295,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await lastValueFrom(handler.handle(streamMock));
 
-      expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body, 'utf-8').toString() });
+      expect(res.writeHead).toHaveBeenCalledWith(200, expect.objectContaining({ 'content-length': Buffer.byteLength(body, 'utf-8').toString() }));
 
     });
 
@@ -281,7 +306,13 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await lastValueFrom(handler.handle(streamMock));
 
-      expect(res.writeHead).toHaveBeenCalledWith(200, { 'content-length': Buffer.byteLength(body.toString(), 'utf-8').toString(), 'content-type': 'text/html' });
+      expect(res.writeHead).toHaveBeenCalledWith(
+        200,
+        expect.objectContaining({
+          'content-length': Buffer.byteLength(body.toString(), 'utf-8').toString(),
+          'content-type': 'text/html',
+        }),
+      );
 
     });
 
@@ -291,7 +322,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await lastValueFrom(handler.handle(streamMock));
 
-      expect(res.writeHead).toHaveBeenCalledWith(409, { 'content-length': Buffer.byteLength('Internal Server Error', 'utf-8').toString() });
+      expect(res.writeHead).toHaveBeenCalledWith(409, expect.any(Object));
       expect(res.write).toHaveBeenCalledWith('Internal Server Error');
 
     });
@@ -302,7 +333,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await lastValueFrom(handler.handle(streamMock));
 
-      expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength('Internal Server Error', 'utf-8').toString() });
+      expect(res.writeHead).toHaveBeenCalledWith(500, expect.any(Object));
       expect(res.write).toHaveBeenCalledWith('Internal Server Error');
 
     });
@@ -313,8 +344,59 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       await lastValueFrom(handler.handle(streamMock));
 
-      expect(res.writeHead).toHaveBeenCalledWith(500, { 'content-length': Buffer.byteLength('Internal Server Error', 'utf-8').toString() });
+      expect(res.writeHead).toHaveBeenCalledWith(500, expect.any(Object));
       expect(res.write).toHaveBeenCalledWith('Internal Server Error');
+
+    });
+
+    it('should add a x-powered-by response header', async () => {
+
+      await lastValueFrom(handler.handle(streamMock));
+
+      expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(
+        200,
+        expect.objectContaining({
+          'x-powered-by': 'handlers.js',
+        }),
+      );
+
+    });
+
+    it('should write strict-transport-security header to the response', async () => {
+
+      handler = new NodeHttpRequestResponseHandler(
+        nestedHttpHandler,
+        'handlers.js',
+        { includeSubDomains: true, maxAge: 7200 },
+      );
+
+      await lastValueFrom(handler.handle(streamMock));
+
+      expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(
+        200,
+        expect.objectContaining({
+          'strict-transport-security': 'max-age=7200; includeSubDomains',
+        }),
+      );
+
+    });
+
+    it('should write strict-transport-security header to the response, but not include "includeSubDomains" if specified', async () => {
+
+      handler = new NodeHttpRequestResponseHandler(
+        nestedHttpHandler,
+        'handlers.js',
+        { includeSubDomains: false, maxAge: 5000 },
+      );
+
+      await lastValueFrom(handler.handle(streamMock));
+
+      expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(
+        200,
+        expect.objectContaining({
+          'strict-transport-security': 'max-age=5000',
+        }),
+      );
 
     });
 
