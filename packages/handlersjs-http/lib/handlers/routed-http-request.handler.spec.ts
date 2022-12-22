@@ -331,14 +331,14 @@ describe('RoutedHttpRequestHandler', () => {
 
     });
 
-    it('should not add date header by default', async() => {
+    it('should not add vary header by default', async() => {
 
       const httpHandlerContext: HttpHandlerContext = {
-        request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
+        request: { url: new URL('/path2', 'http://example.com'), method: 'POST', headers: {} },
       };
 
       const response = await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
-      expect(response.headers.date).toBeUndefined();
+      expect(response.headers.vary).toBeUndefined();
 
     });
 
