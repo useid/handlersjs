@@ -121,7 +121,6 @@ export class RoutedHttpRequestHandler implements HttpHandler {
       const requestWithParams = Object.assign(request, { parameters });
       const newContext = { request: requestWithParams, route: matchingRouteWithOperation.route };
       const preResponseHandler = matchingRouteWithOperation.controller.preResponseHandler;
-      const matchingOperation = matchingRouteWithOperation.operation;
 
       return (preResponseHandler
         ? preResponseHandler.handle(newContext)
@@ -133,7 +132,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
           headers: {
             ... response.headers,
             ... (request.method === 'OPTIONS') && { Allow: allowedMethods.join(', ') },
-            ... (matchingOperation?.vary) && { vary: matchingOperation.vary.join(', ') },
+            ... (matchingRouteWithOperation.operation?.vary) && { vary: matchingRouteWithOperation.operation.vary.join(', ') },
           },
         }))
       );
