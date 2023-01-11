@@ -230,7 +230,7 @@ describe('HttpCorsRequestHandler', () => {
     it('should keep the vary header from its child handler', async () => {
 
       handler = {
-        handle: jest.fn().mockReturnValue(of({ headers: { vary: 'accept, origin'}, status: 200, body: 'handler done' } as HttpHandlerResponse)),
+        handle: jest.fn().mockReturnValue(of({ headers: { vary: 'accept, origin' }, status: 200, body: 'handler done' } as HttpHandlerResponse)),
       };
 
       service = new HttpCorsRequestHandler(handler, { credentials: true }, true);
