@@ -1,24 +1,33 @@
-# Handlersjs
-## Configure Git
+# Handlers.js
 
-Start by installing Git and configuring your global Git name and email address. You can do so by executing the following commands. Please make sure to use exactly the same name and email address as in your Github profile.
+Handlers.js provides a modular framework based on the abstraction of software components as _handlers_ of data. Using the handlers in this repository, and custom handlers you build yourself, you can compose multiple specialized modules into a full application. Building software this way ensures easily maintainable, configurable and rewireable applications.
+
+The real power of — and inspiration for — Handlersjs comes from the [Components.js](https://componentsjs.readthedocs.io) dependency injection framework, for which each package provides the necessary component configuration files. Combining Handlers.js with Components.js enables you to define each software component separately, and then wire them together declaratively using semantic configuration in JSON files, instead of hard-wiring them together in code.
+
+## Packages
+
+- `handlersjs-core` contains the basic handler model, and some high-level generic handlers.
+- `handlerjs-http` provides a model for HTTP servers, a Node.js implementation thereof, and handlers for routing, CORS, assets etc.
+- `handlerjs-logging` enables the retrieval of global loggers, and provides implementations for the console and for Winston.
+- `handlerjs-storage` defines several models of key-value storage, and contains implementations based on local storage, JSON file storage, and in memory storage.
+
+## Usage
+
+The packages in this repo are hosted on the [GitHub npm registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry). To use them, make sure your git configuration contains you GitHub username and e-mail address as values for the `user.name` and `user.email` parameters. You will also need a [personal access token](https://github.com/settings/tokens) with at least the `write:packages` and `read:packages` scopes, and use it to log in to the registry.
 
 ```
-$ git config --global user.name "John Doe"
-$ git config --global user.email john@digita.ai
-```
-
-To be safe, backup all of your existing repositories, or simply create a new folder which will contain your Github repositories. Once done, clone the Github repositories by executing the following command.
-
-```
-$ git clone git@github.com:digita-ai/handlersjs.git
-```
-
-In order to pull and publish packages from GitHub, you need to [authenticate by using a personal access token](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry). Start by generating one which has at least the `write:packages` and `read:packages` scopes on [this page](https://github.com/settings/tokens). Note that you will not be able to recover or view the token after it has been created, so keep it somewhere safe.
-
-```
-$ npm login --registry#https://npm.pkg.github.com
+$ git config --global user.name [your GitHub username]
+$ git config --global user.email [your GitHub e-mail address]
+$ npm login --registry=https://npm.pkg.github.com
 Username: [your GitHub username]
 Password: [your personal access token]
 Email: [your GitHub e-mail address]
+```
+
+## Contributing
+
+Bugs and other issues are very welcome. To contribute PRs, clone the repository, and set up your git environment as specified above.
+
+```
+$ git clone git@github.com:digita-ai/handlersjs.git
 ```
