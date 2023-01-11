@@ -88,7 +88,7 @@ export class HttpCorsRequestHandler implements HttpHandler {
 
             ... response.headers,
             ... allowOrigin && ({
-              ... (allowOrigin !== '*') && { 'vary': 'origin' },
+              ... (allowOrigin !== '*') && { 'vary': [ ... new Set([ ... response.headers.vary?.split(',').map((v) => v.trim().toLowerCase()) ?? [], `origin` ])].join(', ') },
               'access-control-allow-origin': allowOrigin,
               'access-control-allow-methods': (allowMethods ?? routeMethods ?? allMethods).join(', '),
               ... (allowHeadersOrRequested) && { 'access-control-allow-headers': allowHeadersOrRequested },
@@ -113,7 +113,7 @@ export class HttpCorsRequestHandler implements HttpHandler {
             ... response.headers,
             ... allowOrigin && ({
               'access-control-allow-origin': allowOrigin,
-              ... (allowOrigin !== '*') && { 'vary': 'origin' },
+              ... (allowOrigin !== '*') && { 'vary': [ ... new Set([ ... response.headers.vary?.split(',').map((v) => v.trim().toLowerCase()) ?? [], `origin` ])].join(', ') },
               ... (credentials) && { 'access-control-allow-credentials': 'true' },
               ... (exposeHeaders) && { 'access-control-expose-headers': exposeHeaders.join(',') },
             }),

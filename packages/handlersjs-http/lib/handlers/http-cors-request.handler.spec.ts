@@ -227,6 +227,27 @@ describe('HttpCorsRequestHandler', () => {
 
     });
 
+    it('should keep the vary header from its child handler', async () => {
+
+      handler = {
+        handle: jest.fn().mockReturnValue(of({ headers: { vary: 'accept, origin'}, status: 200, body: 'handler done' } as HttpHandlerResponse)),
+      };
+
+      service = new HttpCorsRequestHandler(handler, { credentials: true }, true);
+
+      const response = await lastValueFrom(service.handle(context));
+
+      expect(response.headers['access-control-allow-origin']).toEqual(context.request.headers.origin);
+      expect(response.headers.vary).toEqual('accept, origin');
+
+      context.request.method = 'OPTIONS';
+      const responseOptions = await lastValueFrom(service.handle(context));
+
+      expect(responseOptions.headers['access-control-allow-origin']).toEqual(context.request.headers.origin);
+      expect(responseOptions.headers.vary).toEqual('accept, origin');
+
+    });
+
   });
 
 });
