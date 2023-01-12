@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.13.1](https://github.com/digita-ai/handlersjs/compare/v0.13.0...v0.13.1) (2023-01-12)
+
+
+### **Bug Fixes**
+
+* return correct vary header ([#218](https://github.com/digita-ai/handlersjs/issues/218)) ([7258c1d](https://github.com/digita-ai/handlersjs/commit/7258c1d1959dd5ca7fe3fc3ff82bf5bba84245ff))
+
+
+
 ## [0.13.0](https://github.com/digita-ai/handlersjs/compare/v0.12.1...v0.13.0) (2022-12-22)
 
 
