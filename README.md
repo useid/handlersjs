@@ -1,8 +1,10 @@
 # Handlers.js
 
-Handlers.js provides a modular framework based on the abstraction of software components as _handlers_ of data. Using the handlers in this repository, and custom handlers you build yourself, you can compose multiple specialized modules into a full application. Building software this way ensures easily maintainable, configurable and rewireable applications.
+Handlers.js provides a modular framework based on an abstraction of software components as _handlers_ of data. Using the handlers in this repository, and custom handlers you build yourself, you can compose multiple specialized modules into a full application. Building software this way ensures easily maintainable, configurable and rewireable applications.
 
 The real power of — and inspiration for — Handlers.js comes from the [Components.js](https://componentsjs.readthedocs.io) dependency injection framework, for which each package provides the necessary component configuration files. Combining Handlers.js with Components.js enables you to define each software component separately, and then wire them together declaratively using semantic configuration in JSON files, instead of hard-wiring them together in code.
+
+Lots of the handlers in this repository are written for software design based on the _Chain of Responsibility_ pattern, in which each processing component decides whether it is applicable based on the command input, and then passes the input to the next handler. Handlers.js combines this object-oriented pattern with _asynchronous_ and _functional_ programming approaches: handlers are basically functions which are composed into a single process, and return the caller a Promise that resolves when they are complete (or rejects when they encounter an error).
 
 ## Packages
 
