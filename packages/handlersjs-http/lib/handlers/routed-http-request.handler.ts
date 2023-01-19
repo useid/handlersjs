@@ -100,8 +100,9 @@ export class RoutedHttpRequestHandler implements HttpHandler {
 
     if (matchingRoutes?.length) {
 
-      const matchingRouteWithOperation = matchingRoutes.find((r) =>
-        r.route.operations.map((op) => op.method).includes(request.method));
+      const matchingRouteWithOperation = matchingRoutes
+        .map((r) => ({ ...r, operation: r.route.operations.find((op) => op.method === request.method) }))
+        .find((r) => r.operation);
 
       const allowedMethods = matchingRoutes.flatMap((r) => r.route.operations.map((op) => op.method));
 
@@ -129,6 +130,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
           headers: {
             ... response.headers,
             ... (request.method === 'OPTIONS') && { Allow: allowedMethods.join(', ') },
+            ... (matchingRouteWithOperation.operation?.vary) && { vary: matchingRouteWithOperation.operation.vary.join(', ') },
           },
         }))
       );
