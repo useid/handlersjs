@@ -3,6 +3,156 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.13.1](https://github.com/digita-ai/handlersjs/compare/v0.13.0...v0.13.1) (2023-01-12)
+
+
+### **Bug Fixes**
+
+* return correct vary header ([#218](https://github.com/digita-ai/handlersjs/issues/218)) ([7258c1d](https://github.com/digita-ai/handlersjs/commit/7258c1d1959dd5ca7fe3fc3ff82bf5bba84245ff))
+
+
+
+## [0.13.0](https://github.com/digita-ai/handlersjs/compare/v0.12.1...v0.13.0) (2022-12-22)
+
+
+### **Features**
+
+* add x-powered-by, strict-transport-security and vary header ([#217](https://github.com/digita-ai/handlersjs/issues/217)) ([297898d](https://github.com/digita-ai/handlersjs/commit/297898d5224e86c3abe5924b4f92629b58390193))
+
+
+
+### [0.12.1](https://github.com/digita-ai/handlersjs/compare/v0.12.0...v0.12.1) (2022-09-26)
+
+
+### **Bug Fixes**
+
+* response body parsing ([#211](https://github.com/digita-ai/handlersjs/issues/211)) ([88016c9](https://github.com/digita-ai/handlersjs/commit/88016c9157c534934f22d13ce40ab906831a32d0))
+
+
+
+## [0.12.0](https://github.com/digita-ai/handlersjs/compare/v0.11.0...v0.12.0) (2022-09-19)
+
+
+### **Features**
+
+* make parseBody more robust ([#199](https://github.com/digita-ai/handlersjs/issues/199)) ([e88e5d2](https://github.com/digita-ai/handlersjs/commit/e88e5d265e49a1c4f3f18d105ae566e7007c16fd))
+
+
+### **Bug Fixes**
+
+* do not remove origin header in cors request handler ([#210](https://github.com/digita-ai/handlersjs/issues/210)) ([f7a7b27](https://github.com/digita-ai/handlersjs/commit/f7a7b2768bac312c6896c3f9bb345baf23412e07))
+* set default content-type instead of undefined ([#209](https://github.com/digita-ai/handlersjs/issues/209)) ([ff93983](https://github.com/digita-ai/handlersjs/commit/ff93983b600718ff863045001aee710c16fcb36a))
+
+
+
+## [0.11.0](https://github.com/digita-ai/handlersjs/compare/v0.10.0...v0.11.0) (2022-05-24)
+
+
+### **Features**
+
+* bump versions for componentsjs(-generator) ([#202](https://github.com/digita-ai/handlersjs/issues/202)) ([f4ac28e](https://github.com/digita-ai/handlersjs/commit/f4ac28edfb97bc0ac7df477742ac85f195d51dcd))
+
+
+
+## [0.10.0](https://github.com/digita-ai/handlersjs/compare/v0.9.2...v0.10.0) (2022-05-19)
+
+
+### **Features**
+
+* add console logger to http package ([#186](https://github.com/digita-ai/handlersjs/issues/186)) ([1e6280d](https://github.com/digita-ai/handlersjs/commit/1e6280de97c3df9844f0ce7165b5533b3f81a5ea))
+
+
+### **Bug Fixes**
+
+* can't return false as a body ([#196](https://github.com/digita-ai/handlersjs/issues/196)) ([ad0d662](https://github.com/digita-ai/handlersjs/commit/ad0d6627ceee9c9abf010672b827bc09304e71d0))
+
+
+
+### [0.9.2](https://github.com/digita-ai/handlersjs/compare/v0.9.1...v0.9.2) (2022-04-22)
+
+
+### **Bug Fixes**
+
+* ignore charset when parsing json body ([#193](https://github.com/digita-ai/handlersjs/issues/193)) ([aa82b92](https://github.com/digita-ai/handlersjs/commit/aa82b9244ee3ae79eb03727d4100192c772ab8a5))
+
+
+
+### [0.9.1](https://github.com/digita-ai/handlersjs/compare/v0.9.0...v0.9.1) (2022-04-21)
+
+**Note:** Version bump only for package @digita-ai/handlersjs-http
+
+
+
+
+
+## [0.9.0](https://github.com/digita-ai/handlersjs/compare/v0.8.6...v0.9.0) (2022-04-08)
+
+
+### **Features**
+
+* create basic StatusHandler ([#190](https://github.com/digita-ai/handlersjs/issues/190)) ([9c75ad7](https://github.com/digita-ai/handlersjs/commit/9c75ad7aef22920f9683b056c4066957e5e816dc))
+
+
+
+### [0.8.6](https://github.com/digita-ai/handlersjs/compare/v0.8.5...v0.8.6) (2022-04-07)
+
+**Note:** Version bump only for package @digita-ai/handlersjs-http
+
+
+
+
+
+### [0.8.5](https://github.com/digita-ai/handlersjs/compare/v0.8.4...v0.8.5) (2022-03-02)
+
+
+### **Bug Fixes**
+
+* bump componentsjs with temp fixes  ([47ba52b](https://github.com/digita-ai/handlersjs/commit/47ba52b0b9d7455528a209e17842d24464aa6295))
+
+
+
+### [0.8.4](https://github.com/digita-ai/handlersjs/compare/v0.8.3...v0.8.4) (2022-02-28)
+
+**Note:** Version bump only for package @digita-ai/handlersjs-http
+
+
+
+
+
+### [0.8.3](https://github.com/digita-ai/handlersjs/compare/v0.8.2...v0.8.3) (2022-02-18)
+
+
+### **Bug Fixes**
+
+* error handler signature ([#183](https://github.com/digita-ai/handlersjs/issues/183)) ([1db118d](https://github.com/digita-ai/handlersjs/commit/1db118d2821dad5df7098de762beb9fd9c297252))
+
+
+
+### [0.8.2](https://github.com/digita-ai/handlersjs/compare/v0.8.1...v0.8.2) (2022-02-15)
+
+**Note:** Version bump only for package @digita-ai/handlersjs-http
+
+
+
+
+
+### [0.8.1](https://github.com/digita-ai/handlersjs/compare/v0.8.0...v0.8.1) (2022-02-15)
+
+**Note:** Version bump only for package @digita-ai/handlersjs-http
+
+
+
+
+
+## [0.8.0](https://github.com/digita-ai/handlersjs/compare/v0.7.1...v0.8.0) (2022-02-11)
+
+
+### **Features**
+
+* refactor handler architecture ([#136](https://github.com/digita-ai/handlersjs/issues/136)) ([ee3e464](https://github.com/digita-ai/handlersjs/commit/ee3e4643e0c2cf281cca26dfdd8dc9fff4a6ca58))
+
+
+
 ### [0.7.1](https://github.com/digita-ai/handlersjs/compare/v0.7.0...v0.7.1) (2022-01-23)
 
 **Note:** Version bump only for package @digita-ai/handlersjs-http

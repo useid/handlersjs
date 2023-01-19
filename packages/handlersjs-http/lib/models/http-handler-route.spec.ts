@@ -1,4 +1,4 @@
-import { HttpHandlerOperation, HttpHandlerOperationHeader, HttpHandlerOperationMedia, HttpHandlerOperationMediaPayload, HttpHandlerOperationResponse, HttpHandlerOperationSecurityType, HttpHandlerRoute } from './http-handler-route';
+import { HttpHandlerOperation, HttpHandlerOperationHeader, HttpHandlerOperationMedia, HttpHandlerOperationMediaPayload, HttpHandlerOperationResponse, HttpHandlerRoute } from './http-handler-route';
 
 describe('HttpHandlerRoute', () => {
 
@@ -69,9 +69,10 @@ describe('HttpHandlerRoute', () => {
 
   describe('HttpHandlerRoute', () => {
 
+    class testClass extends HttpHandlerRoute { }
+
     it('should be instantiated correctly', () => {
 
-      class testClass extends HttpHandlerRoute { }
       const object = new testClass(undefined, 'path', undefined);
       expect(object).toBeDefined();
       expect(object).toBeTruthy();

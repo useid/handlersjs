@@ -2,7 +2,6 @@ import { lastValueFrom, of } from 'rxjs';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
-import { cleanHeaders } from '../util/clean-headers';
 import { HttpCorsOptions, HttpCorsRequestHandler } from './http-cors-request.handler';
 
 describe('HttpCorsRequestHandler', () => {
@@ -24,8 +23,6 @@ describe('HttpCorsRequestHandler', () => {
 
     handler = {
       handle: jest.fn().mockReturnValue(of({ headers: mockResponseHeaders, status: 200, body: 'handler done' } as HttpHandlerResponse)),
-      safeHandle: jest.fn(),
-      canHandle: jest.fn().mockReturnValue(of(true)),
     };
 
     context = {
@@ -35,6 +32,7 @@ describe('HttpCorsRequestHandler', () => {
         headers: {
           accept: 'text/plain',
           origin: 'http://test.de',
+          ['access-control-request-method']: 'GET',
         },
       },
     };
@@ -63,29 +61,23 @@ describe('HttpCorsRequestHandler', () => {
 
     });
 
-    describe('canHandle()', () => {
-
-      it('should always return true', async() => {
-
-        await expect(lastValueFrom(service.canHandle(undefined))).resolves.toBe(true);
-
-      });
-
-    });
-
     describe('handle()', () => {
 
       // Check 'noCorsRequestContext' and 'cleanHeaders'
       it('should not pass CORS headers to the child handler.handle', async() => {
 
-        const noCorsHeaderContext = { ...context, request: { ...context.request, headers: { accept: 'text/plain' } } };
-
-        await lastValueFrom(service.handle(noCorsHeaderContext));
+        await lastValueFrom(service.handle(context));
 
         expect(handler.handle).toHaveBeenCalledTimes(1);
-        const expectedToBeCalledWith = { ...context, request: { headers:  cleanHeaders(noCorsHeaderContext.request.headers), method: 'GET', url: new URL('http://example.com') } };
 
-        expect(handler.handle).toHaveBeenCalledWith(expectedToBeCalledWith);
+        expect(handler.handle).toHaveBeenCalledWith(expect.objectContaining({
+          request: expect.objectContaining({
+            headers: {
+              accept: context.request.headers.accept,
+              origin: context.request.headers.origin,
+            },
+          }),
+        }));
 
       });
 
@@ -232,6 +224,27 @@ describe('HttpCorsRequestHandler', () => {
       const response = await lastValueFrom(service.handle(context));
 
       expect(response.headers['access-control-allow-headers']).toEqual('X-Custom-Header,Upgrade-Insecure-Requests');
+
+    });
+
+    it('should keep the vary header from its child handler', async () => {
+
+      handler = {
+        handle: jest.fn().mockReturnValue(of({ headers: { vary: 'accept, origin' }, status: 200, body: 'handler done' } as HttpHandlerResponse)),
+      };
+
+      service = new HttpCorsRequestHandler(handler, { credentials: true }, true);
+
+      const response = await lastValueFrom(service.handle(context));
+
+      expect(response.headers['access-control-allow-origin']).toEqual(context.request.headers.origin);
+      expect(response.headers.vary).toEqual('accept, origin');
+
+      context.request.method = 'OPTIONS';
+      const responseOptions = await lastValueFrom(service.handle(context));
+
+      expect(responseOptions.headers['access-control-allow-origin']).toEqual(context.request.headers.origin);
+      expect(responseOptions.headers.vary).toEqual('accept, origin');
 
     });
 

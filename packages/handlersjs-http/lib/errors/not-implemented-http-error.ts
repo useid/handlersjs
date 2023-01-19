@@ -38,7 +38,11 @@ export class NotImplementedHttpError extends HttpError {
 
   static isInstance(error: unknown): error is NotImplementedHttpError {
 
-    return HttpError.isInstance(error) && error.statusCode === 501;
+    const errorIsInstance = HttpError.isInstance(error) && error.statusCode === 501;
+
+    this.logger.info(`Checking if ${error} is an instance of ${this.name}: `, errorIsInstance);
+
+    return errorIsInstance;
 
   }
 

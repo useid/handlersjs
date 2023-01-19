@@ -1,4 +1,5 @@
-import { Observable, of } from 'rxjs';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
+import { Observable, of, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -13,23 +14,15 @@ export interface HttpCorsOptions {
   credentials?: boolean;
   maxAge?: number;
 }
-export class HttpCorsRequestHandler extends HttpHandler {
+export class HttpCorsRequestHandler implements HttpHandler {
+
+  private logger = getLoggerFor(this, 5, 5);
 
   constructor(
     private handler: HttpHandler,
     private options?: HttpCorsOptions,
     private passThroughOptions: boolean = false,
-  ) {
-
-    super();
-
-  }
-
-  canHandle(context: HttpHandlerContext): Observable<boolean> {
-
-    return of(true);
-
-  }
+  ) { }
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
@@ -40,7 +33,6 @@ export class HttpCorsRequestHandler extends HttpHandler {
     const cleanRequestHeaders = cleanHeaders(requestHeaders);
 
     const {
-      ['origin']: requestedOrigin,
       /* eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructuring for removal */
       ['access-control-request-method']: requestedMethod,
       ['access-control-request-headers']: requestedHeaders,
@@ -57,6 +49,8 @@ export class HttpCorsRequestHandler extends HttpHandler {
       },
     };
 
+    const { origin: requestedOrigin } = cleanRequestHeaders;
+
     const allowOrigin = origins
       ? origins.includes(requestedOrigin)
         ? requestedOrigin
@@ -71,8 +65,12 @@ export class HttpCorsRequestHandler extends HttpHandler {
 
       /* Preflight Request */
 
+      this.logger.info('Processing preflight request', noCorsRequestContext);
+
       const routeMethods = context.route?.operations.map((op) => op.method);
       const allMethods = [ 'GET', 'HEAD', 'PUT', 'POST', 'DELETE', 'PATCH' ];
+
+      this.passThroughOptions ? this.logger.info('Handling context: ', noCorsRequestContext) : this.logger.info('No content found, returning 204 response for preflight request');
 
       const initialOptions = this.passThroughOptions
         ? this.handler.handle(noCorsRequestContext)
@@ -83,13 +81,14 @@ export class HttpCorsRequestHandler extends HttpHandler {
           ... response,
           headers: cleanHeaders(response.headers),
         })),
+        tap((response) => this.logger.info('Configuring CORS headers for response', response)),
         map((response) => ({
           ... response,
           headers: {
 
             ... response.headers,
             ... allowOrigin && ({
-              ... (allowOrigin !== '*') && { 'vary': 'origin' },
+              ... (allowOrigin !== '*') && { 'vary': [ ... new Set([ ... response.headers.vary?.split(',').map((v) => v.trim().toLowerCase()) ?? [], `origin` ]) ].join(', ') },
               'access-control-allow-origin': allowOrigin,
               'access-control-allow-methods': (allowMethods ?? routeMethods ?? allMethods).join(', '),
               ... (allowHeadersOrRequested) && { 'access-control-allow-headers': allowHeadersOrRequested },
@@ -104,14 +103,17 @@ export class HttpCorsRequestHandler extends HttpHandler {
 
       /* CORS Request */
 
+      this.logger.info('Processing CORS request', noCorsRequestContext);
+
       return this.handler.handle(noCorsRequestContext).pipe(
+        tap((response) => this.logger.info('Configuring CORS headers for response', response)),
         map((response) => ({
           ... response,
           headers: {
             ... response.headers,
             ... allowOrigin && ({
               'access-control-allow-origin': allowOrigin,
-              ... (allowOrigin !== '*') && { 'vary': 'origin' },
+              ... (allowOrigin !== '*') && { 'vary': [ ... new Set([ ... response.headers.vary?.split(',').map((v) => v.trim().toLowerCase()) ?? [], `origin` ]) ].join(', ') },
               ... (credentials) && { 'access-control-allow-credentials': 'true' },
               ... (exposeHeaders) && { 'access-control-expose-headers': exposeHeaders.join(',') },
             }),

@@ -1,81 +1,64 @@
 import { lastValueFrom, of } from 'rxjs';
-import { Handler } from './handler';
 import { SequenceHandler } from './sequence.handler';
+import { Handler } from './handler';
 
 describe('SequenceHandler', () => {
 
-  const handlers: Handler<unknown>[] = [];
-  const handler = new SequenceHandler<unknown, unknown>(handlers);
+  let pipeThroughOne;
+  let pipeThroughTwo;
 
-  const input = {
-    msg: 'input',
-  };
+  const mockHandler: Handler<number, number> = { handle: (input: number) => of(2 * input) };
+  const mockHandler2: Handler<number, number> = { handle: (input: number) => of(4 * input) };
 
-  const intermediateOutput = {
-    msg: 'output',
-  };
+  beforeEach(async () => {
 
-  it('should be correctly instantiated', () => {
-
-    expect(handler).toBeTruthy();
+    pipeThroughOne = new SequenceHandler([ mockHandler ]);
+    pipeThroughTwo = new SequenceHandler([ mockHandler, mockHandler2 ]);
 
   });
 
-  it('should error when no handler was provided', () => {
+  afterEach(() => {
+
+    jest.clearAllMocks();
+
+  });
+
+  it('should be correctly instantiated', () => {
+
+    expect(pipeThroughOne).toBeTruthy();
+    expect(pipeThroughTwo).toBeTruthy();
+
+  });
+
+  it('should error when no handlers were provided', async() => {
 
     expect(() => new SequenceHandler(null)).toThrow('Argument handlers should be set.');
 
   });
 
-  describe('canHandle', () => {
+  it('should pass on the input to every next handler', async() => {
 
-    it('should return true if input and intermediateOutput was provided', async () => {
-
-      await expect(lastValueFrom(handler.canHandle(input, intermediateOutput))).resolves.toEqual(true);
-
-    });
+    let response = await lastValueFrom(pipeThroughOne.handle(5));
+    expect(response).toEqual(10);
+    response = await lastValueFrom(pipeThroughTwo.handle(5));
+    expect(response).toEqual(40);
 
   });
 
   describe('handle', () => {
 
-    it('should set intermediateOutput as an unknown empty request object if none was provided', async () => {
+    it('should call the nested handlers handler', async () => {
 
-      await expect(lastValueFrom(handler.handle(input))).resolves.toEqual({ body: null, status: 200, headers: {} });
+      mockHandler.handle = jest.fn().mockReturnValue(of(10));
+      mockHandler2.handle = jest.fn().mockReturnValue(of(20));
 
-    });
+      await lastValueFrom(pipeThroughTwo.handle(5));
 
-    it('should call all the nested handlers safeHandles', async () => {
+      expect(mockHandler.handle).toHaveBeenCalledTimes(1);
+      expect(mockHandler2.handle).toHaveBeenCalledTimes(1);
 
-      const nestedHandler = {
-        handle: jest.fn(),
-        canHandle: jest.fn(),
-        safeHandle: jest.fn().mockReturnValue(of(intermediateOutput)),
-      };
-
-      const nestedHandler2 = {
-        handle: jest.fn(),
-        canHandle: jest.fn(),
-        safeHandle: jest.fn().mockReturnValue(of(intermediateOutput)),
-      };
-
-      const nestedHandler3 = {
-        handle: jest.fn(),
-        canHandle: jest.fn().mockReturnValue(of(false)),
-        safeHandle: jest.fn().mockReturnValue(of(intermediateOutput)),
-      };
-
-      const newHandler = new SequenceHandler<unknown, unknown>([ nestedHandler, nestedHandler2, nestedHandler3 ]);
-
-      await lastValueFrom(newHandler.handle(input, intermediateOutput));
-
-      expect(nestedHandler.safeHandle).toHaveBeenCalledTimes(1);
-      expect(nestedHandler2.safeHandle).toHaveBeenCalledTimes(1);
-      expect(nestedHandler3.safeHandle).toHaveBeenCalledTimes(1);
-
-      expect(nestedHandler.safeHandle).toHaveBeenCalledWith(input, intermediateOutput);
-      expect(nestedHandler2.safeHandle).toHaveBeenCalledWith(input, intermediateOutput);
-      expect(nestedHandler3.safeHandle).toHaveBeenCalledWith(input, intermediateOutput);
+      expect(mockHandler.handle).toHaveBeenCalledWith(5);
+      expect(mockHandler2.handle).toHaveBeenCalledWith(10);
 
     });
 

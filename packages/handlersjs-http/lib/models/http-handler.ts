@@ -1,12 +1,7 @@
-import { Observable } from 'rxjs';
 import { Handler } from '@digita-ai/handlersjs-core';
 import { HttpHandlerResponse } from './http-handler-response';
 import { HttpHandlerContext } from './http-handler-context';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export abstract class HttpHandler<C extends HttpHandlerContext = HttpHandlerContext>
-  extends Handler<C, HttpHandlerResponse> {
-
-  public abstract canHandle(context: C, response?: HttpHandlerResponse): Observable<boolean>;
-  public abstract handle(context: C, response?: HttpHandlerResponse): Observable<HttpHandlerResponse>;
-
-}
+  extends Handler<C, HttpHandlerResponse> {}

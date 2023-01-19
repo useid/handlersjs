@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/handlersjs-core",
-  "version": "0.7.1",
+  "version": "0.13.1",
   "description": "",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -24,7 +24,7 @@
     "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json",
     "build": "rimraf ./dist && npm run build:ts && npm run build:components",
     "build:ts": "tsc",
-    "build:components": "componentsjs-generator --typeScopedContexts -s lib -c dist/components -i .componentsignore",
+    "build:components": "componentsjs-generator -s lib -c dist/components -i .componentsignore --lenient",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "lint:staged": "lint-staged"
@@ -41,8 +41,8 @@
     "@types/clone": "^2.1.1",
     "@types/jest": "^27.0.2",
     "@types/n3": "1.10.0",
-    "componentsjs": "^4.5.0",
-    "componentsjs-generator": "^2.6.1",
+    "componentsjs": "^5.2.0",
+    "componentsjs-generator": "^3.0.3",
     "eslint": "^7.25.0",
     "jest": "^27.3.1",
     "jest-coverage-thresholds-bumper": "^1.0.1",
@@ -54,7 +54,7 @@
   "dependencies": {
     "@types/node": "^16.11.7",
     "clone": "^2.1.2",
-    "rxjs": "^7.5.1"
+    "rxjs": "^7.5.4"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core",
   "lsd:components": "dist/components/components.jsonld",
@@ -71,10 +71,10 @@
     "displayName": "core",
     "coverageThreshold": {
       "global": {
-        "statements": 86.15,
-        "branches": 80.95,
-        "lines": 85.12,
-        "functions": 84.78
+        "statements": 85.22,
+        "branches": 83.33,
+        "lines": 83.54,
+        "functions": 82.14
       }
     },
     "coveragePathIgnorePatterns": [

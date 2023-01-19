@@ -43,25 +43,21 @@ describe('HttpHandlerStaticAssetService', () => {
 
   });
 
-  describe('canHandle()', () => {
-
-    it('should always return true', async() => {
-
-      const response = lastValueFrom(service.canHandle(context));
-      await expect(response).resolves.toBe(true);
-
-    });
-
-  });
-
   describe('handle()', () => {
 
-    it('throws an UnsupportedMediaTypeHttpError when no accept header is found', async() => {
+    it('should set Content-Type when Accept is undefined', async() => {
 
-      const response = lastValueFrom(service
-        .handle({ ...context, request: { ...context.request, headers: { accept: undefined } } }));
+      const contentType = 'text/plain';
+      const absolutePath = join(__dirname, '../../test/');
+      const absoluteService = new HttpHandlerStaticAssetService(absolutePath, contentType);
 
-      await expect(response).rejects.toThrowError(new UnsupportedMediaTypeHttpError('No accept header found'));
+      context.request.parameters.filename = 'test.txt';
+
+      const response = await lastValueFrom(absoluteService.handle(
+        { ...context, request: { ...context.request, headers: { accept: undefined } } }
+      ));
+
+      await expect(response.headers).toStrictEqual({ 'Content-Type': `${contentType}` });
 
     });
 

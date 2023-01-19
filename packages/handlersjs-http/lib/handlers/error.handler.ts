@@ -1,6 +1,6 @@
 import { Observable, of, throwError } from 'rxjs';
-import { Handler } from '@digita-ai/handlersjs-core';
 import { catchError } from 'rxjs/operators';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -48,7 +48,9 @@ export const statusCodes: { [code: number]: string } = {
   511: 'Network Authentication Required',
 };
 
-export class ErrorHandler extends Handler<HttpHandlerContext, HttpHandlerResponse> {
+export class ErrorHandler implements HttpHandler {
+
+  private logger = getLoggerFor(this, 5, 5);
 
   /**
    * Creates an {ErrorHandler} that catches errors and returns an error response to the given handler.
@@ -60,8 +62,6 @@ export class ErrorHandler extends Handler<HttpHandlerContext, HttpHandlerRespons
     private showUpstreamError: boolean = false
   ) {
 
-    super();
-
     if (!nestedHandler) {
 
       throw new Error('A HttpHandler must be provided');
@@ -72,23 +72,32 @@ export class ErrorHandler extends Handler<HttpHandlerContext, HttpHandlerRespons
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse>{
 
-    if (!context) { return throwError(() => new Error('A context must be provided')); }
+    if (!context) {
+
+      this.logger.verbose('Context was not provided');
+
+      return throwError(() => new Error('A context must be provided'));
+
+    }
 
     return this.nestedHandler.handle(context).pipe(
-      catchError((error) => of({
-        status: statusCodes[error?.status] ? error.status : 500,
-        headers: error?.headers ?? {},
-        body: this.showUpstreamError
-          ? error?.body ?? error
-          : statusCodes[error?.status] ?? statusCodes[500],
-      }))
+      catchError((error) => {
+
+        this.logger.error('Error occurred: ', error);
+
+        const status = error?.statusCode ?? error.status;
+        const message = error?.message ?? error.body;
+
+        return of({
+          status: statusCodes[status] ? status : 500,
+          headers: error?.headers ?? {},
+          body: this.showUpstreamError
+            ? message ?? error
+            : statusCodes[status] ?? statusCodes[500],
+        });
+
+      })
     );
-
-  }
-
-  canHandle(context: HttpHandlerContext): Observable<boolean> {
-
-    return context? of(true) : of(false);
 
   }
 

@@ -26,7 +26,6 @@ import { HttpError } from './http-error';
 
 /**
  * An error thrown when incoming data is not supported.
- * Probably because an {@link AsyncHandler} returns false on the canHandle call.
  */
 export class BadRequestHttpError extends HttpError {
 
@@ -43,7 +42,11 @@ export class BadRequestHttpError extends HttpError {
 
   static isInstance(error: unknown): error is BadRequestHttpError {
 
-    return HttpError.isInstance(error) && error.statusCode === 400;
+    const errorIsInstance = HttpError.isInstance(error) && error.statusCode === 400;
+
+    this.logger.info(`Checking if ${error} is an instance of ${this.name}: `, errorIsInstance);
+
+    return errorIsInstance;
 
   }
 

@@ -1,7 +1,8 @@
 import { readFile } from 'fs/promises';
 import { join, isAbsolute } from 'path';
-import { from, Observable, of, throwError } from 'rxjs';
+import { from, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
@@ -9,41 +10,41 @@ import { NotFoundHttpError } from '../errors/not-found-http-error';
 import { UnsupportedMediaTypeHttpError } from '../errors/unsupported-media-type-http-error';
 import { ForbiddenHttpError } from '../errors/forbidden-http-error';
 
-export class HttpHandlerStaticAssetService extends HttpHandler {
+export class HttpHandlerStaticAssetService implements HttpHandler {
 
-  constructor(private path: string, private contentType: string) {
+  private logger = getLoggerFor(this, 5, 5);
 
-    super();
-
-  }
-
-  canHandle(context: HttpHandlerContext): Observable<boolean> {
-
-    return of(true);
-
-  }
+  constructor(private path: string, private contentType: string) { }
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
-    const canHandleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];
+    const possibleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];
 
     if (!context.request?.headers?.accept) {
 
-      return throwError(() => new UnsupportedMediaTypeHttpError('No accept header found'));
+      this.logger.verbose('No accept header found', context.request?.headers);
 
-    }
+      this.logger.verbose('Returning default type', this.contentType);
 
-    const reqHeaders = context.request.headers.accept.split(',').map((accept) => accept.split(';')[0]);
+    }else{
 
-    if (!reqHeaders.some((contentType) => canHandleAcceptHeaders.includes(contentType.trim()))) {
+      const reqHeaders = context.request.headers.accept.split(',').map((accept) => accept.split(';')[0]);
 
-      return throwError(() => new UnsupportedMediaTypeHttpError('Content type not supported'));
+      if (!reqHeaders.some((contentType) => possibleAcceptHeaders.includes(contentType.trim()))) {
+
+        this.logger.verbose('Content type not supported', this.contentType);
+
+        return throwError(() => new UnsupportedMediaTypeHttpError('Content type not supported'));
+
+      }
 
     }
 
     const filename = context.request.parameters?.filename;
 
     if(filename && filename.includes('../')) {
+
+      this.logger.verbose('This type of filename is not supported', filename);
 
       return throwError(() => new ForbiddenHttpError());
 
@@ -59,7 +60,13 @@ export class HttpHandlerStaticAssetService extends HttpHandler {
         },
         status: 200,
       })),
-      catchError(() => throwError(() => new NotFoundHttpError('Error while trying to read file'))),
+      catchError(() => {
+
+        this.logger.verbose('Failed to read file: ', filePath);
+
+        return throwError(() => new NotFoundHttpError('Error while trying to read file'));
+
+      }),
     );
 
   }

@@ -22,7 +22,7 @@
                             "label": "ControllerList",
                             "routes": [
                                 {
-                                    "@id": "urn:dgt-id-proxy:default:MockRoute",
+                                    "@id": "urn:dgt-id-proxy:default:MockRoute1",
                                     "@type": "HttpHandlerRoute",
                                     "operations": [
                                         {
@@ -45,14 +45,11 @@
                             "label": "ControllerList",
                             "routes": [
                                 {
-                                    "@id": "urn:dgt-id-proxy:default:MockRoute",
+                                    "@id": "urn:dgt-id-proxy:default:MockRoute2",
                                     "@type": "HttpHandlerRoute",
                                     "operations": [
                                         {
-                                            "@id": "urn:dgt-id-proxy:default:GetOperation",
-                                            "@type": "HttpHandlerOperation",
-                                            "method": "GET",
-                                            "publish": false
+                                            "@id": "urn:dgt-id-proxy:default:GetOperation"
                                         }
                                     ],
                                     "handler": {
