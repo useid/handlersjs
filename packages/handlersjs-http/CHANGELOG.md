@@ -3,6 +3,48 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.13.1](https://github.com/digita-ai/handlersjs/compare/v0.13.0...v0.13.1) (2023-01-12)
+
+
+### **Bug Fixes**
+
+* return correct vary header ([#218](https://github.com/digita-ai/handlersjs/issues/218)) ([7258c1d](https://github.com/digita-ai/handlersjs/commit/7258c1d1959dd5ca7fe3fc3ff82bf5bba84245ff))
+
+
+
+## [0.13.0](https://github.com/digita-ai/handlersjs/compare/v0.12.1...v0.13.0) (2022-12-22)
+
+
+### **Features**
+
+* add x-powered-by, strict-transport-security and vary header ([#217](https://github.com/digita-ai/handlersjs/issues/217)) ([297898d](https://github.com/digita-ai/handlersjs/commit/297898d5224e86c3abe5924b4f92629b58390193))
+
+
+
+### [0.12.1](https://github.com/digita-ai/handlersjs/compare/v0.12.0...v0.12.1) (2022-09-26)
+
+
+### **Bug Fixes**
+
+* response body parsing ([#211](https://github.com/digita-ai/handlersjs/issues/211)) ([88016c9](https://github.com/digita-ai/handlersjs/commit/88016c9157c534934f22d13ce40ab906831a32d0))
+
+
+
+## [0.12.0](https://github.com/digita-ai/handlersjs/compare/v0.11.0...v0.12.0) (2022-09-19)
+
+
+### **Features**
+
+* make parseBody more robust ([#199](https://github.com/digita-ai/handlersjs/issues/199)) ([e88e5d2](https://github.com/digita-ai/handlersjs/commit/e88e5d265e49a1c4f3f18d105ae566e7007c16fd))
+
+
+### **Bug Fixes**
+
+* do not remove origin header in cors request handler ([#210](https://github.com/digita-ai/handlersjs/issues/210)) ([f7a7b27](https://github.com/digita-ai/handlersjs/commit/f7a7b2768bac312c6896c3f9bb345baf23412e07))
+* set default content-type instead of undefined ([#209](https://github.com/digita-ai/handlersjs/issues/209)) ([ff93983](https://github.com/digita-ai/handlersjs/commit/ff93983b600718ff863045001aee710c16fcb36a))
+
+
+
 ## [0.11.0](https://github.com/digita-ai/handlersjs/compare/v0.10.0...v0.11.0) (2022-05-24)
 
 

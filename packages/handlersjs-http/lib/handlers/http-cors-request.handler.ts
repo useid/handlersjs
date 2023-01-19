@@ -33,7 +33,6 @@ export class HttpCorsRequestHandler implements HttpHandler {
     const cleanRequestHeaders = cleanHeaders(requestHeaders);
 
     const {
-      ['origin']: requestedOrigin,
       /* eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructuring for removal */
       ['access-control-request-method']: requestedMethod,
       ['access-control-request-headers']: requestedHeaders,
@@ -49,6 +48,8 @@ export class HttpCorsRequestHandler implements HttpHandler {
         },
       },
     };
+
+    const { origin: requestedOrigin } = cleanRequestHeaders;
 
     const allowOrigin = origins
       ? origins.includes(requestedOrigin)
@@ -87,7 +88,7 @@ export class HttpCorsRequestHandler implements HttpHandler {
 
             ... response.headers,
             ... allowOrigin && ({
-              ... (allowOrigin !== '*') && { 'vary': 'origin' },
+              ... (allowOrigin !== '*') && { 'vary': [ ... new Set([ ... response.headers.vary?.split(',').map((v) => v.trim().toLowerCase()) ?? [], `origin` ]) ].join(', ') },
               'access-control-allow-origin': allowOrigin,
               'access-control-allow-methods': (allowMethods ?? routeMethods ?? allMethods).join(', '),
               ... (allowHeadersOrRequested) && { 'access-control-allow-headers': allowHeadersOrRequested },
@@ -112,7 +113,7 @@ export class HttpCorsRequestHandler implements HttpHandler {
             ... response.headers,
             ... allowOrigin && ({
               'access-control-allow-origin': allowOrigin,
-              ... (allowOrigin !== '*') && { 'vary': 'origin' },
+              ... (allowOrigin !== '*') && { 'vary': [ ... new Set([ ... response.headers.vary?.split(',').map((v) => v.trim().toLowerCase()) ?? [], `origin` ]) ].join(', ') },
               ... (credentials) && { 'access-control-allow-credentials': 'true' },
               ... (exposeHeaders) && { 'access-control-expose-headers': exposeHeaders.join(',') },
             }),

@@ -30,6 +30,8 @@ describe('RoutedHttpRequestHandler', () => {
   let mockHttpHandler: HttpHandler;
   let preresponseHandler: Handler<HttpHandlerContext, HttpHandlerContext>;
 
+  const vary = [ 'Accept', 'Authorization', 'Origin' ];
+
   beforeEach(() => {
 
     mockHttpHandler = getMockedHttpHandler();
@@ -43,6 +45,7 @@ describe('RoutedHttpRequestHandler', () => {
           operations: [ {
             method: 'GET',
             publish: true,
+            vary,
           }, {
             method: 'OPTIONS',
             publish: false,
@@ -325,6 +328,28 @@ describe('RoutedHttpRequestHandler', () => {
 
       await expect(lastValueFrom(defaultRoutedHttpRequestHandler.handle(httpHandlerContext))).resolves.toEqual({ body: 'defaultHandler mockBody', headers: {}, status:200 });
       expect(defaultHandler.handle).toHaveBeenCalledTimes(1);
+
+    });
+
+    it('should not add vary header by default', async() => {
+
+      const httpHandlerContext: HttpHandlerContext = {
+        request: { url: new URL('/path2', 'http://example.com'), method: 'POST', headers: {} },
+      };
+
+      const response = await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+      expect(response.headers.vary).toBeUndefined();
+
+    });
+
+    it('should add vary header to the response when specified in the matched route', async() => {
+
+      const httpHandlerContext: HttpHandlerContext = {
+        request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
+      };
+
+      const response = await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+      expect(response.headers).toEqual(expect.objectContaining({ 'vary': vary.join(', ') }));
 
     });
 
