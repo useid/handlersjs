@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.13.1](https://github.com/digita-ai/handlersjs/compare/v0.13.0...v0.13.1) (2023-01-12)
+
+**Note:** Version bump only for package @digita-ai/handlersjs-core
+
+
+
+
+
+## [0.13.0](https://github.com/digita-ai/handlersjs/compare/v0.12.1...v0.13.0) (2022-12-22)
+
+**Note:** Version bump only for package @digita-ai/handlersjs-core
+
+
+
+
+
+### [0.12.1](https://github.com/digita-ai/handlersjs/compare/v0.12.0...v0.12.1) (2022-09-26)
+
+**Note:** Version bump only for package @digita-ai/handlersjs-core
+
+
+
+
+
+## [0.12.0](https://github.com/digita-ai/handlersjs/compare/v0.11.0...v0.12.0) (2022-09-19)
+
+**Note:** Version bump only for package @digita-ai/handlersjs-core
+
+
+
+
+
 ## [0.11.0](https://github.com/digita-ai/handlersjs/compare/v0.10.0...v0.11.0) (2022-05-24)
 
 
