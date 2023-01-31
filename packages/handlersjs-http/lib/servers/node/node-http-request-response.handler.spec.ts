@@ -13,7 +13,8 @@ describe('NodeHttpRequestResponseHandler', () => {
   let streamMock: NodeHttpStreams;
   let req: IncomingMessage;
   let res: ServerResponse;
-  const buffer = Buffer.from('bodyString');
+  const bufferString = 'bodyString';
+  const buffer = Buffer.from(bufferString);
 
   beforeEach(async () => {
 
@@ -22,9 +23,12 @@ describe('NodeHttpRequestResponseHandler', () => {
     handler = new NodeHttpRequestResponseHandler(nestedHttpHandler);
 
     req = new mockhttp.Request({
-      url: 'http://localhost:3000/test?works=yes',
+      url: '/test?works=yes',
       method: 'GET',
       buffer,
+      headers: {
+        host: 'localhost:3000',
+      },
     });
 
     res = new mockhttp.Response();
@@ -134,11 +138,11 @@ describe('NodeHttpRequestResponseHandler', () => {
       expect(nestedHttpHandler.handle).toHaveBeenCalledTimes(1);
 
       expect(nestedHttpHandler.handle).toHaveBeenCalledWith({
-        'request': {
-          'method': 'GET',
-          'headers': {},
-          'url': new URL('http://localhost:3000/test?works=yes'),
-          'body': 'bodyString',
+        request: {
+          method: streamMock.requestStream.method,
+          headers: streamMock.requestStream.headers,
+          url: new URL(streamMock.requestStream.url as string, `http://${streamMock.requestStream.headers.host}`),
+          body: bufferString,
         },
       });
 
@@ -184,7 +188,26 @@ describe('NodeHttpRequestResponseHandler', () => {
       await lastValueFrom(handler.handle(streamMock));
       expect(nestedHttpHandler.handle).toHaveBeenCalledTimes(1);
 
-      expect(nestedHttpHandler.handle).toHaveBeenCalledWith(expect.objectContaining({ request: expect.objectContaining({ url: new URL('http://localhost:3000/test?works=yes'), method: 'GET', headers: {} }) }));
+      expect(nestedHttpHandler.handle).toHaveBeenCalledWith(expect.objectContaining({
+        request: expect.objectContaining({
+          url: new URL(`http://${streamMock.requestStream.headers.host}${streamMock.requestStream.url}`),
+        }),
+      }));
+
+    });
+
+    it('should remove excessive slashes at start of requestStream.url', async () => {
+
+      const path = 'remove-em-pls';
+      streamMock.requestStream.url = `//${path}`;
+      await lastValueFrom(handler.handle(streamMock));
+      expect(nestedHttpHandler.handle).toHaveBeenCalledTimes(1);
+
+      expect(nestedHttpHandler.handle).toHaveBeenCalledWith(expect.objectContaining({
+        request: expect.objectContaining({
+          url: new URL(`http://${streamMock.requestStream.headers.host}/${path}`),
+        }),
+      }));
 
     });
 

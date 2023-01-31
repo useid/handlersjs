@@ -151,7 +151,8 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
       map((chunks) => Buffer.concat(chunks).toString()),
       map((body) => {
 
-        const urlObject: URL = new URL(url, `http://${nodeHttpStreams.requestStream.headers.host}`);
+        // Make sure first param doesn't start with multiple slashes
+        const urlObject: URL = new URL(url.replace(/^\/+/, '/'), `http://${nodeHttpStreams.requestStream.headers.host}`);
 
         const httpHandlerRequest: HttpHandlerRequest = {
           url: urlObject,
