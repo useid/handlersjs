@@ -1,4 +1,5 @@
 import Pino from 'pino';
+import pretty from 'pino-pretty';
 import { LoggerLevel } from '../models/logger-level';
 import { PinoLogger } from './pino-logger';
 
@@ -10,6 +11,8 @@ jest.mock('pino', () => jest.fn().mockReturnValue({
   trace: jest.fn().mockImplementation(() => undefined),
 }));
 
+jest.mock('pino-pretty', () => jest.fn().mockImplementation(() => undefined));
+
 describe('PinoLogger', () => {
 
   let logger: PinoLogger;
@@ -17,7 +20,7 @@ describe('PinoLogger', () => {
 
   beforeEach(async () => {
 
-    logger = new PinoLogger('test-logger', 6, 6);
+    logger = new PinoLogger('test-logger', 5, 5);
 
   });
 
@@ -31,6 +34,15 @@ describe('PinoLogger', () => {
   it('should be correctly instantiated', () => {
 
     expect(logger).toBeTruthy();
+
+  });
+
+  it ('should create a logger that prettifies logs when prettyPrint is true', () =>{
+
+    const testLogger = new PinoLogger('test-logger', 5, 5, true);
+    testLogger.log(5, 'test message', { data: 'data' });
+    expect(pretty).toHaveBeenCalledTimes(1);
+    expect(Pino).toHaveBeenCalledTimes(1);
 
   });
 
