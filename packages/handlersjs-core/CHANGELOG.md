@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.0](https://github.com/digita-ai/handlersjs/compare/v0.13.1...v0.14.0) (2023-03-29)
+
+
+### **Features**
+
+* implement pino logger ([#223](https://github.com/digita-ai/handlersjs/issues/223)) ([0d93efe](https://github.com/digita-ai/handlersjs/commit/0d93efe302a2b7ad365c4ffdc54569a45b3506bf))
+
+
+
 ### [0.13.1](https://github.com/digita-ai/handlersjs/compare/v0.13.0...v0.13.1) (2023-01-12)
 
 **Note:** Version bump only for package @digita-ai/handlersjs-core

@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.0](https://github.com/digita-ai/handlersjs/compare/v0.13.1...v0.14.0) (2023-03-29)
+
+
+### **Documentation**
+
+* change version to latest ([f34f4bb](https://github.com/digita-ai/handlersjs/commit/f34f4bb80b9c47b9dae360fab9fbaa0d54a3be15))
+* elaborate readme ([#219](https://github.com/digita-ai/handlersjs/issues/219)) ([26bcd4c](https://github.com/digita-ai/handlersjs/commit/26bcd4c5a2883742750ccb323051b36ba1a701f0))
+* set antora version to master ([7dc3b32](https://github.com/digita-ai/handlersjs/commit/7dc3b326d850a16260aa3aa6e25be4c4cbe22b05))
+* use old antora syntax ([9fd8b10](https://github.com/digita-ai/handlersjs/commit/9fd8b109f1112c8fda7d6a8d907b3d5c17f04e1b))
+
+
+### **Bug Fixes**
+
+* url parsing in http-request-response.handler ([#220](https://github.com/digita-ai/handlersjs/issues/220)) ([c2c94f2](https://github.com/digita-ai/handlersjs/commit/c2c94f223a85112a59160e787bba90dc5d110c75))
+
+
+### **Features**
+
+* implement pino logger ([#223](https://github.com/digita-ai/handlersjs/issues/223)) ([0d93efe](https://github.com/digita-ai/handlersjs/commit/0d93efe302a2b7ad365c4ffdc54569a45b3506bf))
+
+
+
 ### [0.13.1](https://github.com/digita-ai/handlersjs/compare/v0.13.0...v0.13.1) (2023-01-12)
 
 
