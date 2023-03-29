@@ -2,11 +2,13 @@
 
 import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
 import Pino from 'pino';
+import pretty from 'pino-pretty';
 import { Logger } from '../models/logger';
 import { LoggerLevel } from '../models/logger-level';
 
-/** ß
- * JavaScript console-based logger service
+/**
+ * A logger that uses the "pino" library to log messages.
+ * Pino: https://github.com/pinojs/pino
  */
 export class PinoLogger extends Logger {
 
@@ -14,6 +16,7 @@ export class PinoLogger extends Logger {
     protected readonly label: string,
     protected readonly minimumLevel: LoggerLevel,
     protected readonly minimumLevelPrintData: LoggerLevel,
+    protected readonly prettyPrint: boolean = false,
   ) {
 
     super(label, minimumLevel, minimumLevelPrintData);
@@ -34,13 +37,16 @@ export class PinoLogger extends Logger {
 
     }
 
-    const timestamp: string = new Date().toISOString();
-
     if (level <= this.minimumLevel) {
 
-      const logData = level > this.minimumLevelPrintData ? '' : data||'';
+      const logData = level > this.minimumLevelPrintData ? {} : data || {};
+
       // Pino does not use "silly", but "trace" instead. So we need to convert the level.
-      const logger = Pino({ level: level === 5 ? 'trace' : LoggerLevel[level].toString() });
+      const loggerOptions = {
+        level: level === 5 ? 'trace' : LoggerLevel[level].toString(),
+      };
+
+      const logger = this.prettyPrint ? Pino(loggerOptions, pretty()) : Pino(loggerOptions);
 
       switch (level) {
 
