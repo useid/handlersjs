@@ -68,10 +68,10 @@
     "displayName": "logging",
     "coverageThreshold": {
       "global": {
-        "statements": 98.98,
-        "branches": 82.35,
-        "lines": 98.93,
-        "functions": 94.73
+        "statements": 99.21,
+        "branches": 84,
+        "lines": 99.18,
+        "functions": 95.23
       }
     },
     "coveragePathIgnorePatterns": [

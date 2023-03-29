@@ -1,0 +1,42 @@
+{
+    "folders": [
+      {
+        "name": "root",
+        "path": "."
+      },
+      {
+        "name": "core",
+        "path": "packages/handlersjs-core"
+      },
+      {
+        "name": "http",
+        "path": "packages/handlersjs-http"
+      },
+      {
+        "name": "storage",
+        "path": "packages/handlersjs-storage"
+      },
+      {
+        "name": "logging",
+        "path": "packages/handlersjs-logging"
+      },
+    ],
+    "settings": {
+      "eslint.format.enable": true,
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+      "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+      },
+      "files.eol": "\n",
+      "cSpell.words": [
+        "handlersjs"
+      ]
+    },
+    "extensions": {
+      "recommendations": [
+        "dbaeumer.vscode-eslint",
+        "humao.rest-client"
+      ]
+    }
+  }
+  
