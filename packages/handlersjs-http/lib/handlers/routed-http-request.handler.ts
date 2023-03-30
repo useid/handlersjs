@@ -14,7 +14,7 @@ import { HttpHandlerRoute } from '../models/http-handler-route';
  */
 export class RoutedHttpRequestHandler implements HttpHandler {
 
-  private logger = getLoggerFor(this, 5, 5);
+  private logger = getLoggerFor(this);
 
   private pathToRouteMap: Map<string, { controller: HttpHandlerController; route: HttpHandlerRoute }[]>;
 

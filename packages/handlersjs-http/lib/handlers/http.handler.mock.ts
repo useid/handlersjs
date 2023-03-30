@@ -9,7 +9,7 @@ import { HttpHandlerResponse } from '../models/http-handler-response';
  */
 export class MockHttpHandler implements HttpHandler {
 
-  private logger = getLoggerFor(this, 5, 5);
+  private logger = getLoggerFor(this);
 
   /**
    * Returns a mock response: ```

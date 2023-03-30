@@ -11,7 +11,7 @@ import { NodeHttpStreamsHandler } from './node-http-streams.handler';
 export class NodeHttpServer extends Server {
 
   private server: NodeServer;
-  private logger = getLoggerFor(this, 5, 5);
+  private logger = getLoggerFor(this);
 
   /**
    * Creates a { NodeHttpServer } listening on `http://``host``:``port`, passing requests through the given { NodeHttpStreamsHandler }.

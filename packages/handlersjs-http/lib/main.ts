@@ -20,8 +20,8 @@ export const launch: (variables: Record<string, any>) => Promise<void> = async (
 
   await manager.configRegistry.register(configPath);
 
-  setLoggerFactory(new ConsoleLoggerFactory());
-  setLogger(getLoggerFor('HTTP', 6, 6));
+  setLoggerFactory(new ConsoleLoggerFactory({ minimumLevel: 5, minimumLevelPrintData: 5 }));
+  setLogger(getLoggerFor('HTTP'));
 
   const server: NodeHttpServer = await manager.instantiate('urn:handlersjs-http:default:NodeHttpServer', { variables });
 
