@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/handlersjs-logging",
-  "version": "0.14.1",
+  "version": "0.14.2",
   "description": "",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -50,7 +50,7 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
-    "@digita-ai/handlersjs-core": "0.14.1",
+    "@digita-ai/handlersjs-core": "0.14.2",
     "pino": "^8.11.0",
     "pino-pretty": "^10.0.0",
     "rxjs": "^7.5.4",
