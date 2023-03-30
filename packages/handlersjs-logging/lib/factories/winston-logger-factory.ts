@@ -1,8 +1,7 @@
 import { WinstonLogger } from '../loggers/winston-logger';
 import { Logger } from '../models/logger';
-import { LoggerLevel } from '../models/logger-level';
+import { LoggerOptions } from '../models/logger-options';
 import { LoggerFactory } from './logger-factory';
-import { LoggerOptions } from 'models/logger-options';
 
 /**
  * Creates {@link WinstonLogger } instances for the given logging level.
