@@ -1,3 +1,4 @@
+import { LoggerOptions } from './models/logger-options';
 import { Logger } from './models/logger';
 import { LoggerFactory } from './models/logger-factory';
 import { LoggerLevel } from './models/logger-level';
@@ -32,7 +33,8 @@ export const setLogger = (newLogger: Logger): void => {
 export const getLoggerFor = (
   loggable: string | { constructor: { name: string } },
   minimumLevel: LoggerLevel,
-  minimumLevelPrintData: LoggerLevel
+  minimumLevelPrintData: LoggerLevel,
+  loggerOptions?: LoggerOptions
 ): Logger => {
 
   if (!loggerFactory) {
@@ -41,7 +43,7 @@ export const getLoggerFor = (
 
   }
 
-  return loggerFactory.createLogger(typeof loggable === 'string' ? loggable : loggable.constructor.name, minimumLevel, minimumLevelPrintData);
+  return loggerFactory.createLogger(typeof loggable === 'string' ? loggable : loggable.constructor.name, minimumLevel, minimumLevelPrintData, loggerOptions);
 
 };
 
