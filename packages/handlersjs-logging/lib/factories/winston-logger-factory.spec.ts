@@ -7,7 +7,7 @@ describe('WinstonLoggerFactory', () => {
 
   beforeEach(async () => {
 
-    loggerFactory = new WinstonLoggerFactory();
+    loggerFactory = new WinstonLoggerFactory({ minimumLevel: 5, minimumLevelPrintData: 5 });
 
   });
 
@@ -21,11 +21,21 @@ describe('WinstonLoggerFactory', () => {
 
     it('should create a logger', async () => {
 
-      const logger = loggerFactory.createLogger('test-logger', 5, 5);
+      const logger = loggerFactory.createLogger('test-logger');
 
       expect(logger['label']).toEqual('test-logger');
       expect(logger['minimumLevel']).toEqual(5);
       expect(logger['minimumLevelPrintData']).toEqual(5);
+
+    });
+
+    it('should create a logger with specified minimumLevel and minimumLevelForPrintData', async () => {
+
+      const logger = loggerFactory.createLogger('test-logger', { minimumLevel: 3, minimumLevelPrintData: 3 });
+
+      expect(logger['label']).toEqual('test-logger');
+      expect(logger['minimumLevel']).toEqual(3);
+      expect(logger['minimumLevelPrintData']).toEqual(3);
 
     });
 

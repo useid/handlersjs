@@ -1,6 +1,6 @@
 export * from './factories/console-logger-factory';
 export * from './loggers/console-logger';
-export * from './models/logger-factory';
+export * from './factories/logger-factory';
 export * from './models/logger-level';
 export * from './models/logger';
 export * from './models/logger-options';
