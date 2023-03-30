@@ -16,7 +16,7 @@ export interface HttpCorsOptions {
 }
 export class HttpCorsRequestHandler implements HttpHandler {
 
-  private logger = getLoggerFor(this, 5, 5);
+  private logger = getLoggerFor(this);
 
   constructor(
     private handler: HttpHandler,

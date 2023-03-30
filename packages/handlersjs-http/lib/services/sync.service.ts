@@ -8,7 +8,7 @@ export class SyncService<T, S extends string, P extends string, M extends {
   [s in S]: T[] } & { [p in P]: string[] }> implements Handler<void, void> {
 
   latestSync: Date | undefined = undefined;
-  private logger = getLoggerFor(this, 5, 5);
+  private logger = getLoggerFor(this);
 
   /**
    *

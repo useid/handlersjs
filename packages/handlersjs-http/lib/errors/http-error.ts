@@ -33,7 +33,7 @@ export class HttpError extends Error {
 
   protected static readonly statusCode: number;
   public readonly statusCode: number;
-  protected static readonly logger = getLoggerFor(this, 5, 5);
+  protected static readonly logger = getLoggerFor(this);
 
   /**
    * Creates a new HTTP error. Subclasses should call this with their fixed status code.

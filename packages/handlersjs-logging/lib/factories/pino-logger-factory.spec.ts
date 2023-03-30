@@ -7,7 +7,7 @@ describe('PinoLoggerFactory', () => {
 
   beforeEach(async () => {
 
-    loggerFactory = new PinoLoggerFactory();
+    loggerFactory = new PinoLoggerFactory({ minimumLevel: 5, minimumLevelPrintData: 5, prettyPrint: false });
 
   });
 
@@ -21,7 +21,7 @@ describe('PinoLoggerFactory', () => {
 
     it('should create a logger with prettyPrint set to false if no logger options were passed', async () => {
 
-      const logger = loggerFactory.createLogger('test-logger', 5, 5);
+      const logger = loggerFactory.createLogger('test-logger');
 
       expect(logger['label']).toEqual('test-logger');
       expect(logger['minimumLevel']).toEqual(5);
@@ -30,25 +30,25 @@ describe('PinoLoggerFactory', () => {
 
     });
 
-    it('should create a logger with prettyPrint set to false if it was passed in the loggerOptions', async () => {
+    it('should create a logger with specified minimumLevel, minimumLevelForPrintData and prettyPrint', async () => {
 
-      const logger = loggerFactory.createLogger('test-logger', 5, 5, { prettyPrint: false });
-
-      expect(logger['label']).toEqual('test-logger');
-      expect(logger['minimumLevel']).toEqual(5);
-      expect(logger['minimumLevelPrintData']).toEqual(5);
-      expect(logger['prettyPrint']).toEqual(false);
-
-    });
-
-    it('should create a logger with prettyPrint set to true if it was passed in the loggerOptions', async () => {
-
-      const logger = loggerFactory.createLogger('test-logger', 5, 5, { prettyPrint: true });
+      const logger = loggerFactory.createLogger('test-logger', { minimumLevel: 3, minimumLevelPrintData: 3, prettyPrint: true });
 
       expect(logger['label']).toEqual('test-logger');
-      expect(logger['minimumLevel']).toEqual(5);
-      expect(logger['minimumLevelPrintData']).toEqual(5);
+      expect(logger['minimumLevel']).toEqual(3);
+      expect(logger['minimumLevelPrintData']).toEqual(3);
       expect(logger['prettyPrint']).toEqual(true);
+
+    });
+
+    it('should create a logger with specified minimumLevel, minimumLevelForPrintData', async () => {
+
+      const logger = loggerFactory.createLogger('test-logger', { minimumLevel: 3, minimumLevelPrintData: 3 });
+
+      expect(logger['label']).toEqual('test-logger');
+      expect(logger['minimumLevel']).toEqual(3);
+      expect(logger['minimumLevelPrintData']).toEqual(3);
+      expect(logger['prettyPrint']).toEqual(false);
 
     });
 

@@ -12,7 +12,7 @@ import { ForbiddenHttpError } from '../errors/forbidden-http-error';
 
 export class HttpHandlerStaticAssetService implements HttpHandler {
 
-  private logger = getLoggerFor(this, 5, 5);
+  private logger = getLoggerFor(this);
 
   constructor(private path: string, private contentType: string) { }
 

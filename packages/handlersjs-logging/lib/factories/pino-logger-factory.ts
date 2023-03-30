@@ -1,22 +1,30 @@
 import { Logger } from '../models/logger';
-import { LoggerFactory } from '../models/logger-factory';
-import { LoggerLevel } from '../models/logger-level';
 import { PinoLogger } from '../loggers/pino-logger';
-import { LoggerOptions } from '../models/logger-options';
+import { PinoLoggerOptions } from '../models/logger-options';
+import { LoggerFactory } from './logger-factory';
 
 /**
  * Creates {@link PinoLogger } instances for the given logging level.
  */
-export class PinoLoggerFactory implements LoggerFactory {
+export class PinoLoggerFactory extends LoggerFactory {
+
+  constructor (private pinoLoggerOptions: PinoLoggerOptions) {
+
+    super(pinoLoggerOptions);
+
+  }
 
   createLogger(
     label: string,
-    minimumLevel: LoggerLevel,
-    minimumLevelPrintData: LoggerLevel,
-    loggerOptions?: LoggerOptions
+    pinoLoggerOptions?: PinoLoggerOptions
   ): Logger {
 
-    return new PinoLogger(label, minimumLevel, minimumLevelPrintData, loggerOptions?.prettyPrint);
+    return new PinoLogger(
+      label,
+      pinoLoggerOptions?.minimumLevel ?? this.pinoLoggerOptions.minimumLevel,
+      pinoLoggerOptions?.minimumLevelPrintData ?? this.pinoLoggerOptions.minimumLevelPrintData,
+      pinoLoggerOptions?.prettyPrint ?? this.pinoLoggerOptions.prettyPrint
+    );
 
   }
 

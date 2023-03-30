@@ -16,7 +16,7 @@ import { NodeHttpStreams } from './node-http-streams.model';
  */
 export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
-  private logger = getLoggerFor(this, 5, 5);
+  private logger = getLoggerFor(this);
 
   /**
    * Creates a { NodeHttpRequestResponseHandler } passing requests through the given handler.

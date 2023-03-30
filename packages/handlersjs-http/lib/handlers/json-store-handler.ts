@@ -8,7 +8,7 @@ import { HttpHandlerResponse } from '../models/http-handler-response';
 
 export class JsonStoreHandler<T extends string, M extends { [t in T]: unknown }> implements HttpHandler {
 
-  private logger = getLoggerFor(this, 5, 5);
+  private logger = getLoggerFor(this);
 
   /**
    * Creates a HTTP handler that returns the contents of the storage data as a stringified JSON response

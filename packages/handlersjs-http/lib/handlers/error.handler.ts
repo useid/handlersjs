@@ -50,7 +50,7 @@ export const statusCodes: { [code: number]: string } = {
 
 export class ErrorHandler implements HttpHandler {
 
-  private logger = getLoggerFor(this, 5, 5);
+  private logger = getLoggerFor(this);
 
   /**
    * Creates an {ErrorHandler} that catches errors and returns an error response to the given handler.

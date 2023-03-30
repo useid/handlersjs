@@ -8,7 +8,7 @@ import { getLogger, getLoggerFor, setLogger, setLoggerFactory } from './main';
 describe('main', () => {
 
   const logger = new ConsoleLogger('test-logger', 5, 5);
-  const loggerFactory = new ConsoleLoggerFactory();
+  const loggerFactory = new ConsoleLoggerFactory({ minimumLevel: 5, minimumLevelPrintData: 5 });
 
   beforeEach(() => {
 
@@ -49,7 +49,7 @@ describe('main', () => {
 
     it('should create a logger with a label when given a string', () => {
 
-      const testLogger = getLoggerFor('test-logger', 5, 5);
+      const testLogger = getLoggerFor('test-logger', { minimumLevel: 5, minimumLevelPrintData: 5 });
       expect(testLogger['label']).toEqual('test-logger');
       expect(testLogger['minimumLevel']).toEqual(5);
       expect(testLogger['minimumLevelPrintData']).toEqual(5);
@@ -59,7 +59,7 @@ describe('main', () => {
     it('should create a logger with a label based on constructor name when given an instance of a class', () => {
 
       const testClass = { constructor: { name: 'test-constructor-name' } };
-      const testLogger = getLoggerFor(testClass, 4, 4);
+      const testLogger = getLoggerFor(testClass, { minimumLevel: 4, minimumLevelPrintData: 4 });
 
       expect(testLogger['label']).toEqual('test-constructor-name');
       expect(testLogger['minimumLevel']).toEqual(4);
@@ -70,7 +70,7 @@ describe('main', () => {
     it('should error when no loggerFactory is set', () => {
 
       setLoggerFactory(undefined);
-      expect(() => getLoggerFor('test-logger', 5, 5)).toThrow('No LoggerFactory was set to create loggers.');
+      expect(() => getLoggerFor('test-logger')).toThrow('No LoggerFactory was set to create loggers.');
 
     });
 
@@ -80,12 +80,12 @@ describe('main', () => {
 
     it('should set the logger factory', () => {
 
-      const testLogger = getLoggerFor('test-logger', 5, 5);
+      const testLogger = getLoggerFor('test-logger');
       expect(testLogger instanceof ConsoleLogger).toEqual(true);
 
-      setLoggerFactory(new WinstonLoggerFactory());
+      setLoggerFactory(new WinstonLoggerFactory({ minimumLevel: 5, minimumLevelPrintData: 5 }));
 
-      const newLogger = getLoggerFor('test-logger', 4, 4);
+      const newLogger = getLoggerFor('test-logger');
       expect(newLogger instanceof WinstonLogger).toEqual(true);
 
     });

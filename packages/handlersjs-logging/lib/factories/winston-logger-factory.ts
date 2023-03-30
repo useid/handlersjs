@@ -1,16 +1,26 @@
 import { WinstonLogger } from '../loggers/winston-logger';
 import { Logger } from '../models/logger';
-import { LoggerFactory } from '../models/logger-factory';
-import { LoggerLevel } from '../models/logger-level';
+import { LoggerOptions } from '../models/logger-options';
+import { LoggerFactory } from './logger-factory';
 
 /**
  * Creates {@link WinstonLogger } instances for the given logging level.
  */
-export class WinstonLoggerFactory implements LoggerFactory {
+export class WinstonLoggerFactory extends LoggerFactory {
 
-  createLogger(label: string, minimumLevel: LoggerLevel, minimumLevelPrintData: LoggerLevel): Logger {
+  constructor(loggerOptions: LoggerOptions) {
 
-    return new WinstonLogger(label, minimumLevel, minimumLevelPrintData);
+    super(loggerOptions);
+
+  }
+
+  createLogger(label: string, loggerOptions?: LoggerOptions): Logger {
+
+    return new WinstonLogger(
+      label,
+      loggerOptions?.minimumLevel ?? this.loggerOptions.minimumLevel,
+      loggerOptions?.minimumLevelPrintData ?? this.loggerOptions.minimumLevelPrintData
+    );
 
   }
 

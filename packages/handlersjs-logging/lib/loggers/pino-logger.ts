@@ -40,6 +40,7 @@ export class PinoLogger extends Logger {
     if (level <= this.minimumLevel) {
 
       const logData = level > this.minimumLevelPrintData ? {} : data || {};
+      const logMessage = `[${this.label}] ${message}`;
 
       // Pino does not use "silly", but "trace" instead. So we need to convert the level.
       const loggerOptions = {
@@ -51,23 +52,23 @@ export class PinoLogger extends Logger {
       switch (level) {
 
         case LoggerLevel.info:
-          logger.info(logData, message);
+          logger.info(logData, logMessage);
           break;
 
         case LoggerLevel.debug:
-          logger.debug(logData, message);
+          logger.debug(logData, logMessage);
           break;
 
         case LoggerLevel.warn:
-          logger.warn(logData, message);
+          logger.warn(logData, logMessage);
           break;
 
         case LoggerLevel.error:
-          logger.error(logData, message);
+          logger.error(logData, logMessage);
           break;
 
         default:
-          logger.trace(logData, message);
+          logger.trace(logData, logMessage);
           break;
 
       }

@@ -1,16 +1,26 @@
 import { Logger } from '../models/logger';
-import { LoggerFactory } from '../models/logger-factory';
-import { LoggerLevel } from '../models/logger-level';
 import { ConsoleLogger } from '../loggers/console-logger';
+import { LoggerOptions } from '../models/logger-options';
+import { LoggerFactory } from './logger-factory';
 
 /**
  * Creates {@link ConsoleLogger } instances for the given logging level.
  */
-export class ConsoleLoggerFactory implements LoggerFactory {
+export class ConsoleLoggerFactory extends LoggerFactory {
 
-  createLogger(label: string, minimumLevel: LoggerLevel, minimumLevelPrintData: LoggerLevel): Logger {
+  constructor(loggerOptions: LoggerOptions) {
 
-    return new ConsoleLogger(label, minimumLevel, minimumLevelPrintData);
+    super(loggerOptions);
+
+  }
+
+  createLogger(label: string, loggerOptions?: LoggerOptions): Logger {
+
+    return new ConsoleLogger(
+      label,
+      loggerOptions?.minimumLevel ?? this.loggerOptions.minimumLevel,
+      loggerOptions?.minimumLevelPrintData ?? this.loggerOptions.minimumLevelPrintData
+    );
 
   }
 
