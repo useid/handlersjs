@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.14.1](https://github.com/digita-ai/handlersjs/compare/v0.14.0...v0.14.1) (2023-03-30)
+
+
+### **Features**
+
+* pino logger factory and exports ([#224](https://github.com/digita-ai/handlersjs/issues/224)) ([9aaf395](https://github.com/digita-ai/handlersjs/commit/9aaf3951490128a6565e2a58b87258810100f7a7))
+
+
+### **Bug Fixes**
+
+* add loggeroptions to getloggerfor ([#225](https://github.com/digita-ai/handlersjs/issues/225)) ([a8fe84a](https://github.com/digita-ai/handlersjs/commit/a8fe84aa04e4f0d4d165c349f35c807e4e7e150e))
+
+
+
 ## [0.14.0](https://github.com/digita-ai/handlersjs/compare/v0.13.1...v0.14.0) (2023-03-29)
 
 
