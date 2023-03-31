@@ -81,7 +81,7 @@ export class HttpCorsRequestHandler implements HttpHandler {
           ... response,
           headers: cleanHeaders(response.headers),
         })),
-        tap((response) => this.logger.info('Configuring CORS headers for response', response)),
+        tap((response) => this.logger.info('Configuring CORS headers for response')),
         map((response) => ({
           ... response,
           headers: {
@@ -106,7 +106,7 @@ export class HttpCorsRequestHandler implements HttpHandler {
       this.logger.info('Processing CORS request', noCorsRequestContext);
 
       return this.handler.handle(noCorsRequestContext).pipe(
-        tap((response) => this.logger.info('Configuring CORS headers for response', response)),
+        tap((response) => this.logger.info('Configuring CORS headers for response')),
         map((response) => ({
           ... response,
           headers: {
