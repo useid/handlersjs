@@ -2,7 +2,7 @@
 
 import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
 import Pino from 'pino';
-import pretty from 'pino-pretty';
+import pretty, { colorizerFactory } from 'pino-pretty';
 import { Logger } from '../models/logger';
 import { LoggerLevel } from '../models/logger-level';
 
@@ -39,36 +39,69 @@ export class PinoLogger extends Logger {
 
     if (level <= this.minimumLevel) {
 
-      const logData = level > this.minimumLevelPrintData ? {} : data || {};
+      const logData = level > this.minimumLevelPrintData
+        ? {}
+        // if data is a string, convert it to an object with a data property. Pino expects data to be an object. If it remains a string, it will use the data as a message, and drop the rest of our log.
+        : typeof data === 'string'
+          ? { data }
+          // if data is undefined, convert it to an empty object.
+          : data ?? {};
+
       const logMessage = `[${this.label}] ${message}`;
 
-      // Pino does not use "silly", but "trace" instead. So we need to convert the level.
       const loggerOptions = {
-        level: level === 5 ? 'trace' : LoggerLevel[level].toString(),
+        // Define custom levels for the pino logger to match our own logger levels.
+        customLevels: {
+          error: 0,
+          warn: 1,
+          info: 2,
+          verbose: 3,
+          debug: 4,
+          silly: 5,
+        },
+        useOnlyCustomLevels: true,
+        level: LoggerLevel[level].toString(),
       };
 
-      const logger = this.prettyPrint ? Pino(loggerOptions, pretty()) : Pino(loggerOptions);
+      // if prettyPrint is ture, use pino-pretty with custom options to prettify the log. Otherwise, use pino without prettifying.
+      const logger = this.prettyPrint ? Pino(loggerOptions, pretty({
+        customPrettifiers: {
+          level: (logLevel) => {
+
+            // define what colors each level should have when prettified
+            const levelColorize = colorizerFactory(true, [ [ 0, 'red' ], [ 1, 'yellow' ], [ 2, 'green' ], [ 3, 'white' ], [ 4, 'blue' ], [ 5, 'gray' ] ]);
+
+            // tell pino-pretty to colorize the logLevel, and tell it what name the log level should have in the prettified log.
+            return levelColorize(logLevel.toString(), { customLevels: { 0: 'ERROR', 1: 'WARN', 2: 'INFO', 3: 'VERBOSE', 4: 'DEBUG', 5: 'SILLY' } });
+
+          },
+        },
+      })) : Pino(loggerOptions);
 
       switch (level) {
 
-        case LoggerLevel.info:
-          logger.info(logData, logMessage);
-          break;
-
-        case LoggerLevel.debug:
-          logger.debug(logData, logMessage);
+        case LoggerLevel.error:
+          logger.error(logData, logMessage);
           break;
 
         case LoggerLevel.warn:
           logger.warn(logData, logMessage);
           break;
 
-        case LoggerLevel.error:
-          logger.error(logData, logMessage);
+        case LoggerLevel.info:
+          logger.info(logData, logMessage);
+          break;
+
+        case LoggerLevel.verbose:
+          logger.verbose(logData, logMessage);
+          break;
+
+        case LoggerLevel.debug:
+          logger.debug(logData, logMessage);
           break;
 
         default:
-          logger.trace(logData, logMessage);
+          logger.silly(logData, logMessage);
           break;
 
       }
