@@ -63,7 +63,7 @@ export class PinoLogger extends Logger {
         level: LoggerLevel[level].toString(),
       };
 
-      // if prettyPrint is ture, use pino-pretty with custom options to prettify the log. Otherwise, use pino without prettifying.
+      // if prettyPrint is true, use pino-pretty with custom options to prettify the log. Otherwise, use pino without prettifying.
       const logger = this.prettyPrint ? Pino(loggerOptions, pretty({
         customPrettifiers: {
           level: (logLevel) => {
