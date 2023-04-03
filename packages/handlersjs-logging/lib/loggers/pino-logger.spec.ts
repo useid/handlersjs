@@ -8,7 +8,8 @@ jest.mock('pino', () => jest.fn().mockReturnValue({
   info: jest.fn().mockImplementation(() => undefined),
   debug: jest.fn().mockImplementation(() => undefined),
   error: jest.fn().mockImplementation(() => undefined),
-  trace: jest.fn().mockImplementation(() => undefined),
+  verbose: jest.fn().mockImplementation(() => undefined),
+  silly: jest.fn().mockImplementation(() => undefined),
 }));
 
 jest.mock('pino-pretty', () => jest.fn().mockImplementation(() => undefined));
@@ -16,7 +17,7 @@ jest.mock('pino-pretty', () => jest.fn().mockImplementation(() => undefined));
 describe('PinoLogger', () => {
 
   let logger: PinoLogger;
-  const levels = [ 'info', 'debug', 'warn', 'error' ].map((s) => [ s, s ]);
+  const levels = [ 'info', 'debug', 'warn', 'error', 'silly', 'verbose' ].map((s) => [ s, s ]);
 
   beforeEach(async () => {
 
@@ -42,6 +43,13 @@ describe('PinoLogger', () => {
     const testLogger = new PinoLogger('test-logger', 5, 5, true);
     testLogger.log(5, 'test message', { data: 'data' });
     expect(pretty).toHaveBeenCalledTimes(1);
+
+    expect(pretty).toHaveBeenCalledWith(expect.objectContaining({
+      customPrettifiers: {
+        level: expect.any(Function),
+      },
+    }));
+
     expect(Pino).toHaveBeenCalledTimes(1);
 
   });
@@ -51,7 +59,7 @@ describe('PinoLogger', () => {
 
   describe('log', () => {
 
-    it.each([ ...levels, [ 'silly', 'trace' ] ])('LoggerLevel.%s should call the logger returned by pino with %s', (level, log) => {
+    it.each(levels)('LoggerLevel.%s should call the logger returned by pino with %s', (level, log) => {
 
       logger.log(LoggerLevel[level], testMessage, data);
       expect(Pino()[log]).toHaveBeenCalledTimes(1);
