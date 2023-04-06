@@ -5,6 +5,6 @@ import { ConsoleLogger } from '@digita-ai/handlersjs-logging';
 
 jest.mock('@digita-ai/handlersjs-logging', () => ({
   ... jest.requireActual('@digita-ai/handlersjs-logging') as any,
-  getLogger: () => new ConsoleLogger('HTTP', 6, 6),
-  getLoggerFor: () => new ConsoleLogger('HTTP', 6, 6),
+  getLogger: () => new ConsoleLogger('HTTP', 5, 5),
+  getLoggerFor: () => new ConsoleLogger('HTTP', 5, 5),
 }));

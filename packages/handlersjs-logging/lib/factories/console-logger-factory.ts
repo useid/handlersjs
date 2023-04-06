@@ -14,10 +14,13 @@ export class ConsoleLoggerFactory extends LoggerFactory {
 
   }
 
-  createLogger(label: string, loggerOptions?: LoggerOptions): Logger {
+  createLogger(
+    defaultLabel: string,
+    loggerOptions?: LoggerOptions,
+  ): Logger {
 
     return new ConsoleLogger(
-      label,
+      defaultLabel,
       loggerOptions?.minimumLevel ?? this.loggerOptions.minimumLevel,
       loggerOptions?.minimumLevelPrintData ?? this.loggerOptions.minimumLevelPrintData
     );

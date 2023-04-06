@@ -3,11 +3,83 @@ import { LoggerLevel } from './logger-level';
 
 export abstract class Logger {
 
+  public label: string;
+  public variables: Record<string, string> = {};
+
   constructor(
-    protected readonly label: string,
+    defaultLabel: string,
     protected readonly minimumLevel: LoggerLevel,
     protected readonly minimumLevelPrintData: LoggerLevel,
-  ) {}
+  ) {
+    this.label = defaultLabel;
+  }
+
+  /**
+   * Set the label of the logger
+   *
+   * @param label the string or class value that should be used as the label
+   * @returns the Logger object
+   */
+  setLabel(label: string | { constructor: { name: string } }): Logger {
+
+    this.label = typeof label === 'string' ? label : label.constructor.name;
+
+    return this;
+
+  }
+
+  /**
+   * set a variable that will be logged with every log message
+   *
+   * @param key key of the variable
+   * @param value value of the variable
+   * @returns the Logger object
+   */
+  setVariable(key: string, value: string): Logger {
+
+    this.variables[key] = value;
+
+    return this;
+
+  };
+
+  /**
+   * Remove a variable from the logger
+   *
+   * @param key key of the variable
+   * @returns the Logger object
+   */
+  removeVariable(key: string): Logger {
+
+    delete this.variables[key];
+
+    return this;
+
+  };
+
+  /**
+   * Clear all variables from the logger
+   *
+   * @returns the Logger object
+   */
+  clearVariables(): Logger {
+
+    this.variables = {};
+
+    return this;
+
+  };
+
+  /**
+   * retrieve the variables of the logger
+   *
+   * @returns the variables of the logger
+   */
+  getVariables(): Record<string, string> {
+
+    return this.variables;
+
+  }
 
   /**
    * Logs an error message

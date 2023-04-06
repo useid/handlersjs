@@ -27,7 +27,6 @@ describe('PinoLogger', () => {
 
   afterEach(() => {
 
-    // clear spies
     jest.clearAllMocks();
 
   });
@@ -38,10 +37,10 @@ describe('PinoLogger', () => {
 
   });
 
-  it ('should create a logger that prettifies logs when prettyPrint is true', () =>{
+  it('should create a logger that prettifies logs when prettyPrint is true', () =>{
 
-    const testLogger = new PinoLogger('test-logger', 5, 5, true);
-    testLogger.log(5, 'test message', { data: 'data' });
+    new PinoLogger('test-logger', 5, 5, true);
+
     expect(pretty).toHaveBeenCalledTimes(1);
 
     expect(pretty).toHaveBeenCalledWith(expect.objectContaining({
@@ -50,14 +49,12 @@ describe('PinoLogger', () => {
       },
     }));
 
-    expect(Pino).toHaveBeenCalledTimes(1);
-
   });
 
-  const testMessage = 'TestMessage';
-  const data = { data: 'data' };
-
   describe('log', () => {
+
+    const testMessage = 'TestMessage';
+    const data = { data: 'data' };
 
     it.each(levels)('LoggerLevel.%s should call the logger returned by pino with %s', (level, log) => {
 

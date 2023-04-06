@@ -12,14 +12,46 @@ import { LoggerLevel } from '../models/logger-level';
  */
 export class PinoLogger extends Logger {
 
+  // & type to support custom log levels for now and not get type errors :)
+  private pinoLoggerInstance: Pino.Logger & { silly?: any, verbose?: any };
+
   constructor(
-    protected readonly label: string,
+    defaultLabel: string,
     protected readonly minimumLevel: LoggerLevel,
     protected readonly minimumLevelPrintData: LoggerLevel,
     protected readonly prettyPrint: boolean = false,
   ) {
 
-    super(label, minimumLevel, minimumLevelPrintData);
+    super(defaultLabel, minimumLevel, minimumLevelPrintData);
+
+    const loggerOptions: Pino.LoggerOptions = {
+      // Define custom levels for the pino logger to match our own logger levels.
+      customLevels: {
+        error: 0,
+        warn: 1,
+        info: 2,
+        verbose: 3,
+        debug: 4,
+        silly: 5,
+      },
+      useOnlyCustomLevels: true,
+      level: LoggerLevel[this.minimumLevel].toString(),
+    };
+
+    // if prettyPrint is true, use pino-pretty with custom options to prettify the log. Otherwise, use pino without prettifying.
+    this.pinoLoggerInstance = this.prettyPrint ? Pino(loggerOptions, pretty({
+      customPrettifiers: {
+        level: (logLevel) => {
+
+          // define what colors each level should have when prettified
+          const levelColorize = colorizerFactory(true, [ [ 0, 'red' ], [ 1, 'yellow' ], [ 2, 'green' ], [ 3, 'white' ], [ 4, 'blue' ], [ 5, 'gray' ] ]);
+
+          // tell pino-pretty to colorize the logLevel, and tell it what name the log level should have in the prettified log.
+          return levelColorize(logLevel.toString(), { customLevels: { 0: 'ERROR', 1: 'WARN', 2: 'INFO', 3: 'VERBOSE', 4: 'DEBUG', 5: 'SILLY' } });
+
+        },
+      },
+    })) : Pino(loggerOptions);
 
   }
 
@@ -27,7 +59,7 @@ export class PinoLogger extends Logger {
 
     if (level === null || level === undefined) {
 
-      throw new HandlerArgumentError('level should be set', this.label);
+      throw new HandlerArgumentError('level should be set', level);
 
     }
 
@@ -49,59 +81,30 @@ export class PinoLogger extends Logger {
 
       const logMessage = `[${this.label}] ${message}`;
 
-      const loggerOptions = {
-        // Define custom levels for the pino logger to match our own logger levels.
-        customLevels: {
-          error: 0,
-          warn: 1,
-          info: 2,
-          verbose: 3,
-          debug: 4,
-          silly: 5,
-        },
-        useOnlyCustomLevels: true,
-        level: LoggerLevel[level].toString(),
-      };
-
-      // if prettyPrint is true, use pino-pretty with custom options to prettify the log. Otherwise, use pino without prettifying.
-      const logger = this.prettyPrint ? Pino(loggerOptions, pretty({
-        customPrettifiers: {
-          level: (logLevel) => {
-
-            // define what colors each level should have when prettified
-            const levelColorize = colorizerFactory(true, [ [ 0, 'red' ], [ 1, 'yellow' ], [ 2, 'green' ], [ 3, 'white' ], [ 4, 'blue' ], [ 5, 'gray' ] ]);
-
-            // tell pino-pretty to colorize the logLevel, and tell it what name the log level should have in the prettified log.
-            return levelColorize(logLevel.toString(), { customLevels: { 0: 'ERROR', 1: 'WARN', 2: 'INFO', 3: 'VERBOSE', 4: 'DEBUG', 5: 'SILLY' } });
-
-          },
-        },
-      })) : Pino(loggerOptions);
-
       switch (level) {
 
         case LoggerLevel.error:
-          logger.error(logData, logMessage);
+          this.pinoLoggerInstance.error(logData, logMessage);
           break;
 
         case LoggerLevel.warn:
-          logger.warn(logData, logMessage);
+          this.pinoLoggerInstance.warn(logData, logMessage);
           break;
 
         case LoggerLevel.info:
-          logger.info(logData, logMessage);
+          this.pinoLoggerInstance.info(logData, logMessage);
           break;
 
         case LoggerLevel.verbose:
-          logger.verbose(logData, logMessage);
+          this.pinoLoggerInstance.verbose(logData, logMessage);
           break;
 
         case LoggerLevel.debug:
-          logger.debug(logData, logMessage);
+          this.pinoLoggerInstance.debug(logData, logMessage);
           break;
 
         default:
-          logger.silly(logData, logMessage);
+          this.pinoLoggerInstance.silly(logData, logMessage);
           break;
 
       }
