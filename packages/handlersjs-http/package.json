@@ -62,7 +62,8 @@
     "@digita-ai/handlersjs-logging": "0.15.0",
     "@digita-ai/handlersjs-storage": "0.15.0",
     "node-fetch": "^2.6.1",
-    "rxjs": "^7.5.7"
+    "rxjs": "^7.5.7",
+    "uuid": "^9.0.0"
   },
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http",
   "lsd:components": "dist/components/components.jsonld",

@@ -1,6 +1,5 @@
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -50,8 +49,6 @@ export const statusCodes: { [code: number]: string } = {
 
 export class ErrorHandler implements HttpHandler {
 
-  private logger = getLoggerFor(this);
-
   /**
    * Creates an {ErrorHandler} that catches errors and returns an error response to the given handler.
    *
@@ -72,18 +69,12 @@ export class ErrorHandler implements HttpHandler {
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse>{
 
-    if (!context) {
-
-      this.logger.verbose('Context was not provided');
-
-      return throwError(() => new Error('A context must be provided'));
-
-    }
+    context.logger.setLabel(this);
 
     return this.nestedHandler.handle(context).pipe(
       catchError((error) => {
 
-        this.logger.error('Error occurred: ', error);
+        context.logger.error('Error occurred: ', error);
 
         const status = error?.statusCode ?? error.status;
         const message = error?.message ?? error.body;

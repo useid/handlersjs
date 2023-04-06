@@ -21,7 +21,11 @@ export class NodeHttpServer extends Server {
    * @param { NodeHttpStreamsHandler } nodeHttpStreamsHandler - the handler handling incoming requests
    * @constructor
    */
-  constructor(protected host: string, protected port: number, private nodeHttpStreamsHandler: NodeHttpStreamsHandler){
+  constructor(
+    protected host: string,
+    protected port: number,
+    private nodeHttpStreamsHandler: NodeHttpStreamsHandler,
+  ){
 
     super(`http`, host, port);
 

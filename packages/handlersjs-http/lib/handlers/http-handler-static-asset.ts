@@ -2,7 +2,6 @@ import { readFile } from 'fs/promises';
 import { join, isAbsolute } from 'path';
 import { from, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
@@ -12,19 +11,18 @@ import { ForbiddenHttpError } from '../errors/forbidden-http-error';
 
 export class HttpHandlerStaticAssetService implements HttpHandler {
 
-  private logger = getLoggerFor(this);
-
   constructor(private path: string, private contentType: string) { }
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
+
+    context.logger.setLabel(this);
 
     const possibleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];
 
     if (!context.request?.headers?.accept) {
 
-      this.logger.verbose('No accept header found', context.request?.headers);
-
-      this.logger.verbose('Returning default type', this.contentType);
+      context.logger.verbose('No accept header found', context.request?.headers);
+      context.logger.verbose('Returning default type', this.contentType);
 
     }else{
 
@@ -32,7 +30,7 @@ export class HttpHandlerStaticAssetService implements HttpHandler {
 
       if (!reqHeaders.some((contentType) => possibleAcceptHeaders.includes(contentType.trim()))) {
 
-        this.logger.verbose('Content type not supported', this.contentType);
+        context.logger.verbose('Content type not supported', this.contentType);
 
         return throwError(() => new UnsupportedMediaTypeHttpError('Content type not supported'));
 
@@ -44,7 +42,7 @@ export class HttpHandlerStaticAssetService implements HttpHandler {
 
     if(filename && filename.includes('../')) {
 
-      this.logger.verbose('This type of filename is not supported', filename);
+      context.logger.verbose('This type of filename is not supported', filename);
 
       return throwError(() => new ForbiddenHttpError());
 
@@ -62,7 +60,7 @@ export class HttpHandlerStaticAssetService implements HttpHandler {
       })),
       catchError(() => {
 
-        this.logger.verbose('Failed to read file: ', filePath);
+        context.logger.verbose('Failed to read file: ', filePath);
 
         return throwError(() => new NotFoundHttpError('Error while trying to read file'));
 
