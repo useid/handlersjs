@@ -1,6 +1,6 @@
 import { Handler } from '@digita-ai/handlersjs-core';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { TimedTypedKeyValueStore } from '@digita-ai/handlersjs-storage';
-import { HttpHandlerContext } from 'models/http-handler-context';
 import fetch from 'node-fetch';
 import { from, Observable } from 'rxjs';
 
@@ -8,6 +8,7 @@ export class SyncService<T, S extends string, P extends string, M extends {
   [s in S]: T[] } & { [p in P]: string[] }> implements Handler<void, void> {
 
   latestSync: Date | undefined = undefined;
+  private logger = getLoggerFor(this);
 
   /**
    *
@@ -34,35 +35,35 @@ export class SyncService<T, S extends string, P extends string, M extends {
    *
    * @returns itself
    */
-  private async sync(context: HttpHandlerContext): Promise<void> {
+  private async sync(): Promise<void> {
 
-    context.logger.info('Syncing...');
+    this.logger.info('Syncing...');
 
-    context.logger.info('Retrieving storage');
+    this.logger.info('Retrieving storage');
     const storage: T[] = await this.store.get(this.storage) ?? [];
 
-    context.logger.info('Retrieving peers');
+    this.logger.info('Retrieving peers');
     const peers: string[] = await this.store.get(this.peers) ?? [];
 
     const options = this.latestSync ? {
       headers: { 'If-Modified-Since': this.latestSync.toUTCString() },
     } : undefined;
 
-    context.logger.info('Updating time of latest synchronization');
+    this.logger.info('Updating time of latest synchronization');
     this.latestSync = new Date();
 
     const fetchedValues: T[][] = await Promise.all(([ ... peers ]).map(async (host) => {
 
       try {
 
-        context.logger.info(`Fetching from ${host}`);
+        this.logger.info(`Fetching from ${host}`);
         const httpResponse = await fetch(`${host}${this.endpoint ? '/' + this.endpoint : ''}`, options);
 
         return httpResponse.status === 200 ? await httpResponse.json() : [];
 
       } catch (error) {
 
-        context.logger.error('Failed to fetch values from peer: ', error);
+        this.logger.error('Failed to fetch values from peer: ', error);
 
         return [];
 
@@ -72,17 +73,15 @@ export class SyncService<T, S extends string, P extends string, M extends {
 
     const storedValues = [ ...storage, ...fetchedValues.flat() ];
 
-    context.logger.info('Saving values to storage', storedValues);
+    this.logger.info('Saving values to storage', storedValues);
 
     await this.store.set(this.storage, [ ... new Set(storedValues) ] as M[S]);
 
   }
 
-  handle(context: HttpHandlerContext): Observable<void> {
-
-    context.logger.setLabel(this);
+  handle(): Observable<void> {
   
-    return from(this.sync(context));
+    return from(this.sync());
 
   }
 

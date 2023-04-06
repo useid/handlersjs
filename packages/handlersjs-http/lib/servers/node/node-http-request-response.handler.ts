@@ -128,7 +128,8 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
     }
 
     // Add a correlation id to be logged with every log from here on
-    logger.setVariable('correlationId', nodeHttpStreams.requestStream.headers['x-correlation-id'] ?? v4());
+    const correlationIdHeader = nodeHttpStreams.requestStream.headers['x-correlation-id'];
+    logger.setVariable('correlationId', (Array.isArray(correlationIdHeader) ? correlationIdHeader[0] : correlationIdHeader) ?? v4());
 
     const url = nodeHttpStreams.requestStream.url;
 
