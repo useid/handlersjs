@@ -13,7 +13,7 @@ import { LoggerLevel } from '../models/logger-level';
 export class PinoLogger extends Logger {
 
   // & type to support custom log levels for now and not get type errors :)
-  private pinoLoggerInstance: Pino.Logger & { silly?: any, verbose?: any };
+  private pinoLoggerInstance: Pino.Logger & { silly?: any; verbose?: any };
 
   constructor(
     defaultLabel: string,

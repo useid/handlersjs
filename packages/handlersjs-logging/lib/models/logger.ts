@@ -11,7 +11,9 @@ export abstract class Logger {
     protected readonly minimumLevel: LoggerLevel,
     protected readonly minimumLevelPrintData: LoggerLevel,
   ) {
+
     this.label = defaultLabel;
+
   }
 
   /**
@@ -41,7 +43,7 @@ export abstract class Logger {
 
     return this;
 
-  };
+  }
 
   /**
    * Remove a variable from the logger
@@ -55,7 +57,7 @@ export abstract class Logger {
 
     return this;
 
-  };
+  }
 
   /**
    * Clear all variables from the logger
@@ -68,7 +70,7 @@ export abstract class Logger {
 
     return this;
 
-  };
+  }
 
   /**
    * retrieve the variables of the logger
