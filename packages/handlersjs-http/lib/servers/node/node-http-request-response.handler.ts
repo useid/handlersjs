@@ -191,6 +191,8 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
       }),
       catchError((error) => {
 
+        logger.setLabel(this);
+
         const status = error?.statusCode ?? error.status;
         const message = error?.message ?? error.body;
 
@@ -200,6 +202,8 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
       }),
       switchMap((response) => {
+
+        logger.setLabel(this);
 
         const contentTypeHeader = response.headers['content-type'];
 
