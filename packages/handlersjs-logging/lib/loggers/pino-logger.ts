@@ -71,9 +71,11 @@ export class PinoLogger extends Logger {
 
     if (level <= this.minimumLevel) {
 
-      const parsedData = level > this.minimumLevelPrintData ? {} : data ?? {};
+      const logData = {
+        variables: this.variables,
+        ... (level <= this.minimumLevelPrintData && !!data) && { data },
+      };
 
-      const logData = { variables: this.variables, data: parsedData };
       const logMessage = `[${this.label}] ${message}`;
 
       switch (level) {
