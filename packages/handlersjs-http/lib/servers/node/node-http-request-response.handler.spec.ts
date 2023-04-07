@@ -1,11 +1,11 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { lastValueFrom, of, throwError } from 'rxjs';
 import * as mockhttp from 'mock-http';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandler } from '../../models/http-handler';
 import { BadRequestHttpError } from '../../errors/bad-request-http-error';
 import { NodeHttpRequestResponseHandler } from './node-http-request-response.handler';
 import { NodeHttpStreams } from './node-http-streams.model';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 
 describe('NodeHttpRequestResponseHandler', () => {
 
@@ -426,16 +426,16 @@ describe('NodeHttpRequestResponseHandler', () => {
     });
 
     it('should parse the x-correlation-id as a string', async () => {
-        
-        streamMock.requestStream.headers['x-correlation-id'] = '1234';
-        await lastValueFrom(handler.handle(streamMock));
 
-        await expect(nestedHttpHandler.handle).toHaveBeenCalledWith(expect.objectContaining({
-          logger: expect.objectContaining({ 
-            variables: expect.objectContaining({ correlationId: streamMock.requestStream.headers['x-correlation-id'] }),
-          }),
-        }));
-    
+      streamMock.requestStream.headers['x-correlation-id'] = '1234';
+      await lastValueFrom(handler.handle(streamMock));
+
+      await expect(nestedHttpHandler.handle).toHaveBeenCalledWith(expect.objectContaining({
+        logger: expect.objectContaining({
+          variables: expect.objectContaining({ correlationId: streamMock.requestStream.headers['x-correlation-id'] }),
+        }),
+      }));
+
     });
 
     it('should parse the x-correlation-id as an array', async () => {
@@ -444,11 +444,11 @@ describe('NodeHttpRequestResponseHandler', () => {
       await lastValueFrom(handler.handle(streamMock));
 
       await expect(nestedHttpHandler.handle).toHaveBeenCalledWith(expect.objectContaining({
-        logger: expect.objectContaining({ 
+        logger: expect.objectContaining({
           variables: expect.objectContaining({ correlationId: streamMock.requestStream.headers['x-correlation-id'][0] }),
         }),
       }));
-  
+
     });
 
     it('should parse the x-correlation-id as undefined', async () => {
@@ -461,7 +461,7 @@ describe('NodeHttpRequestResponseHandler', () => {
           variables: expect.objectContaining({ correlationId: expect.any(String) }),
         }),
       }));
-  
+
     });
 
   });

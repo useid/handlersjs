@@ -9,15 +9,15 @@ describe('cleanHeaders()', () => {
   });
 
   it('should make all keys lowercase', () => {
-      
-      expect(cleanHeaders({ 'X-Test': 'test' })).toEqual({ 'x-test': 'test' });
-  
+
+    expect(cleanHeaders({ 'X-Test': 'test' })).toEqual({ 'x-test': 'test' });
+
   });
 
   it('should combine multiple headers with the same key', () => {
-      
-      expect(cleanHeaders({ 'X-Test': 'test', 'x-test': 'test2' })).toEqual({ 'x-test': 'test,test2' });
-  
+
+    expect(cleanHeaders({ 'X-Test': 'test', 'x-test': 'test2' })).toEqual({ 'x-test': 'test,test2' });
+
   });
 
 });

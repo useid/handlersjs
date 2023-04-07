@@ -1,6 +1,7 @@
 import { getLoggerFor, Logger } from '@digita-ai/handlersjs-logging';
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { map, switchMap, toArray, catchError } from 'rxjs/operators';
+import { v4 } from 'uuid';
 import { BadRequestHttpError } from '../../errors/bad-request-http-error';
 import { HttpHandler } from '../../models/http-handler';
 import { HttpHandlerContext } from '../../models/http-handler-context';
@@ -9,7 +10,6 @@ import { HttpMethods } from '../../models/http-method';
 import { statusCodes } from '../../handlers/error.handler';
 import { NodeHttpStreamsHandler } from './node-http-streams.handler';
 import { NodeHttpStreams } from './node-http-streams.model';
-import { v4 } from 'uuid';
 
 /**
  * A { NodeHttpStreamsHandler } reading the request stream into a { HttpHandlerRequest },

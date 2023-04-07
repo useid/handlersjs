@@ -1,11 +1,11 @@
 import { Handler } from '@digita-ai/handlersjs-core';
 import { lastValueFrom, of } from 'rxjs';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerController } from '../models/http-handler-controller';
 import { HttpHandlerRoute } from '../models/http-handler-route';
 import { RoutedHttpRequestHandler } from './routed-http-request.handler';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 
 const getMockedHttpHandler = (): HttpHandler => ({
   handle: jest.fn().mockReturnValue(of({ status: 200, headers: {} })),

@@ -1,8 +1,8 @@
 import { lastValueFrom, of } from 'rxjs';
 import { Handler } from '@digita-ai/handlersjs-core';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpSequenceHandler } from './http-sequence-handler';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 
 describe('HttpSequenceHandler', () => {
 

@@ -7,7 +7,6 @@ import { HttpHandlerResponse } from '../models/http-handler-response';
 
 export class JsonStoreHandler<T extends string, M extends { [t in T]: unknown }> implements HttpHandler {
 
-
   /**
    * Creates a HTTP handler that returns the contents of the storage data as a stringified JSON response
    *

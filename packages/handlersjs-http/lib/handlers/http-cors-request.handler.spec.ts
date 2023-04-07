@@ -1,9 +1,9 @@
 import { lastValueFrom, of } from 'rxjs';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpCorsOptions, HttpCorsRequestHandler } from './http-cors-request.handler';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 
 describe('HttpCorsRequestHandler', () => {
 

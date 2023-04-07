@@ -7,8 +7,11 @@ jest.mock('@digita-ai/handlersjs-logging', () => ({
   ... jest.requireActual('@digita-ai/handlersjs-logging') as any,
   getLogger: () => new ConsoleLogger('TEST', 5, 5),
   getLoggerFor: () => {
+
     const logger = new ConsoleLogger('TEST', 5, 5);
     logger.log = jest.fn();
+
     return logger;
+
   },
 }));

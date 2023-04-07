@@ -1,10 +1,10 @@
 import { lastValueFrom } from 'rxjs';
 import { MemoryStore } from '@digita-ai/handlersjs-storage';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpMethods } from '../models/http-method';
 import { JsonStoreHandler } from './json-store-handler';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 
 describe('JsonStoreHandler', () => {
 

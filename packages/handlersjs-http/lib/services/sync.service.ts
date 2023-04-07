@@ -25,7 +25,9 @@ export class SyncService<T, S extends string, P extends string, M extends {
   ) {
 
     if (!storage) { throw new Error('A storage must be provided'); }
+
     if (!peers) { throw new Error('Peers must be provided'); }
+
     if (!store) { throw new Error('A store must be provided'); }
 
   }
@@ -80,7 +82,7 @@ export class SyncService<T, S extends string, P extends string, M extends {
   }
 
   handle(): Observable<void> {
-  
+
     return from(this.sync());
 
   }

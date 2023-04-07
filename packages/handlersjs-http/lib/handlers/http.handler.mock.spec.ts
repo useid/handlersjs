@@ -1,7 +1,7 @@
 import { lastValueFrom } from 'rxjs';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { MockHttpHandler } from './http.handler.mock';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 
 describe('MockHttpHandler', () => {
 

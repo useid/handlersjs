@@ -1,5 +1,5 @@
-import { NodeHttpStreamsHandler } from './node-http-streams.handler';
 import { of } from 'rxjs';
+import { NodeHttpStreamsHandler } from './node-http-streams.handler';
 
 class HandlerWrapper extends NodeHttpStreamsHandler {
 

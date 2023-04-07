@@ -1,11 +1,11 @@
 import { join } from 'path';
 import { lastValueFrom } from 'rxjs';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { NotFoundHttpError } from '../errors/not-found-http-error';
 import { ForbiddenHttpError } from '../errors/forbidden-http-error';
 import { UnsupportedMediaTypeHttpError } from '../errors/unsupported-media-type-http-error';
 import { HttpHandlerStaticAssetService } from './http-handler-static-asset';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 
 jest.mock('fs/promises', () => ({
   readFile: jest.fn().mockImplementation(async (path) => {

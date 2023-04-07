@@ -1,9 +1,9 @@
 import { lastValueFrom, of, throwError } from 'rxjs';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpCorsRequestHandler } from './http-cors-request.handler';
 import { ErrorHandler } from './error.handler';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 
 const response: HttpHandlerResponse = {
   body: 'upstream response body',
