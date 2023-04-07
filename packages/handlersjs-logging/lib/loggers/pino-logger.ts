@@ -71,13 +71,7 @@ export class PinoLogger extends Logger {
 
     if (level <= this.minimumLevel) {
 
-      const parsedData = level > this.minimumLevelPrintData
-        ? {}
-        // if data is a string, convert it to an object with a data property. Pino expects data to be an object. If it remains a string, it will use the data as a message, and drop the rest of our log.
-        : typeof data === 'string'
-          ? { string: data }
-          // if data is undefined, convert it to an empty object.
-          : data ?? {};
+      const parsedData = level > this.minimumLevelPrintData ? {} : data ?? {};
 
       const logData = { variables: this.variables, data: parsedData };
       const logMessage = `[${this.label}] ${message}`;
