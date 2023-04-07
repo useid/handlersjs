@@ -75,7 +75,7 @@ export class PinoLogger extends Logger {
         ? {}
         // if data is a string, convert it to an object with a data property. Pino expects data to be an object. If it remains a string, it will use the data as a message, and drop the rest of our log.
         : typeof data === 'string'
-          ? { data }
+          ? { string: data }
           // if data is undefined, convert it to an empty object.
           : data ?? {};
 

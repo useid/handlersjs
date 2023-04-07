@@ -119,6 +119,18 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     }
 
+    if (!nodeHttpStreams.requestStream.headers) {
+
+      logger.verbose('No request headers received', nodeHttpStreams.requestStream);
+
+      return throwError(() => new Error('headers of the request cannot be null or undefined.'));
+
+    }
+
+    // Add a correlation id to be logged with every log from here on
+    const correlationIdHeader = nodeHttpStreams.requestStream.headers['x-correlation-id'];
+    logger.setVariable('correlationId', (Array.isArray(correlationIdHeader) ? correlationIdHeader[0] : correlationIdHeader) ?? v4());
+
     if (!nodeHttpStreams.responseStream) {
 
       logger.verbose('No response stream received', nodeHttpStreams);
@@ -126,10 +138,6 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
       return throwError(() => new Error('response stream cannot be null or undefined.'));
 
     }
-
-    // Add a correlation id to be logged with every log from here on
-    const correlationIdHeader = nodeHttpStreams.requestStream.headers['x-correlation-id'];
-    logger.setVariable('correlationId', (Array.isArray(correlationIdHeader) ? correlationIdHeader[0] : correlationIdHeader) ?? v4());
 
     const url = nodeHttpStreams.requestStream.url;
 
@@ -148,14 +156,6 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
       logger.verbose('No method received', nodeHttpStreams.requestStream);
 
       return throwError(() => new Error('method of the request cannot be null or undefined.'));
-
-    }
-
-    if (!nodeHttpStreams.requestStream.headers) {
-
-      logger.verbose('No request headers received', nodeHttpStreams.requestStream);
-
-      return throwError(() => new Error('headers of the request cannot be null or undefined.'));
 
     }
 

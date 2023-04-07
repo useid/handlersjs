@@ -5,6 +5,7 @@ import { NotFoundHttpError } from '../errors/not-found-http-error';
 import { ForbiddenHttpError } from '../errors/forbidden-http-error';
 import { UnsupportedMediaTypeHttpError } from '../errors/unsupported-media-type-http-error';
 import { HttpHandlerStaticAssetService } from './http-handler-static-asset';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 
 jest.mock('fs/promises', () => ({
   readFile: jest.fn().mockImplementation(async (path) => {
@@ -17,12 +18,14 @@ jest.mock('fs/promises', () => ({
 describe('HttpHandlerStaticAssetService', () => {
 
   const service: HttpHandlerStaticAssetService = new HttpHandlerStaticAssetService('test/', 'text/plain');
+  const logger = getLoggerFor(HttpHandlerStaticAssetService);
 
   let context: HttpHandlerContext;
 
   beforeEach(() => {
 
     context = {
+      logger,
       request: {
         url: new URL('http://example.com'),
         method: 'GET',

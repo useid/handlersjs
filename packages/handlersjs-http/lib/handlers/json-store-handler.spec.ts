@@ -4,6 +4,7 @@ import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpMethods } from '../models/http-method';
 import { JsonStoreHandler } from './json-store-handler';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 
 describe('JsonStoreHandler', () => {
 
@@ -14,6 +15,7 @@ describe('JsonStoreHandler', () => {
 
   const inputData = [ 'abc', 'defghij', '123' ];
   const inputData2 = [ ... inputData, '456' ]; // another list of data that may be used to update the store
+  const logger = getLoggerFor(JsonStoreHandler);
 
   let jsonStoreHandler: JsonStoreHandler<'data', StoreInterface>;
   let memoryStore: MemoryStore<StoreInterface>;
@@ -26,6 +28,7 @@ describe('JsonStoreHandler', () => {
     jsonStoreHandler = new JsonStoreHandler('data', memoryStore);
 
     requestContext = {
+      logger,
       request: {
         url: new URL('http://localhost/'),
         method: 'GET',

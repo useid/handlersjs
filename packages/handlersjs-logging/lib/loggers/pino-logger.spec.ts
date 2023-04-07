@@ -60,7 +60,7 @@ describe('PinoLogger', () => {
 
       logger.log(LoggerLevel[level], testMessage, data);
       expect(Pino()[log]).toHaveBeenCalledTimes(1);
-      expect(Pino()[log]).toHaveBeenCalledWith(data, expect.stringContaining(testMessage));
+      expect(Pino()[log]).toHaveBeenCalledWith({ variables: {}, data }, expect.stringContaining(testMessage));
 
     });
 

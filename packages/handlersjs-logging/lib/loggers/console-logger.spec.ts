@@ -44,7 +44,7 @@ describe('ConsoleLogger', () => {
 
       logger.log(LoggerLevel[level], testMessage, data);
       expect(spy.get(log)).toHaveBeenCalledTimes(1);
-      expect(spy.get(log)).toHaveBeenCalledWith(expect.stringContaining(testMessage), data);
+      expect(spy.get(log)).toHaveBeenCalledWith(expect.stringContaining(testMessage), {}, data);
 
     });
 
