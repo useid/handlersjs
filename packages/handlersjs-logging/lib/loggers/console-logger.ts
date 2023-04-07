@@ -29,7 +29,7 @@ export class ConsoleLogger extends Logger {
 
       const logMessage = `[${timestamp} ${this.label}] ${message}`;
       const logData = level > this.minimumLevelPrintData ? '' : data||'';
-      const log = [ logMessage, logData ];
+      const log = [ logMessage, this.variables, logData ];
 
       switch (level) {
 

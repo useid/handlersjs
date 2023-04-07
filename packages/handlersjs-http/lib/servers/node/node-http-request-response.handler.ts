@@ -184,7 +184,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
       }),
       switchMap((context: HttpHandlerContext) => {
 
-        context.logger.info('Handling request ', context);
+        logger.info('Handling request: ', context);
 
         return this.httpHandler.handle(context);
 
