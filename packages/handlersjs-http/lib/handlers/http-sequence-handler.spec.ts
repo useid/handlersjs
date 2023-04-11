@@ -1,5 +1,6 @@
 import { lastValueFrom, of } from 'rxjs';
 import { Handler } from '@digita-ai/handlersjs-core';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpSequenceHandler } from './http-sequence-handler';
 
@@ -7,7 +8,7 @@ describe('HttpSequenceHandler', () => {
 
   const mockHandler: Handler<void, void> = { handle: (input: void) => of(void(0)) };
   let httpSequenceHandler: HttpSequenceHandler<HttpHandlerContext>;
-
+  const logger = getLoggerFor(HttpSequenceHandler);
   let mockContext: HttpHandlerContext;
 
   beforeEach(async () => {
@@ -15,6 +16,7 @@ describe('HttpSequenceHandler', () => {
     httpSequenceHandler = new HttpSequenceHandler([ mockHandler ]);
 
     mockContext = {
+      logger,
       request: {
         method: 'GET',
         url: new URL('http://localhost:3000/'),

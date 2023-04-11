@@ -1,5 +1,4 @@
-import { Observable, of, throwError } from 'rxjs';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
+import { Observable, of } from 'rxjs';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerResponse } from '../models/http-handler-response';
@@ -8,8 +7,6 @@ import { HttpHandlerResponse } from '../models/http-handler-response';
  * A mock of an HttpHandler used for tests
  */
 export class MockHttpHandler implements HttpHandler {
-
-  private logger = getLoggerFor(this);
 
   /**
    * Returns a mock response: ```
@@ -25,13 +22,7 @@ export class MockHttpHandler implements HttpHandler {
    */
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
-    if (!context) {
-
-      this.logger.verbose('No context provided');
-
-      return throwError(() => new Error('Context cannot be null or undefined'));
-
-    }
+    context.logger.setLabel(this);
 
     const response: HttpHandlerResponse = {
       body: 'some mock output',

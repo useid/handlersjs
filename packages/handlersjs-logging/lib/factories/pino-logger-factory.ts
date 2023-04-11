@@ -15,12 +15,12 @@ export class PinoLoggerFactory extends LoggerFactory {
   }
 
   createLogger(
-    label: string,
+    defaultLabel: string,
     pinoLoggerOptions?: PinoLoggerOptions
   ): Logger {
 
     return new PinoLogger(
-      label,
+      defaultLabel,
       pinoLoggerOptions?.minimumLevel ?? this.pinoLoggerOptions.minimumLevel,
       pinoLoggerOptions?.minimumLevelPrintData ?? this.pinoLoggerOptions.minimumLevelPrintData,
       pinoLoggerOptions?.prettyPrint ?? this.pinoLoggerOptions.prettyPrint

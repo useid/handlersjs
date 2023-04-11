@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 import { ConsoleLogger } from './loggers/console-logger';
 import { ConsoleLoggerFactory } from './factories/console-logger-factory';
-import { WinstonLogger } from './loggers/winston-logger';
-import { WinstonLoggerFactory } from './factories/winston-logger-factory';
 import { getLogger, getLoggerFor, setLogger, setLoggerFactory } from './main';
+import { PinoLoggerFactory } from './factories/pino-logger-factory';
+import { PinoLogger } from './loggers/pino-logger';
 
 describe('main', () => {
 
@@ -69,7 +69,7 @@ describe('main', () => {
 
     it('should error when no loggerFactory is set', () => {
 
-      setLoggerFactory(undefined);
+      setLoggerFactory(undefined as unknown as ConsoleLoggerFactory);
       expect(() => getLoggerFor('test-logger')).toThrow('No LoggerFactory was set to create loggers.');
 
     });
@@ -83,10 +83,10 @@ describe('main', () => {
       const testLogger = getLoggerFor('test-logger');
       expect(testLogger instanceof ConsoleLogger).toEqual(true);
 
-      setLoggerFactory(new WinstonLoggerFactory({ minimumLevel: 5, minimumLevelPrintData: 5 }));
+      setLoggerFactory(new PinoLoggerFactory({ minimumLevel: 5, minimumLevelPrintData: 5 }));
 
       const newLogger = getLoggerFor('test-logger');
-      expect(newLogger instanceof WinstonLogger).toEqual(true);
+      expect(newLogger instanceof PinoLogger).toEqual(true);
 
     });
 

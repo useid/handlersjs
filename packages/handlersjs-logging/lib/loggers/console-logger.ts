@@ -9,21 +9,11 @@ import { LoggerLevel } from '../models/logger-level';
  */
 export class ConsoleLogger extends Logger {
 
-  constructor(
-    protected readonly label: string,
-    protected readonly minimumLevel: LoggerLevel,
-    protected readonly minimumLevelPrintData: LoggerLevel,
-  ) {
-
-    super(label, minimumLevel, minimumLevelPrintData);
-
-  }
-
   log(level: LoggerLevel, message: string, data?: unknown): void {
 
     if (level === null || level === undefined) {
 
-      throw new HandlerArgumentError('level should be set', this.label);
+      throw new HandlerArgumentError('level should be set', level);
 
     }
 
@@ -39,7 +29,7 @@ export class ConsoleLogger extends Logger {
 
       const logMessage = `[${timestamp} ${this.label}] ${message}`;
       const logData = level > this.minimumLevelPrintData ? '' : data||'';
-      const log = [ logMessage, logData ];
+      const log = [ logMessage, this.variables, logData ];
 
       switch (level) {
 

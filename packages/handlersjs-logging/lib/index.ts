@@ -6,6 +6,4 @@ export * from './models/logger';
 export * from './models/logger-options';
 export * from './factories/pino-logger-factory';
 export * from './loggers/pino-logger';
-export * from './factories/winston-logger-factory';
-export * from './loggers/winston-logger';
 export * from './main';

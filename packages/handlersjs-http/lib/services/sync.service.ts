@@ -81,9 +81,7 @@ export class SyncService<T, S extends string, P extends string, M extends {
 
   }
 
-  handle(input: void): Observable<void> {
-
-    this.logger.info('Calling handle');
+  handle(): Observable<void> {
 
     return from(this.sync());
 

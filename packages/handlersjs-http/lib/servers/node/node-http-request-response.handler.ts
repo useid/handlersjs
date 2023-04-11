@@ -1,6 +1,7 @@
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
+import { getLoggerFor, Logger } from '@digita-ai/handlersjs-logging';
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { map, switchMap, toArray, catchError } from 'rxjs/operators';
+import { v4 } from 'uuid';
 import { BadRequestHttpError } from '../../errors/bad-request-http-error';
 import { HttpHandler } from '../../models/http-handler';
 import { HttpHandlerContext } from '../../models/http-handler-context';
@@ -16,7 +17,8 @@ import { NodeHttpStreams } from './node-http-streams.model';
  */
 export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
-  private logger = getLoggerFor(this);
+  private requestId = '';
+  private correlationId = '';
 
   /**
    * Creates a { NodeHttpRequestResponseHandler } passing requests through the given handler.
@@ -37,13 +39,17 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
   }
 
-  private parseBody(body: string, contentType?: string): string | { [key: string]: string } {
+  private parseBody(
+    logger: Logger,
+    body: string,
+    contentType?: string,
+  ): string | { [key: string]: string } {
 
     // TODO: parse x-www-form-urlencoded body
     // case 'application/':
     //   return JSON.parse(`{"${decodeURIComponent(body).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`);
 
-    this.logger.info('Parsing request body', { body, contentType });
+    logger.info('Parsing request body', { body, contentType });
 
     if (contentType?.startsWith('application/json')) {
 
@@ -63,10 +69,14 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
   }
 
-  private parseResponseBody(body: unknown, contentType?: string) {
+  private parseResponseBody(
+    logger: Logger,
+    body: unknown,
+    contentType?: string,
+  ) {
 
     // don't log the body if it is a buffer. It results in a long, illegible log.
-    this.logger.info('Parsing response body', { body: body instanceof Buffer ? 'Buffer' : body, contentType });
+    logger.info('Parsing response body', { body: body instanceof Buffer ? 'Buffer' : body, contentType });
 
     if (contentType?.startsWith('application/json')) {
 
@@ -90,9 +100,13 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
    */
   handle(nodeHttpStreams: NodeHttpStreams): Observable<void> {
 
+    // This is where we initialize a logger to be passed through the code
+    // via the HttpHandlerContext (no need to call .setLabel() here)
+    const logger = getLoggerFor(this);
+
     if (!nodeHttpStreams) {
 
-      this.logger.verbose('No node http streams received');
+      logger.verbose('No node http streams received');
 
       return throwError(() => new Error('node http streams object cannot be null or undefined.'));
 
@@ -100,15 +114,32 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!nodeHttpStreams.requestStream) {
 
-      this.logger.verbose('No request stream received', nodeHttpStreams);
+      logger.verbose('No request stream received', nodeHttpStreams);
 
       return throwError(() => new Error('request stream cannot be null or undefined.'));
 
     }
 
+    if (!nodeHttpStreams.requestStream.headers) {
+
+      logger.verbose('No request headers received', nodeHttpStreams.requestStream);
+
+      return throwError(() => new Error('headers of the request cannot be null or undefined.'));
+
+    }
+
+    // Add a request id to to be logged with every log from here on
+    const requestIdHeader = nodeHttpStreams.requestStream.headers['x-request-id'];
+    this.requestId = (Array.isArray(requestIdHeader) ? requestIdHeader[0] : requestIdHeader) ?? v4();
+    logger.setVariable('requestId', this.requestId);
+    // Add a correlation id to be logged with every log from here on
+    const correlationIdHeader = nodeHttpStreams.requestStream.headers['x-correlation-id'];
+    this.correlationId = (Array.isArray(correlationIdHeader) ? correlationIdHeader[0] : correlationIdHeader) ?? v4();
+    logger.setVariable('correlationId', this.correlationId);
+
     if (!nodeHttpStreams.responseStream) {
 
-      this.logger.verbose('No response stream received', nodeHttpStreams);
+      logger.verbose('No response stream received', nodeHttpStreams);
 
       return throwError(() => new Error('response stream cannot be null or undefined.'));
 
@@ -118,7 +149,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!url) {
 
-      this.logger.verbose('No url received', nodeHttpStreams.requestStream);
+      logger.verbose('No url received', nodeHttpStreams.requestStream);
 
       return throwError(() => new Error('url of the request cannot be null or undefined.'));
 
@@ -128,17 +159,9 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!method) {
 
-      this.logger.verbose('No method received', nodeHttpStreams.requestStream);
+      logger.verbose('No method received', nodeHttpStreams.requestStream);
 
       return throwError(() => new Error('method of the request cannot be null or undefined.'));
-
-    }
-
-    if (!nodeHttpStreams.requestStream.headers) {
-
-      this.logger.verbose('No request headers received', nodeHttpStreams.requestStream);
-
-      return throwError(() => new Error('headers of the request cannot be null or undefined.'));
 
     }
 
@@ -159,30 +182,34 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
           url: urlObject,
           method,
           headers: nodeHttpStreams.requestStream.headers as { [key: string]: string },
-          ... (body && body !== '') && { body: this.parseBody(body, nodeHttpStreams.requestStream.headers['content-type']) },
+          ... (body && body !== '') && { body: this.parseBody(logger, body, nodeHttpStreams.requestStream.headers['content-type']) },
         };
 
-        return { request: httpHandlerRequest };
+        return { request: httpHandlerRequest, logger };
 
       }),
       switchMap((context: HttpHandlerContext) => {
 
-        this.logger.info('Handling request ', context);
+        logger.info('Handling request: ', context);
 
         return this.httpHandler.handle(context);
 
       }),
       catchError((error) => {
 
+        logger.setLabel(this);
+
         const status = error?.statusCode ?? error.status;
         const message = error?.message ?? error.body;
 
-        this.logger.debug(`${error.name}:`, error);
+        logger.debug(`${error.name}:`, error);
 
         return of({ headers: {}, ... error, body: message ?? 'Internal Server Error', status: statusCodes[status] ? status : 500 });
 
       }),
       switchMap((response) => {
+
+        logger.setLabel(this);
 
         const contentTypeHeader = response.headers['content-type'];
 
@@ -204,7 +231,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
           && charsetString !== 'hex'
         ) {
 
-          this.logger.warn('Unsupported charset', charsetString);
+          logger.warn('Unsupported charset', charsetString);
 
           return throwError(() => new Error('The specified charset is not supported'));
 
@@ -220,7 +247,13 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
           ... (body !== undefined && body !== null) && { 'content-length': Buffer.byteLength(body, charsetString).toString() },
           ... (this.hsts) && { 'strict-transport-security': `max-age=${this.hsts.maxAge}${this.hsts.includeSubDomains ? '; includeSubDomains' : ''}` },
           'x-powered-by': this.poweredBy,
+          'x-request-id': this.requestId,
+          'x-correlation-id': this.correlationId,
         };
+
+        // Reset variables so new requests will never share ids
+        this.requestId = '';
+        this.correlationId = '';
 
         return of({
           ...response,
@@ -240,7 +273,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
           const contentTypeHeader = response.headers['content-type'] || response.headers['Content-Type'];
 
-          const body = this.parseResponseBody(response.body, contentTypeHeader);
+          const body = this.parseResponseBody(logger, response.body, contentTypeHeader);
           nodeHttpStreams.responseStream.write(body);
 
         }

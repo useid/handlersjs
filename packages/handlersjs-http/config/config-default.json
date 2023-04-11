@@ -1,71 +1,70 @@
 {
-    "@context": [
-      "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/context.jsonld",
-      "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/context.jsonld"
-    ],
-    "@graph": [
-        {
-            "@id": "urn:handlersjs-http:default:NodeHttpServer",
-            "@type": "NodeHttpServer",
-            "port": "3000",
-            "host": "localhost",
-            "nodeHttpStreamsHandler": {
-                "@id": "urn:handlersjs-http:default:NodeHttpRequestResponseHandler",
-                "@type": "NodeHttpRequestResponseHandler",
-                "httpHandler": {
-                    "@id": "urn:handlersjs-http:default:RoutedHttpRequestHandler",
-                    "@type": "RoutedHttpRequestHandler",
-                    "handlerControllerList": [
-                        {
-                            "@id": "urn:handlersjs-http:default:HttpHandlerController",
-                            "@type": "HttpHandlerController",
-                            "label": "ControllerList",
-                            "routes": [
-                                {
-                                    "@id": "urn:dgt-id-proxy:default:MockRoute1",
-                                    "@type": "HttpHandlerRoute",
-                                    "operations": [
-                                        {
-                                            "@id": "urn:dgt-id-proxy:default:GetOperation",
-                                            "@type": "HttpHandlerOperation",
-                                            "method": "GET",
-                                            "publish": false
-                                        }
-                                    ],
-                                    "handler": {
-                                      "@type": "MockHttpHandler"
-                                    },
-                                    "path": "/mock"
-                                }
-                            ]
-                        },
-                        {
-                            "@id": "urn:handlersjs-http:default:HttpHandlerController2",
-                            "@type": "HttpHandlerController",
-                            "label": "ControllerList",
-                            "routes": [
-                                {
-                                    "@id": "urn:dgt-id-proxy:default:MockRoute2",
-                                    "@type": "HttpHandlerRoute",
-                                    "operations": [
-                                        {
-                                            "@id": "urn:dgt-id-proxy:default:GetOperation"
-                                        }
-                                    ],
-                                    "handler": {
-                                      "@type": "MockHttpHandler"
-                                    },
-                                    "path": "/mock2"
-                                }
-                            ]
-                        }
-                    ],
-                    "defaultHandler": {
-                        "@type": "MockHttpHandler"
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:handlersjs-http:default:NodeHttpServer",
+      "@type": "NodeHttpServer",
+      "port": "3000",
+      "host": "localhost",
+      "nodeHttpStreamsHandler": {
+        "@id": "urn:handlersjs-http:default:NodeHttpRequestResponseHandler",
+        "@type": "NodeHttpRequestResponseHandler",
+        "hsts_maxAge": 3600,
+        "hsts_includeSubDomains": true,
+        "httpHandler": {
+          "@id": "urn:handlersjs-http:default:RoutedHttpRequestHandler",
+          "@type": "RoutedHttpRequestHandler",
+          "handlerControllerList": [
+            {
+              "@id": "urn:handlersjs-http:default:HttpHandlerController",
+              "@type": "HttpHandlerController",
+              "label": "ControllerList",
+              "routes": [
+                {
+                  "@id": "urn:handlersjs-http:default:MockRoute1",
+                  "@type": "HttpHandlerRoute",
+                  "operations": [
+                    {
+                      "@id": "urn:handlersjs-http:default:GetOperation",
+                      "@type": "HttpHandlerOperation",
+                      "method": "GET",
+                      "publish": false
                     }
+                  ],
+                  "handler": {
+                    "@type": "MockHttpHandler"
+                  },
+                  "path": "/mock"
                 }
+              ]
+            },
+            {
+              "@id": "urn:handlersjs-http:default:HttpHandlerController2",
+              "@type": "HttpHandlerController",
+              "label": "ControllerList",
+              "routes": [
+                {
+                  "@id": "urn:handlersjs-http:default:MockRoute2",
+                  "@type": "HttpHandlerRoute",
+                  "operations": [
+                    { "@id": "urn:handlersjs-http:default:GetOperation" }
+                  ],
+                  "handler": {
+                    "@type": "MockHttpHandler"
+                  },
+                  "path": "/mock2"
+                }
+              ]
             }
+          ],
+          "defaultHandler": {
+            "@type": "MockHttpHandler"
+          }
         }
-    ]
-
+      }
+    }
+  ]
 }

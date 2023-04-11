@@ -1,14 +1,11 @@
 import { from, Observable, of } from 'rxjs';
 import { TimedTypedKeyValueStore } from '@digita-ai/handlersjs-storage';
 import { map, switchMap } from 'rxjs/operators';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 
 export class JsonStoreHandler<T extends string, M extends { [t in T]: unknown }> implements HttpHandler {
-
-  private logger = getLoggerFor(this);
 
   /**
    * Creates a HTTP handler that returns the contents of the storage data as a stringified JSON response
@@ -26,19 +23,19 @@ export class JsonStoreHandler<T extends string, M extends { [t in T]: unknown }>
    *
    * @returns the stringified storage data as a HTTP response, or a Not Found HTTP response
    */
-  private tryProvideData(): Observable<HttpHandlerResponse> {
+  private tryProvideData(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
     return from(this.store.get(this.data)).pipe(map((data) =>  {
 
       if (data) {
 
-        this.logger.info('Providing data ', this.data);
+        context.logger.info('Providing data ', this.data);
 
         return { body: JSON.stringify(data), headers: {}, status: 200 }; // OK
 
       }
 
-      this.logger.warn('No data found in store for: ', this.data);
+      context.logger.warn('No data found in store for: ', this.data);
 
       return { body: '', headers: {}, status: 404 }; // not found
 
@@ -54,9 +51,11 @@ export class JsonStoreHandler<T extends string, M extends { [t in T]: unknown }>
    */
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
-    if (context?.request?.method !== 'GET') {
+    context.logger.setLabel(this);
 
-      this.logger.verbose('Only GET requests are supported');
+    if (context.request.method !== 'GET') {
+
+      context.logger.verbose('Only GET requests are supported');
 
       // method not allowed
       return of({ body: '', headers: { allow: 'GET' }, status: 405 });
@@ -70,9 +69,9 @@ export class JsonStoreHandler<T extends string, M extends { [t in T]: unknown }>
       return from(this.store.hasUpdate(this.data, new Date(modifiedSince).getTime())).pipe(
         switchMap((hasUpdate) => {
 
-          if (hasUpdate) return this.tryProvideData();
+          if (hasUpdate) return this.tryProvideData(context);
 
-          this.logger.info('No data was modified ', this.data);
+          context.logger.info('No data was modified ', this.data);
 
           return of({ body: '', headers: {}, status: 304 });
 
@@ -81,7 +80,7 @@ export class JsonStoreHandler<T extends string, M extends { [t in T]: unknown }>
 
     } else {
 
-      return this.tryProvideData();
+      return this.tryProvideData(context);
 
     }
 

@@ -1,4 +1,5 @@
 import { lastValueFrom, of } from 'rxjs';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
@@ -10,6 +11,7 @@ describe('HttpCorsRequestHandler', () => {
   let handler: HttpHandler;
   let context: HttpHandlerContext;
   const mockResponseHeaders = { 'some-header': 'headerSome' };
+  const logger = getLoggerFor(HttpCorsRequestHandler);
 
   const mockOptions: HttpCorsOptions = {
     origins: [ 'http://text.com', 'http://test.de' ],
@@ -26,6 +28,7 @@ describe('HttpCorsRequestHandler', () => {
     };
 
     context = {
+      logger,
       request: {
         url: new URL('http://example.com'),
         method: 'GET',
