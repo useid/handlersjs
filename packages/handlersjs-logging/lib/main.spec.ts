@@ -4,16 +4,17 @@ import { ConsoleLoggerFactory } from './factories/console-logger-factory';
 import { getLogger, getLoggerFor, setLogger, setLoggerFactory } from './main';
 import { PinoLoggerFactory } from './factories/pino-logger-factory';
 import { PinoLogger } from './loggers/pino-logger';
+import { LoggerLevel } from './models/logger-level';
+import { Logger } from './models/logger';
 
 describe('main', () => {
 
-  const logger = new ConsoleLogger('test-logger', 5, 5);
-  const loggerFactory = new ConsoleLoggerFactory({ minimumLevel: 5, minimumLevelPrintData: 5 });
+  const loggerFactory = new ConsoleLoggerFactory({ minimumLevel: LoggerLevel.trace, minimumLevelPrintData: LoggerLevel.trace });
 
   beforeEach(() => {
 
-    setLogger(logger);
     setLoggerFactory(loggerFactory);
+    setLogger(loggerFactory.createLogger('test-logger'));
 
   });
 
@@ -21,8 +22,7 @@ describe('main', () => {
 
     it('should return the global logger', () => {
 
-      const get = getLogger();
-      expect(get).toEqual(logger);
+      expect(getLogger()).toEqual(expect.any(Logger));
 
     });
 
@@ -32,14 +32,14 @@ describe('main', () => {
 
     it('should set the global logger', () => {
 
-      const get = getLogger();
-      const newLogger = new ConsoleLogger('test-logger', 1, 1);
+      const oldLogger = getLogger();
+      const newLogger = loggerFactory.createLogger('new-logger');
       setLogger(newLogger);
-      const newGet = getLogger();
-      expect(get).toEqual(logger);
-      expect(get).not.toEqual(newLogger);
-      expect(newGet).not.toEqual(logger);
-      expect(newGet).toEqual(newLogger);
+      const newLoggerGet = getLogger();
+
+      expect(oldLogger).toEqual(expect.any(Logger));
+      expect(newLoggerGet).not.toEqual(oldLogger);
+      expect(newLogger).toEqual(newLoggerGet);
 
     });
 
@@ -49,21 +49,19 @@ describe('main', () => {
 
     it('should create a logger with a label when given a string', () => {
 
-      const testLogger = getLoggerFor('test-logger', { minimumLevel: 5, minimumLevelPrintData: 5 });
+      const testLogger = getLoggerFor('test-logger');
       expect(testLogger['label']).toEqual('test-logger');
-      expect(testLogger['minimumLevel']).toEqual(5);
-      expect(testLogger['minimumLevelPrintData']).toEqual(5);
+      expect(testLogger['minimumLevel']).toEqual(loggerFactory['loggerOptions']['minimumLevel']);
+      expect(testLogger['minimumLevelPrintData']).toEqual(loggerFactory['loggerOptions']['minimumLevelPrintData']);
 
     });
 
     it('should create a logger with a label based on constructor name when given an instance of a class', () => {
 
       const testClass = { constructor: { name: 'test-constructor-name' } };
-      const testLogger = getLoggerFor(testClass, { minimumLevel: 4, minimumLevelPrintData: 4 });
+      const testLogger = getLoggerFor(testClass);
 
       expect(testLogger['label']).toEqual('test-constructor-name');
-      expect(testLogger['minimumLevel']).toEqual(4);
-      expect(testLogger['minimumLevelPrintData']).toEqual(4);
 
     });
 
@@ -81,12 +79,12 @@ describe('main', () => {
     it('should set the logger factory', () => {
 
       const testLogger = getLoggerFor('test-logger');
-      expect(testLogger instanceof ConsoleLogger).toEqual(true);
+      expect(testLogger).toEqual(expect.any(ConsoleLogger));
 
-      setLoggerFactory(new PinoLoggerFactory({ minimumLevel: 5, minimumLevelPrintData: 5 }));
+      setLoggerFactory(new PinoLoggerFactory({ minimumLevel: LoggerLevel.trace, minimumLevelPrintData: LoggerLevel.trace }));
 
       const newLogger = getLoggerFor('test-logger');
-      expect(newLogger instanceof PinoLogger).toEqual(true);
+      expect(newLogger).toEqual(expect.any(PinoLogger));
 
     });
 

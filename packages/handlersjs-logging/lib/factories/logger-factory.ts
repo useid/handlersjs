@@ -1,5 +1,4 @@
 import type { Logger } from '../models/logger';
-import { LoggerLevel } from '../models/logger-level';
 import { LoggerOptions } from '../models/logger-options';
 
 /**

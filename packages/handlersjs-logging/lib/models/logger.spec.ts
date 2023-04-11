@@ -1,37 +1,33 @@
-import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
 import { Logger } from './logger';
 import { LoggerLevel } from './logger-level';
 
-describe('Logger', () => {
+class MockLogger extends Logger {
 
-  class MockLogger extends Logger {
+  log(level: LoggerLevel, message: string, data?: unknown): void {
 
-    log(level: LoggerLevel, message: string, data?: unknown): void {
-
-      throw new Error('Method not implemented.');
-
-    }
-
-    constructor(minimumLevel: LoggerLevel, minimumLevelPrintData: LoggerLevel) {
-
-      super('test-logger', minimumLevel, minimumLevelPrintData);
-
-    }
+    throw new Error('Method not implemented.');
 
   }
 
+  constructor(minimumLevel: LoggerLevel, minimumLevelPrintData: LoggerLevel) {
+
+    super('test-logger', minimumLevel, minimumLevelPrintData);
+
+  }
+
+}
+
+describe('Logger', () => {
+
   let logger: Logger;
 
-  const paramCheck = (logFunction: (msg: string) => void) => {
-
-    expect(() => logFunction(undefined as unknown as string)).toThrow('Message should be set');
-    expect(() => logFunction(null as unknown as string)).toThrow('Message should be set');
-
-  };
+  const message = 'message';
+  const data = { data: 'data' };
 
   beforeEach(() => {
 
-    logger = new MockLogger(LoggerLevel.info, LoggerLevel.info);
+    logger = new MockLogger(LoggerLevel.trace, LoggerLevel.trace);
+    logger.log = jest.fn();
 
   });
 
@@ -104,111 +100,13 @@ describe('Logger', () => {
 
   });
 
-  describe('info', () => {
+  it.each(
+    Object.keys(LoggerLevel).filter((key) => isNaN(Number(key)))
+  )('should call logger.log with %s and the correct parameters', (method) => {
 
-    it('should error when typename or msg are not provided', () => {
-
-      paramCheck(logger.info);
-
-    });
-
-    it('should call log with loggerLevel info and given parameters', () => {
-
-      logger.log = jest.fn();
-      logger.info('message', 'logData');
-      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.info, 'message', 'logData');
-
-    });
-
-  });
-
-  describe('debug', () => {
-
-    it('should error when typename or msg are not provided', () => {
-
-      paramCheck(logger.debug);
-
-    });
-
-    it('should call log with loggerLevel debug and given parameters', () => {
-
-      logger.log = jest.fn();
-      logger.debug('message', 'logData');
-      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.debug, 'message', 'logData');
-
-    });
-
-  });
-
-  describe('warn', () => {
-
-    it('should error when typename or msg are not provided', () => {
-
-      paramCheck(logger.warn);
-
-    });
-
-    it('should call log with loggerLevel warn and given parameters', () => {
-
-      logger.log = jest.fn();
-      logger.warn('message', 'logData');
-      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.warn, 'message', 'logData');
-
-    });
-
-  });
-
-  describe('error', () => {
-
-    it('should error when typename or msg are not provided', () => {
-
-      paramCheck(logger.error);
-
-    });
-
-    it('should call log with loggerLevel warn and given parameters', () => {
-
-      logger.log = jest.fn();
-      logger.error('message', { error: new HandlerArgumentError('HandlerArgumentError', 1), caught: true });
-      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.error, 'message', { 'caught': true, 'error' : new HandlerArgumentError('HandlerArgumentError', 1) });
-
-    });
-
-  });
-
-  describe('silly', () => {
-
-    it('should error when typename or msg are not provided', () => {
-
-      paramCheck(logger.silly);
-
-    });
-
-    it('should call log with loggerLevel warn and given parameters', () => {
-
-      logger.log = jest.fn();
-      logger.silly('message', 'logData');
-      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.silly, 'message', 'logData');
-
-    });
-
-  });
-
-  describe('verbose', () => {
-
-    it('should error when typename or msg are not provided', () => {
-
-      paramCheck(logger.verbose);
-
-    });
-
-    it('should call log with loggerLevel warn and given parameters', () => {
-
-      logger.log = jest.fn();
-      logger.verbose('message', 'logData');
-      expect(logger.log).toHaveBeenCalledWith(LoggerLevel.verbose, 'message', 'logData');
-
-    });
+    logger[method](message, data);
+    expect(logger.log).toHaveBeenCalledWith(LoggerLevel[method], message, data);
+    expect(logger.log).toHaveBeenCalledTimes(1);
 
   });
 

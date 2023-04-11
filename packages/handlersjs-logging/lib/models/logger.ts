@@ -1,4 +1,3 @@
-import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
 import { LoggerLevel } from './logger-level';
 
 export abstract class Logger {
@@ -84,18 +83,24 @@ export abstract class Logger {
   }
 
   /**
+   * Logs a fatal message
+   *
+   * @param message Message that should be logged
+   * @param data Any relevant data that should be logged
+   */
+  fatal(message: string, data?: unknown): void {
+
+    this.log(LoggerLevel.fatal, message, data);
+
+  }
+
+  /**
    * Logs an error message
    *
    * @param message Message that should be logged
    * @param data Any relevant data that should be logged
    */
   error(message: string, data?: unknown): void {
-
-    if (!message) {
-
-      throw new HandlerArgumentError('Message should be set', message);
-
-    }
 
     this.log(LoggerLevel.error, message, data);
 
@@ -109,12 +114,6 @@ export abstract class Logger {
    */
   warn(message: string, data?: unknown): void {
 
-    if (!message) {
-
-      throw new HandlerArgumentError('Message should be set', message);
-
-    }
-
     this.log(LoggerLevel.warn, message, data);
 
   }
@@ -127,31 +126,7 @@ export abstract class Logger {
    */
   info(message: string, data?: unknown): void {
 
-    if (!message) {
-
-      throw new HandlerArgumentError('Message should be set', message);
-
-    }
-
     this.log(LoggerLevel.info, message, data);
-
-  }
-
-  /**
-   * Logs a verbose message
-   *
-   * @param message Message that should be logged
-   * @param data Any relevant data that should be logged
-   */
-  verbose(message: string, data?: unknown): void {
-
-    if (!message) {
-
-      throw new HandlerArgumentError('Message should be set', message);
-
-    }
-
-    this.log(LoggerLevel.verbose, message, data);
 
   }
 
@@ -163,31 +138,19 @@ export abstract class Logger {
    */
   debug(message: string, data?: unknown): void {
 
-    if (!message) {
-
-      throw new HandlerArgumentError('Message should be set', message);
-
-    }
-
     this.log(LoggerLevel.debug, message, data);
 
   }
 
   /**
-   * Logs a silly message
+   * Logs a trace message
    *
    * @param message Message that should be logged
    * @param data Any relevant data that should be logged
    */
-  silly(message: string, data?: unknown): void {
+  trace(message: string, data?: unknown): void {
 
-    if (!message) {
-
-      throw new HandlerArgumentError('Message should be set', message);
-
-    }
-
-    this.log(LoggerLevel.silly, message, data);
+    this.log(LoggerLevel.trace, message, data);
 
   }
 
