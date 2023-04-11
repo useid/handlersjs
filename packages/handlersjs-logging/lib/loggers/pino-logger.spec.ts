@@ -59,13 +59,13 @@ describe('PinoLogger', () => {
     });
 
     it('should throw when level is undefined', () => {
-        
-        expect(() => logger.log(undefined as unknown as LoggerLevel, testMessage)).toThrow('level should be set');
-  
+
+      expect(() => logger.log(undefined as unknown as LoggerLevel, testMessage)).toThrow('level should be set');
+
     });
 
     it('should throw when message is undefined', () => {
-        
+
       expect(() => logger.log(LoggerLevel.info, undefined as unknown as string)).toThrow('message should be set');
 
     });

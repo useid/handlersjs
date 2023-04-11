@@ -8,7 +8,9 @@ describe('PinoLoggerFactory', () => {
 
   beforeEach(async () => {
 
-    loggerFactory = new PinoLoggerFactory({ minimumLevel: LoggerLevel.trace, minimumLevelPrintData: LoggerLevel.trace });
+    loggerFactory = new PinoLoggerFactory(
+      { minimumLevel: LoggerLevel.trace, minimumLevelPrintData: LoggerLevel.trace },
+    );
 
   });
 

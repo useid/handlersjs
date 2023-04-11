@@ -9,7 +9,9 @@ import { Logger } from './models/logger';
 
 describe('main', () => {
 
-  const loggerFactory = new ConsoleLoggerFactory({ minimumLevel: LoggerLevel.trace, minimumLevelPrintData: LoggerLevel.trace });
+  const loggerFactory = new ConsoleLoggerFactory(
+    { minimumLevel: LoggerLevel.trace, minimumLevelPrintData: LoggerLevel.trace },
+  );
 
   beforeEach(() => {
 
@@ -81,7 +83,9 @@ describe('main', () => {
       const testLogger = getLoggerFor('test-logger');
       expect(testLogger).toEqual(expect.any(ConsoleLogger));
 
-      setLoggerFactory(new PinoLoggerFactory({ minimumLevel: LoggerLevel.trace, minimumLevelPrintData: LoggerLevel.trace }));
+      setLoggerFactory(new PinoLoggerFactory(
+        { minimumLevel: LoggerLevel.trace, minimumLevelPrintData: LoggerLevel.trace },
+      ));
 
       const newLogger = getLoggerFor('test-logger');
       expect(newLogger).toEqual(expect.any(PinoLogger));
