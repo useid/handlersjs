@@ -166,6 +166,44 @@ describe('NodeHttpRequestResponseHandler', () => {
         expect.objectContaining({
           mockKey: 'mockValue',
           'content-length': Buffer.byteLength('mockBody', 'utf-8').toString(),
+          'x-request-id': expect.any(String),
+          'x-correlation-id': expect.any(String),
+        }),
+      );
+
+    });
+
+    it('should return the given request and correlation id', async () => {
+
+      const requestId = '123';
+      const correlationId = '567';
+      streamMock.requestStream.headers['x-request-id'] = requestId;
+      streamMock.requestStream.headers['x-correlation-id'] = correlationId;
+      await lastValueFrom(handler.handle(streamMock));
+
+      expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(
+        200,
+        expect.objectContaining({
+          'x-request-id': requestId,
+          'x-correlation-id': correlationId,
+        }),
+      );
+
+    });
+
+    it('should return the first given request and correlation id when array', async () => {
+
+      const requestId = '123';
+      const correlationId = '567';
+      streamMock.requestStream.headers['x-request-id'] = [ requestId, 'zzz' ];
+      streamMock.requestStream.headers['x-correlation-id'] = [ correlationId, 'zzz' ];
+      await lastValueFrom(handler.handle(streamMock));
+
+      expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(
+        200,
+        expect.objectContaining({
+          'x-request-id': requestId,
+          'x-correlation-id': correlationId,
         }),
       );
 

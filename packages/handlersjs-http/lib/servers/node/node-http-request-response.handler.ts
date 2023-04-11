@@ -17,6 +17,9 @@ import { NodeHttpStreams } from './node-http-streams.model';
  */
 export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
+  private requestId = '';
+  private correlationId = '';
+
   /**
    * Creates a { NodeHttpRequestResponseHandler } passing requests through the given handler.
    *
@@ -100,8 +103,6 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
     // This is where we initialize a logger to be passed through the code
     // via the HttpHandlerContext (no need to call .setLabel() here)
     const logger = getLoggerFor(this);
-    // Add a request id to to be logged with every log from here on
-    logger.setVariable('requestId', v4());
 
     if (!nodeHttpStreams) {
 
@@ -127,9 +128,14 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     }
 
+    // Add a request id to to be logged with every log from here on
+    const requestIdHeader = nodeHttpStreams.requestStream.headers['x-request-id'];
+    this.requestId = (Array.isArray(requestIdHeader) ? requestIdHeader[0] : requestIdHeader) ?? v4();
+    logger.setVariable('requestId', this.requestId);
     // Add a correlation id to be logged with every log from here on
     const correlationIdHeader = nodeHttpStreams.requestStream.headers['x-correlation-id'];
-    logger.setVariable('correlationId', (Array.isArray(correlationIdHeader) ? correlationIdHeader[0] : correlationIdHeader) ?? v4());
+    this.correlationId = (Array.isArray(correlationIdHeader) ? correlationIdHeader[0] : correlationIdHeader) ?? v4();
+    logger.setVariable('correlationId', this.correlationId);
 
     if (!nodeHttpStreams.responseStream) {
 
@@ -241,7 +247,13 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
           ... (body !== undefined && body !== null) && { 'content-length': Buffer.byteLength(body, charsetString).toString() },
           ... (this.hsts) && { 'strict-transport-security': `max-age=${this.hsts.maxAge}${this.hsts.includeSubDomains ? '; includeSubDomains' : ''}` },
           'x-powered-by': this.poweredBy,
+          'x-request-id': this.requestId,
+          'x-correlation-id': this.correlationId,
         };
+
+        // Reset variables so new requests will never share ids
+        this.requestId = '';
+        this.correlationId = '';
 
         return of({
           ...response,
