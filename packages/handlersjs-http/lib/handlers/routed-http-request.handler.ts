@@ -57,7 +57,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
 
     const pathSegments = path.split('#')[0].split('?')[0].split('/').slice(1);
 
-    context.logger.info('Finding route for path: ', path);
+    context.logger.info('Finding route for path: ', { path });
 
     // Find a matching route
     const match = Array.from(this.pathToRouteMap.keys()).find((route) => {

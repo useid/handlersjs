@@ -106,7 +106,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!nodeHttpStreams) {
 
-      logger.debug('No node http streams received');
+      logger.error('No node http streams received');
 
       return throwError(() => new Error('node http streams object cannot be null or undefined.'));
 
@@ -114,7 +114,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!nodeHttpStreams.requestStream) {
 
-      logger.debug('No request stream received', nodeHttpStreams);
+      logger.error('No request stream received', nodeHttpStreams);
 
       return throwError(() => new Error('request stream cannot be null or undefined.'));
 
@@ -122,7 +122,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!nodeHttpStreams.requestStream.headers) {
 
-      logger.debug('No request headers received', nodeHttpStreams.requestStream);
+      logger.error('No request headers received', nodeHttpStreams.requestStream);
 
       return throwError(() => new Error('headers of the request cannot be null or undefined.'));
 
@@ -141,7 +141,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!nodeHttpStreams.responseStream) {
 
-      logger.debug('No response stream received', nodeHttpStreams);
+      logger.error('No response stream received', nodeHttpStreams);
 
       return throwError(() => new Error('response stream cannot be null or undefined.'));
 
