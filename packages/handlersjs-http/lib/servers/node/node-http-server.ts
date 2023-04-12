@@ -61,7 +61,7 @@ export class NodeHttpServer extends Server {
 
     this.server.on(('error'), (err: unknown) => {
 
-      this.logger.fatal(`The server ran into a problem: `, err);
+      this.logger.fatal(`The server ran into a problem: `, { error: err });
       subject.error(new Error(`The server ran into a problem: ${err}`));
 
     });
@@ -90,7 +90,7 @@ export class NodeHttpServer extends Server {
 
     this.server.on(('error'), (err: unknown) => {
 
-      this.logger.fatal(`The server ran into a problem: `, err);
+      this.logger.fatal(`The server ran into a problem: `, { error: err });
       subject.error(new Error(`The server ran into a problem: ${err}`));
 
     });

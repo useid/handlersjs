@@ -114,7 +114,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!nodeHttpStreams.requestStream) {
 
-      logger.error('No request stream received', nodeHttpStreams);
+      logger.error('No request stream received', { nodeHttpStreams });
 
       return throwError(() => new Error('request stream cannot be null or undefined.'));
 
@@ -122,7 +122,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!nodeHttpStreams.requestStream.headers) {
 
-      logger.error('No request headers received', nodeHttpStreams.requestStream);
+      logger.error('No request headers received', { requestStream: nodeHttpStreams.requestStream });
 
       return throwError(() => new Error('headers of the request cannot be null or undefined.'));
 
@@ -141,7 +141,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!nodeHttpStreams.responseStream) {
 
-      logger.error('No response stream received', nodeHttpStreams);
+      logger.error('No response stream received', { nodeHttpStreams });
 
       return throwError(() => new Error('response stream cannot be null or undefined.'));
 
@@ -151,7 +151,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!url) {
 
-      logger.warn('No url received', nodeHttpStreams.requestStream);
+      logger.warn('No url received', { requestStream: nodeHttpStreams.requestStream });
 
       return throwError(() => new Error('url of the request cannot be null or undefined.'));
 
@@ -161,7 +161,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!method) {
 
-      logger.warn('No method received', nodeHttpStreams.requestStream);
+      logger.warn('No method received', { requestStream: nodeHttpStreams.requestStream });
 
       return throwError(() => new Error('method of the request cannot be null or undefined.'));
 
@@ -192,7 +192,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
       }),
       switchMap((context: HttpHandlerContext) => {
 
-        logger.info('Handling request: ', context);
+        logger.info('Handling request: ', { context });
 
         return this.httpHandler.handle(context);
 
@@ -204,7 +204,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
         const status = error?.statusCode ?? error.status;
         const message = error?.message ?? error.body;
 
-        logger.warn(`${error.name}:`, error);
+        logger.warn(`${error.name}:`, { error });
 
         return of({ headers: {}, ... error, body: message ?? 'Internal Server Error', status: statusCodes[status] ? status : 500 });
 
@@ -233,7 +233,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
           && charsetString !== 'hex'
         ) {
 
-          logger.warn('Unsupported charset', charsetString);
+          logger.warn('Unsupported charset', { charsetString });
 
           return throwError(() => new Error('The specified charset is not supported'));
 
