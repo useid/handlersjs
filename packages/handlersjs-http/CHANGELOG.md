@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.0](https://github.com/digita-ai/handlersjs/compare/v0.16.0...v0.17.0) (2023-04-12)
+
+
+### **Features**
+
+* change logging to follow bunyan ([#230](https://github.com/digita-ai/handlersjs/issues/230)) ([25ebdcb](https://github.com/digita-ai/handlersjs/commit/25ebdcb5f2beb0ae8cdc03e6064db907964f58c4))
+
+
+
 ## [0.16.0](https://github.com/digita-ai/handlersjs/compare/v0.15.0...v0.16.0) (2023-04-11)
 
 
