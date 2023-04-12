@@ -62,16 +62,11 @@ export class RoutedHttpRequestHandler implements HttpHandler {
     // Find a matching route
     const match = Array.from(this.pathToRouteMap.keys()).find((route) => {
 
+      // Route starts with a '/' so the first segment is always empty.
       const routeSegments = route.split('/').slice(1);
 
       // If there are different numbers of segments, then the route does not match the URL.
-      if (routeSegments.length !== pathSegments.length) {
-
-        context.logger.warn('No path with the same amount of segments was found: ', { route, path });
-
-        return false;
-
-      }
+      if (routeSegments.length !== pathSegments.length) return false;
 
       // If each segment in the url matches the corresponding segment in the route path,
       // or the route path segment starts with a ':' then the route is matched.
@@ -93,7 +88,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
 
       if (!matchingRouteWithOperation) {
 
-        context.logger.info(`Operation not supported. Supported operations: ${allowedMethods}`);
+        context.logger.info(`Operation not supported. Supported operations:`, { allowedMethods });
 
         return of({ body: '', headers: { Allow: allowedMethods.join(', ') }, status: request.method === 'OPTIONS' ? 204 : 405 });
 
@@ -101,6 +96,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
 
       // add parameters from requestPath to the request object
       const parameters = this.extractParameters(matchingRouteWithOperation.route.path.split('/').slice(1), pathSegments);
+      context.logger.info('Extracted parameters from path: ', { parameters });
       const requestWithParams = Object.assign(request, { parameters });
       const newContext = { ... context, request: requestWithParams, route: matchingRouteWithOperation.route };
       const preResponseHandler = matchingRouteWithOperation.controller.preResponseHandler;
@@ -122,13 +118,13 @@ export class RoutedHttpRequestHandler implements HttpHandler {
 
     } else if (this.defaultHandler) {
 
-      context.logger.info('Calling default handlers handle', context);
+      context.logger.info('No matching route found, calling default handler.', { path });
 
       return this.defaultHandler.handle(context);
 
     } else {
 
-      context.logger.error('No matching route found');
+      context.logger.error('No matching route found.', { path });
 
       return of({ body: '', headers: {}, status: 404 });
 

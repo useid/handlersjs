@@ -1,4 +1,4 @@
-import { Observable, of, tap } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -64,12 +64,10 @@ export class HttpCorsRequestHandler implements HttpHandler {
 
       /* Preflight Request */
 
-      context.logger.info('Processing preflight request', noCorsRequestContext);
+      context.logger.info('Processing preflight request');
 
       const routeMethods = context.route?.operations.map((op) => op.method);
       const allMethods = [ 'GET', 'HEAD', 'PUT', 'POST', 'DELETE', 'PATCH' ];
-
-      this.passThroughOptions ? context.logger.info('Handling context: ', noCorsRequestContext) : context.logger.info('No content found, returning 204 response for preflight request');
 
       const initialOptions = this.passThroughOptions
         ? this.handler.handle(noCorsRequestContext)
@@ -80,7 +78,6 @@ export class HttpCorsRequestHandler implements HttpHandler {
           ... response,
           headers: cleanHeaders(response.headers),
         })),
-        tap(() => context.logger.info('Configuring CORS headers for response')),
         map((response) => ({
           ... response,
           headers: {
@@ -102,10 +99,9 @@ export class HttpCorsRequestHandler implements HttpHandler {
 
       /* CORS Request */
 
-      context.logger.info('Processing CORS request', noCorsRequestContext);
+      context.logger.info('Processing CORS request');
 
       return this.handler.handle(noCorsRequestContext).pipe(
-        tap(() => context.logger.info('Configuring CORS headers for response')),
         map((response) => ({
           ... response,
           headers: {

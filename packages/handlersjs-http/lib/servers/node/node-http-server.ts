@@ -61,7 +61,7 @@ export class NodeHttpServer extends Server {
 
     this.server.on(('error'), (err: unknown) => {
 
-      this.logger.debug(`The server ran into a problem: `, err);
+      this.logger.fatal(`The server ran into a problem: `, err);
       subject.error(new Error(`The server ran into a problem: ${err}`));
 
     });
@@ -90,7 +90,7 @@ export class NodeHttpServer extends Server {
 
     this.server.on(('error'), (err: unknown) => {
 
-      this.logger.debug(`The server ran into a problem: `, err);
+      this.logger.fatal(`The server ran into a problem: `, err);
       subject.error(new Error(`The server ran into a problem: ${err}`));
 
     });
@@ -121,14 +121,14 @@ export class NodeHttpServer extends Server {
 
     if (!req) {
 
-      this.logger.verbose('No request received');
+      this.logger.debug('No request received');
       throw new Error('request must be defined.');
 
     }
 
     if (!res) {
 
-      this.logger.verbose('No response received');
+      this.logger.debug('No response received');
       throw new Error('response must be defined.');
 
     }

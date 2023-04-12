@@ -106,7 +106,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!nodeHttpStreams) {
 
-      logger.verbose('No node http streams received');
+      logger.debug('No node http streams received');
 
       return throwError(() => new Error('node http streams object cannot be null or undefined.'));
 
@@ -114,7 +114,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!nodeHttpStreams.requestStream) {
 
-      logger.verbose('No request stream received', nodeHttpStreams);
+      logger.debug('No request stream received', nodeHttpStreams);
 
       return throwError(() => new Error('request stream cannot be null or undefined.'));
 
@@ -122,7 +122,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!nodeHttpStreams.requestStream.headers) {
 
-      logger.verbose('No request headers received', nodeHttpStreams.requestStream);
+      logger.debug('No request headers received', nodeHttpStreams.requestStream);
 
       return throwError(() => new Error('headers of the request cannot be null or undefined.'));
 
@@ -137,9 +137,11 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
     this.correlationId = (Array.isArray(correlationIdHeader) ? correlationIdHeader[0] : correlationIdHeader) ?? v4();
     logger.setVariable('correlationId', this.correlationId);
 
+    logger.info('Set initial Logger variables', { variables: logger.getVariables() });
+
     if (!nodeHttpStreams.responseStream) {
 
-      logger.verbose('No response stream received', nodeHttpStreams);
+      logger.debug('No response stream received', nodeHttpStreams);
 
       return throwError(() => new Error('response stream cannot be null or undefined.'));
 
@@ -149,7 +151,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!url) {
 
-      logger.verbose('No url received', nodeHttpStreams.requestStream);
+      logger.warn('No url received', nodeHttpStreams.requestStream);
 
       return throwError(() => new Error('url of the request cannot be null or undefined.'));
 
@@ -159,7 +161,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!method) {
 
-      logger.verbose('No method received', nodeHttpStreams.requestStream);
+      logger.warn('No method received', nodeHttpStreams.requestStream);
 
       return throwError(() => new Error('method of the request cannot be null or undefined.'));
 
@@ -202,7 +204,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
         const status = error?.statusCode ?? error.status;
         const message = error?.message ?? error.body;
 
-        logger.debug(`${error.name}:`, error);
+        logger.warn(`${error.name}:`, error);
 
         return of({ headers: {}, ... error, body: message ?? 'Internal Server Error', status: statusCodes[status] ? status : 500 });
 
@@ -266,6 +268,8 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
       }),
       map((response) => {
+
+        logger.info('Sending response: ', { response });
 
         nodeHttpStreams.responseStream.writeHead(response.status, response.headers);
 

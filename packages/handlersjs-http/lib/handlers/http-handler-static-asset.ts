@@ -21,8 +21,8 @@ export class HttpHandlerStaticAssetService implements HttpHandler {
 
     if (!context.request?.headers?.accept) {
 
-      context.logger.verbose('No accept header found', context.request?.headers);
-      context.logger.verbose('Returning default type', this.contentType);
+      context.logger.info('No accept header found', context.request?.headers);
+      context.logger.info('Returning default type', this.contentType);
 
     }else{
 
@@ -30,7 +30,7 @@ export class HttpHandlerStaticAssetService implements HttpHandler {
 
       if (!reqHeaders.some((contentType) => possibleAcceptHeaders.includes(contentType.trim()))) {
 
-        context.logger.verbose('Content type not supported', this.contentType);
+        context.logger.info('Content type not supported', this.contentType);
 
         return throwError(() => new UnsupportedMediaTypeHttpError('Content type not supported'));
 
@@ -42,7 +42,7 @@ export class HttpHandlerStaticAssetService implements HttpHandler {
 
     if(filename && filename.includes('../')) {
 
-      context.logger.verbose('This type of filename is not supported', filename);
+      context.logger.info('This type of filename is not supported', filename);
 
       return throwError(() => new ForbiddenHttpError());
 
@@ -60,7 +60,7 @@ export class HttpHandlerStaticAssetService implements HttpHandler {
       })),
       catchError(() => {
 
-        context.logger.verbose('Failed to read file: ', filePath);
+        context.logger.info('Failed to read file: ', filePath);
 
         return throwError(() => new NotFoundHttpError('Error while trying to read file'));
 
