@@ -22,10 +22,7 @@ export class PinoLogger extends Logger {
 
     super(defaultLabel, minimumLevel, minimumLevelPrintData);
 
-    const loggerOptions: Pino.LoggerOptions = {
-      // Translate number value of LoggerLevel to string value of LoggerLevel
-      level: Object.keys(LoggerLevel)[Object.values(LoggerLevel).indexOf(minimumLevel)],
-    };
+    const loggerOptions = { level: LoggerLevel[minimumLevel].toString() };
 
     // if prettyPrint is true, use pino-pretty. Otherwise, use pino without prettifying.
     this.pinoLoggerInstance = this.prettyPrint ? Pino(loggerOptions, pretty()) : Pino(loggerOptions);
