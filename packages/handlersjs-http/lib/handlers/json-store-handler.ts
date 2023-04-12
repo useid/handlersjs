@@ -55,7 +55,7 @@ export class JsonStoreHandler<T extends string, M extends { [t in T]: unknown }>
 
     if (context.request.method !== 'GET') {
 
-      context.logger.verbose('Only GET requests are supported');
+      context.logger.info('Only GET requests are supported');
 
       // method not allowed
       return of({ body: '', headers: { allow: 'GET' }, status: 405 });

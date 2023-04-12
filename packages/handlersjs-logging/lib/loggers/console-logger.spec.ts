@@ -6,26 +6,18 @@ jest.mock('console');
 describe('ConsoleLogger', () => {
 
   let logger: ConsoleLogger;
-  const spy = new Map();
-  const levels = [ 'info', 'debug', 'warn', 'error' ].map((s) => [ s, s ]);
+  let spy: Map<string, jest.SpyInstance>;
 
   beforeEach(async () => {
 
-    logger = new ConsoleLogger('test-logger', 6, 6);
+    logger = new ConsoleLogger('test-logger', LoggerLevel.trace, LoggerLevel.trace);
+    spy = new Map();
     spy.set('warn', jest.spyOn(console, 'warn').mockImplementation(() => undefined));
     spy.set('info', jest.spyOn(console, 'info').mockImplementation(() => undefined));
     spy.set('debug', jest.spyOn(console, 'debug').mockImplementation(() => undefined));
     spy.set('error', jest.spyOn(console, 'error').mockImplementation(() => undefined));
     spy.set('log', jest.spyOn(console, 'log').mockImplementation(() => undefined));
-
-  });
-
-  afterEach(() => {
-
-    // clear spies
     jest.clearAllMocks();
-
-    for (const value of Object.values(spy)) { value.mockReset(); }
 
   });
 
@@ -40,7 +32,14 @@ describe('ConsoleLogger', () => {
 
   describe('log', () => {
 
-    it.each([ ...levels, [ 'silly', 'log' ] ])('LoggerLevel.%s should call console.%s', (level, log) => {
+    it.each([
+      [ 'trace', 'log' ],
+      [ 'debug', 'debug' ],
+      [ 'info', 'info' ],
+      [ 'warn', 'warn' ],
+      [ 'error', 'error' ],
+      [ 'fatal', 'error' ],
+    ])('LoggerLevel.%s should call console.%s', (level, log) => {
 
       logger.log(LoggerLevel[level], testMessage, data);
       expect(spy.get(log)).toHaveBeenCalledTimes(1);
@@ -48,38 +47,32 @@ describe('ConsoleLogger', () => {
 
     });
 
-    const params = {
-      level: LoggerLevel.info,
-      message: 'test message',
-    };
+    it('should throw when level is undefined', () => {
 
-    it.each(Object.keys(params))('throws when %s is null or undefined', (keyToBeNull) => {
-
-      const testArgs = { ...params };
-      testArgs[keyToBeNull] = undefined;
-      expect(() => logger.log(testArgs.level, testArgs.message)).toThrow(`${keyToBeNull} should be set`);
+      expect(() => logger.log(undefined as unknown as LoggerLevel, testMessage)).toThrow('level should be set');
 
     });
 
-  });
+    it('should throw when message is undefined', () => {
 
-  describe('level logs', () => {
+      expect(() => logger.log(LoggerLevel.info, undefined as unknown as string)).toThrow('message should be set');
 
-    it.each(levels)('should log a %s message', async(level) => {
+    });
 
-      const logSpy = jest.spyOn(logger, 'log');
+    it('should not log data when minimumLevelPrintData < minimumLevel', () => {
 
-      if (level === 'error') {
+      logger = new ConsoleLogger('test-logger', LoggerLevel.trace, LoggerLevel.info);
+      logger.log(LoggerLevel.debug, testMessage, data);
+      expect(spy.get('debug')).toHaveBeenCalledTimes(1);
+      expect(spy.get('debug')).toHaveBeenCalledWith(expect.stringContaining(testMessage), {}, '');
 
-        logger[level]('TestService', { error: 'test error', caught: 'error' });
-        expect(logSpy).toHaveBeenCalledWith(LoggerLevel.error, 'TestService', { error: 'test error', caught: 'error' });
+    });
 
-      } else {
+    it('should not log data when data is undefined', () => {
 
-        logger[level]('TestService', 'test data');
-        expect(logSpy).toHaveBeenCalledWith(LoggerLevel[level], 'TestService', 'test data');
-
-      }
+      logger.trace(testMessage, undefined);
+      expect(spy.get('log')).toHaveBeenCalledTimes(1);
+      expect(spy.get('log')).toHaveBeenCalledWith(expect.stringContaining(testMessage), {}, '');
 
     });
 

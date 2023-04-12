@@ -74,7 +74,7 @@ export class ErrorHandler implements HttpHandler {
     return this.nestedHandler.handle(context).pipe(
       catchError((error) => {
 
-        context.logger.error('Error occurred: ', error);
+        context.logger.error('Error occurred: ', { error });
 
         const status = error?.statusCode ?? error.status;
         const message = error?.message ?? error.body;

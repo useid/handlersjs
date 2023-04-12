@@ -41,17 +41,17 @@ export class SyncService<T, S extends string, P extends string, M extends {
 
     this.logger.info('Syncing...');
 
-    this.logger.info('Retrieving storage');
+    this.logger.debug('Retrieving storage');
     const storage: T[] = await this.store.get(this.storage) ?? [];
 
-    this.logger.info('Retrieving peers');
+    this.logger.debug('Retrieving peers');
     const peers: string[] = await this.store.get(this.peers) ?? [];
 
     const options = this.latestSync ? {
       headers: { 'If-Modified-Since': this.latestSync.toUTCString() },
     } : undefined;
 
-    this.logger.info('Updating time of latest synchronization');
+    this.logger.debug('Updating time of latest synchronization');
     this.latestSync = new Date();
 
     const fetchedValues: T[][] = await Promise.all(([ ... peers ]).map(async (host) => {
@@ -65,7 +65,7 @@ export class SyncService<T, S extends string, P extends string, M extends {
 
       } catch (error) {
 
-        this.logger.error('Failed to fetch values from peer: ', error);
+        this.logger.warn('Failed to fetch values from peer: ', error);
 
         return [];
 

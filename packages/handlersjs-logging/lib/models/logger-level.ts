@@ -1,11 +1,11 @@
 /**
- * Level of log severity based on node.js'
+ * Level of log severity based on Bunyan's log levels
  */
 export enum LoggerLevel {
-  error = 0,
-  warn = 1,
-  info = 2,
-  verbose = 3,
-  debug = 4,
-  silly = 5,
+  trace = 10,
+  debug = 20,
+  info = 30,
+  warn = 40,
+  error = 50,
+  fatal = 60,
 }

@@ -25,10 +25,10 @@ export class ConsoleLogger extends Logger {
 
     const timestamp: string = new Date().toISOString();
 
-    if (level <= this.minimumLevel) {
+    if (level >= this.minimumLevel) {
 
       const logMessage = `[${timestamp} ${this.label}] ${message}`;
-      const logData = level > this.minimumLevelPrintData ? '' : data||'';
+      const logData = level >= this.minimumLevelPrintData ? data || '' : '';
       const log = [ logMessage, this.variables, logData ];
 
       switch (level) {
@@ -36,19 +36,17 @@ export class ConsoleLogger extends Logger {
         case LoggerLevel.info:
           console.info(...log);
           break;
-
         case LoggerLevel.debug:
           console.debug(...log);
           break;
-
         case LoggerLevel.warn:
           console.warn(...log);
           break;
-
         case LoggerLevel.error:
+        case LoggerLevel.fatal:
           console.error(...log);
           break;
-
+        case LoggerLevel.trace:
         default:
           console.log(...log);
           break;
