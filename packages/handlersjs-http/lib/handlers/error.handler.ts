@@ -73,7 +73,7 @@ export class ErrorHandler implements HttpHandler {
       catchError((error) => {
 
         context.logger.setLabel(this);
-        context.logger.warn('Error occurred: ', { error });
+        context.logger.error('Error occurred: ', { error });
 
         const status = error?.statusCode ?? error.status;
         const message = error?.message ?? error.body;
