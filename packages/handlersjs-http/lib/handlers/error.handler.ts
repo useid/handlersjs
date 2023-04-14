@@ -69,11 +69,10 @@ export class ErrorHandler implements HttpHandler {
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse>{
 
-    context.logger.setLabel(this);
-
     return this.nestedHandler.handle(context).pipe(
       catchError((error) => {
 
+        context.logger.setLabel(this);
         context.logger.error('Error occurred: ', { error });
 
         const status = error?.statusCode ?? error.status;

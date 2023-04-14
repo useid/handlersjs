@@ -247,7 +247,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
         const extraHeaders = {
           ... (body !== undefined && body !== null && !response.headers['content-type'] && !response.headers['Content-Type'] && typeof response.body !== 'string' && !(response.body instanceof Buffer)) && { 'content-type': 'application/json' },
           ... (body !== undefined && body !== null) && { 'content-length': Buffer.byteLength(body, charsetString).toString() },
-          ... (this.hsts) && { 'strict-transport-security': `max-age=${this.hsts.maxAge}${this.hsts.includeSubDomains ? '; includeSubDomains' : ''}` },
+          ... (this.hsts?.maxAge) && { 'strict-transport-security': `max-age=${this.hsts.maxAge}${this.hsts.includeSubDomains ? '; includeSubDomains' : ''}` },
           'x-powered-by': this.poweredBy,
           'x-request-id': this.requestId,
           'x-correlation-id': this.correlationId,
