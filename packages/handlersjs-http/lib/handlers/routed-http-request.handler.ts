@@ -5,6 +5,7 @@ import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerController } from '../models/http-handler-controller';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpHandlerRoute } from '../models/http-handler-route';
+import { getLogger } from '@digita-ai/handlersjs-logging';
 
 /**
  * A {HttpHandler} handling requests based on routes in a given list of {HttpHandlerController}s.
@@ -14,6 +15,7 @@ import { HttpHandlerRoute } from '../models/http-handler-route';
 export class RoutedHttpRequestHandler implements HttpHandler {
 
   private pathToRouteMap: Map<string, { controller: HttpHandlerController; route: HttpHandlerRoute }[]>;
+  public logger = getLogger();
 
   /**
    * Creates a RoutedHttpRequestHandler, super calls the HttpHandler class and expects a list of HttpHandlerControllers
@@ -50,14 +52,12 @@ export class RoutedHttpRequestHandler implements HttpHandler {
    */
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
-    context.logger.setLabel(this);
-
     const request = context.request;
     const path = request.url.pathname;
 
     const pathSegments = path.split('#')[0].split('?')[0].split('/').slice(1);
 
-    context.logger.info('Finding route for path: ', { path });
+    this.logger.info('Finding route for path: ', { path });
 
     // Find a matching route
     const match = Array.from(this.pathToRouteMap.keys()).find((route) => {
@@ -74,7 +74,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
 
     });
 
-    context.logger.info('Route matched:', { path, match });
+    this.logger.info('Route matched:', { path, match: match ?? 'none' });
 
     const matchingRoutes = match ? this.pathToRouteMap.get(match) : undefined;
 
@@ -88,15 +88,18 @@ export class RoutedHttpRequestHandler implements HttpHandler {
 
       if (!matchingRouteWithOperation) {
 
-        context.logger.info(`Operation not supported. Supported operations:`, { allowedMethods });
+        this.logger.info(`Operation not supported. Supported operations:`, { allowedMethods });
 
         return of({ body: '', headers: { Allow: allowedMethods.join(', ') }, status: request.method === 'OPTIONS' ? 204 : 405 });
 
       }
 
+      // Add the route's path to the logger's variables
+      this.logger.setVariable('route', matchingRouteWithOperation.route.path);
+
       // add parameters from requestPath to the request object
       const parameters = this.extractParameters(matchingRouteWithOperation.route.path.split('/').slice(1), pathSegments);
-      context.logger.info('Extracted parameters from path: ', { parameters });
+      this.logger.info('Extracted parameters from path: ', { parameters });
       const requestWithParams = Object.assign(request, { parameters });
       const newContext = { ... context, request: requestWithParams, route: matchingRouteWithOperation.route };
       const preResponseHandler = matchingRouteWithOperation.controller.preResponseHandler;
@@ -118,13 +121,13 @@ export class RoutedHttpRequestHandler implements HttpHandler {
 
     } else if (this.defaultHandler) {
 
-      context.logger.info('No matching route found, calling default handler.', { path });
+      this.logger.info('No matching route found, calling default handler.', { path });
 
       return this.defaultHandler.handle(context);
 
     } else {
 
-      context.logger.error('No matching route found.', { path });
+      this.logger.error('No matching route found.', { path });
 
       return of({ body: '', headers: {}, status: 404 });
 
