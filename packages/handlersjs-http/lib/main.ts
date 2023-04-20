@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { ComponentsManager } from 'componentsjs';
-import { PinoLoggerFactory, getLogger, getLoggerFor, setLogger, setLoggerFactory } from '@digita-ai/handlersjs-logging';
+import { LoggerLevel, PinoLogger, getLogger, setLogger } from '@digita-ai/handlersjs-logging';
 import { NodeHttpServer } from './servers/node/node-http-server';
 
 export const launch: (variables: Record<string, any>) => Promise<void> = async (variables: Record<string, any>) => {
@@ -20,13 +20,19 @@ export const launch: (variables: Record<string, any>) => Promise<void> = async (
 
   await manager.configRegistry.register(configPath);
 
-  setLoggerFactory(new PinoLoggerFactory({ minimumLevel: 10, minimumLevelPrintData: 10, prettyPrint: true }));
-  setLogger(getLoggerFor('HTTP'));
+  setLogger(new PinoLogger(
+    '-',
+    LoggerLevel.info,
+    LoggerLevel.info,
+    true,
+  ));
+
+  const logger = getLogger();
 
   const server: NodeHttpServer = await manager.instantiate('urn:handlersjs-http:default:NodeHttpServer', { variables });
 
   server.start();
-  getLogger().info('Started server using variables: ', variables);
+  logger.info('Started server using variables: ', variables);
 
 };
 
