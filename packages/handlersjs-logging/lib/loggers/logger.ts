@@ -1,4 +1,4 @@
-import { LoggerLevel } from './logger-level';
+import { LoggerLevel } from '../models/logger-level';
 
 export abstract class Logger {
 
