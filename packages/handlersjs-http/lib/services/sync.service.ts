@@ -1,5 +1,5 @@
 import { Handler } from '@digita-ai/handlersjs-core';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
+import { getLogger } from '@digita-ai/handlersjs-logging';
 import { TimedTypedKeyValueStore } from '@digita-ai/handlersjs-storage';
 import fetch from 'node-fetch';
 import { from, Observable } from 'rxjs';
@@ -8,7 +8,7 @@ export class SyncService<T, S extends string, P extends string, M extends {
   [s in S]: T[] } & { [p in P]: string[] }> implements Handler<void, void> {
 
   latestSync: Date | undefined = undefined;
-  private logger = getLoggerFor(this);
+  private logger = getLogger();
 
   /**
    *

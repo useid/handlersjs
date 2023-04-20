@@ -3,6 +3,7 @@ import { catchError } from 'rxjs/operators';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
+import { getLogger } from '@digita-ai/handlersjs-logging';
 
 export const statusCodes: { [code: number]: string } = {
   400: 'Bad Request',
@@ -49,6 +50,8 @@ export const statusCodes: { [code: number]: string } = {
 
 export class ErrorHandler implements HttpHandler {
 
+  public logger = getLogger();
+
   /**
    * Creates an {ErrorHandler} that catches errors and returns an error response to the given handler.
    *
@@ -72,8 +75,7 @@ export class ErrorHandler implements HttpHandler {
     return this.nestedHandler.handle(context).pipe(
       catchError((error) => {
 
-        context.logger.setLabel(this);
-        context.logger.error('Error occurred: ', { error });
+        this.logger.warn('Error occurred: ', { error });
 
         const status = error?.statusCode ?? error.status;
         const message = error?.message ?? error.body;

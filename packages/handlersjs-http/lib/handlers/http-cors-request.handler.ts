@@ -4,6 +4,7 @@ import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { cleanHeaders } from '../util/clean-headers';
+import { getLogger } from '@digita-ai/handlersjs-logging';
 
 export interface HttpCorsOptions {
   origins?: string[];
@@ -15,6 +16,8 @@ export interface HttpCorsOptions {
 }
 export class HttpCorsRequestHandler implements HttpHandler {
 
+  public logger = getLogger();
+
   constructor(
     private handler: HttpHandler,
     private options?: HttpCorsOptions,
@@ -22,8 +25,6 @@ export class HttpCorsRequestHandler implements HttpHandler {
   ) { }
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
-
-    context.logger.setLabel(this);
 
     const { origins, allowMethods, allowHeaders, exposeHeaders, credentials, maxAge } = this.options || ({});
 
@@ -64,7 +65,7 @@ export class HttpCorsRequestHandler implements HttpHandler {
 
       /* Preflight Request */
 
-      context.logger.info('Processing preflight request');
+      this.logger.info('Processing preflight request');
 
       const routeMethods = context.route?.operations.map((op) => op.method);
       const allMethods = [ 'GET', 'HEAD', 'PUT', 'POST', 'DELETE', 'PATCH' ];
@@ -99,7 +100,7 @@ export class HttpCorsRequestHandler implements HttpHandler {
 
       /* CORS Request */
 
-      context.logger.info('Processing CORS request');
+      this.logger.info('Processing CORS request');
 
       return this.handler.handle(noCorsRequestContext).pipe(
         map((response) => ({

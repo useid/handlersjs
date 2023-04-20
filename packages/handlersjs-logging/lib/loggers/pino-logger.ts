@@ -2,7 +2,7 @@
 import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
 import Pino from 'pino';
 import pretty from 'pino-pretty';
-import { Logger } from '../models/logger';
+import { Logger } from './logger';
 import { LoggerLevel } from '../models/logger-level';
 
 /**
