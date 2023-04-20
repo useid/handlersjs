@@ -22,8 +22,8 @@ export const launch: (variables: Record<string, any>) => Promise<void> = async (
 
   setLogger(new PinoLogger(
     '-',
-    LoggerLevel.info,
-    LoggerLevel.info,
+    LoggerLevel.trace,
+    LoggerLevel.trace,
     true,
   ));
 

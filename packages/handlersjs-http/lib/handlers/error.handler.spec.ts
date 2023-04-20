@@ -1,5 +1,4 @@
 import { lastValueFrom, of, throwError } from 'rxjs';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpCorsRequestHandler } from './http-cors-request.handler';
@@ -13,15 +12,12 @@ const response: HttpHandlerResponse = {
   status: 400,
 };
 
-const logger = getLoggerFor(ErrorHandler);
-
 const context: HttpHandlerContext = {
   request: {
     url: new URL('http://example.org'),
     method: 'GET',
     headers: {},
   },
-  logger,
 };
 
 describe('error_handler', () => {
@@ -130,7 +126,6 @@ describe('error_handler', () => {
             origin: 'http://test.de',
           },
         },
-        logger,
       }));
 
       expect(resp).toEqual({ body: 'upstream response body', status: 400, headers: { location: 'http://test.be', 'access-control-allow-origin': '*' } });

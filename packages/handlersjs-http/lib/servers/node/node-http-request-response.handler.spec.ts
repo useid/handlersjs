@@ -1,11 +1,11 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { lastValueFrom, of, throwError } from 'rxjs';
 import * as mockhttp from 'mock-http';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandler } from '../../models/http-handler';
 import { BadRequestHttpError } from '../../errors/bad-request-http-error';
 import { NodeHttpRequestResponseHandler } from './node-http-request-response.handler';
 import { NodeHttpStreams } from './node-http-streams.model';
+import { getLogger } from '@digita-ai/handlersjs-logging';
 
 describe('NodeHttpRequestResponseHandler', () => {
 
@@ -145,7 +145,6 @@ describe('NodeHttpRequestResponseHandler', () => {
           url: new URL(streamMock.requestStream.url as string, `http://${streamMock.requestStream.headers.host}`),
           body: bufferString,
         },
-        logger: expect.anything(),
       });
 
     });
@@ -463,54 +462,13 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     });
 
-    it('should parse the x-correlation-id as a string', async () => {
-
-      streamMock.requestStream.headers['x-correlation-id'] = '1234';
-      await lastValueFrom(handler.handle(streamMock));
-
-      await expect(nestedHttpHandler.handle).toHaveBeenCalledWith(expect.objectContaining({
-        logger: expect.objectContaining({
-          variables: expect.objectContaining({ correlationId: streamMock.requestStream.headers['x-correlation-id'] }),
-        }),
-      }));
-
-    });
-
-    it('should parse the x-correlation-id as an array', async () => {
-
-      streamMock.requestStream.headers['x-correlation-id'] = [ 'aaa', 'bbb' ];
-      await lastValueFrom(handler.handle(streamMock));
-
-      await expect(nestedHttpHandler.handle).toHaveBeenCalledWith(expect.objectContaining({
-        logger: expect.objectContaining({
-          variables: expect.objectContaining({ correlationId: streamMock.requestStream.headers['x-correlation-id'][0] }),
-        }),
-      }));
-
-    });
-
-    it('should parse the x-correlation-id as undefined', async () => {
-
-      streamMock.requestStream.headers['x-correlation-id'] = undefined;
-      await lastValueFrom(handler.handle(streamMock));
-
-      await expect(nestedHttpHandler.handle).toHaveBeenCalledWith(expect.objectContaining({
-        logger: expect.objectContaining({
-          variables: expect.objectContaining({ correlationId: expect.any(String) }),
-        }),
-      }));
-
-    });
-
   });
-
-  const logger = getLoggerFor(NodeHttpRequestResponseHandler);
 
   describe('parseBody', () => {
 
     it('should return the body JSON parsed if content type is application/json', async () => {
 
-      const parsed = (handler as any).parseBody(logger, '{"name":"jasper","surname":"vandenberghen"}', 'application/json');
+      const parsed = (handler as any).parseBody('{"name":"jasper","surname":"vandenberghen"}', 'application/json');
 
       expect(parsed).toEqual({ name: 'jasper', surname: 'vandenberghen' });
 
@@ -518,7 +476,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     it('should return the body x-www-form-urlencoded UNPARSED if content type is x-www-form-urlencoded', async () => {
 
-      const parsed = (handler as any).parseBody(logger, 'name=jasper&surname=vandenberghen', 'application/x-www-form-urlencoded');
+      const parsed = (handler as any).parseBody('name=jasper&surname=vandenberghen', 'application/x-www-form-urlencoded');
 
       // expect(parsed).toEqual({ name: 'jasper', surname: 'vandenberghen' });
       expect(parsed).toEqual('name=jasper&surname=vandenberghen');
@@ -527,7 +485,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     it('should return the body if content type is default', async () => {
 
-      const parsed = (handler as any).parseBody(logger, '{"name":"jasper","surname":"vandenberghen"}', 'text/plain');
+      const parsed = (handler as any).parseBody('{"name":"jasper","surname":"vandenberghen"}', 'text/plain');
 
       expect(parsed).toEqual('{"name":"jasper","surname":"vandenberghen"}');
 
@@ -535,7 +493,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     it('should error when parser fails', () => {
 
-      expect(() => (handler as any).parseBody(logger, '{""}', 'application/json')).toThrow(BadRequestHttpError);
+      expect(() => (handler as any).parseBody('{""}', 'application/json')).toThrow(BadRequestHttpError);
 
     });
 
@@ -547,7 +505,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       const body = '{"name":"name","surname":"surname"}';
 
-      const parsed = (handler as any).parseResponseBody(logger, body, 'application/json');
+      const parsed = (handler as any).parseResponseBody(body, 'application/json');
 
       expect(parsed).toEqual(body);
 
@@ -557,7 +515,7 @@ describe('NodeHttpRequestResponseHandler', () => {
 
       const body = { name: 'name', surname: 'surname' };
 
-      const parsed = (handler as any).parseResponseBody(logger, body, 'application/json');
+      const parsed = (handler as any).parseResponseBody(body, 'application/json');
 
       expect(parsed).toEqual(JSON.stringify(body));
 

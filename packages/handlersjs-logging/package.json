@@ -68,6 +68,9 @@
   "jest": {
     "preset": "@digita-ai/jest-config",
     "displayName": "logging",
+    "setupFiles": [
+      "<rootDir>/test/setup.ts"
+    ],
     "coverageThreshold": {
       "global": {
         "statements": 100,

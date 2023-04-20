@@ -1,6 +1,5 @@
 import { join } from 'path';
 import { lastValueFrom } from 'rxjs';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { NotFoundHttpError } from '../errors/not-found-http-error';
 import { ForbiddenHttpError } from '../errors/forbidden-http-error';
@@ -18,14 +17,12 @@ jest.mock('fs/promises', () => ({
 describe('HttpHandlerStaticAssetService', () => {
 
   const service: HttpHandlerStaticAssetService = new HttpHandlerStaticAssetService('test/', 'text/plain');
-  const logger = getLoggerFor(HttpHandlerStaticAssetService);
 
   let context: HttpHandlerContext;
 
   beforeEach(() => {
 
     context = {
-      logger,
       request: {
         url: new URL('http://example.com'),
         method: 'GET',
