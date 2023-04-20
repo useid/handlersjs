@@ -1,10 +1,10 @@
 import { from, Observable, of } from 'rxjs';
 import { TimedTypedKeyValueStore } from '@digita-ai/handlersjs-storage';
 import { map, switchMap } from 'rxjs/operators';
+import { getLogger } from '@digita-ai/handlersjs-logging';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
-import { getLogger } from '@digita-ai/handlersjs-logging';
 
 export class JsonStoreHandler<T extends string, M extends { [t in T]: unknown }> implements HttpHandler {
 

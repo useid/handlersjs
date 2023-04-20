@@ -5,7 +5,6 @@ import { HttpHandler } from '../../models/http-handler';
 import { BadRequestHttpError } from '../../errors/bad-request-http-error';
 import { NodeHttpRequestResponseHandler } from './node-http-request-response.handler';
 import { NodeHttpStreams } from './node-http-streams.model';
-import { getLogger } from '@digita-ai/handlersjs-logging';
 
 describe('NodeHttpRequestResponseHandler', () => {
 

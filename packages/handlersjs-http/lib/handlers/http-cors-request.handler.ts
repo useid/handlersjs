@@ -1,10 +1,10 @@
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { getLogger } from '@digita-ai/handlersjs-logging';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { cleanHeaders } from '../util/clean-headers';
-import { getLogger } from '@digita-ai/handlersjs-logging';
 
 export interface HttpCorsOptions {
   origins?: string[];

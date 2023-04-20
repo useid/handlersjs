@@ -1,11 +1,11 @@
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { getLogger } from '@digita-ai/handlersjs-logging';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerController } from '../models/http-handler-controller';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpHandlerRoute } from '../models/http-handler-route';
-import { getLogger } from '@digita-ai/handlersjs-logging';
 
 /**
  * A {HttpHandler} handling requests based on routes in a given list of {HttpHandlerController}s.

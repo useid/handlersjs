@@ -2,13 +2,13 @@ import { readFile } from 'fs/promises';
 import { join, isAbsolute } from 'path';
 import { from, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { getLogger } from '@digita-ai/handlersjs-logging';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { NotFoundHttpError } from '../errors/not-found-http-error';
 import { UnsupportedMediaTypeHttpError } from '../errors/unsupported-media-type-http-error';
 import { ForbiddenHttpError } from '../errors/forbidden-http-error';
-import { getLogger } from '@digita-ai/handlersjs-logging';
 
 export class HttpHandlerStaticAssetService implements HttpHandler {
 

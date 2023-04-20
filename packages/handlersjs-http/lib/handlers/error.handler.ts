@@ -1,9 +1,9 @@
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { getLogger } from '@digita-ai/handlersjs-logging';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
-import { getLogger } from '@digita-ai/handlersjs-logging';
 
 export const statusCodes: { [code: number]: string } = {
   400: 'Bad Request',

@@ -95,7 +95,6 @@ describe('RoutedHttpRequestHandler', () => {
 
   describe('handle', () => {
 
-
     it('should call the handle function of the handler in the HttpHandlerRoute when the requested route exists', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
