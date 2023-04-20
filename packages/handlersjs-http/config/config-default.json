@@ -55,7 +55,7 @@
                   "handler": {
                     "@type": "MockHttpHandler"
                   },
-                  "path": "/mock2"
+                  "path": "/mock2/:something"
                 }
               ]
             }
