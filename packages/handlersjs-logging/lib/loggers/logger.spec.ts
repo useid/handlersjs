@@ -1,5 +1,5 @@
-import { Logger } from './logger';
 import { LoggerLevel } from '../models/logger-level';
+import { Logger } from './logger';
 
 class MockLogger extends Logger {
 

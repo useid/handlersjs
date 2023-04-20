@@ -12,6 +12,7 @@
     "sourceMap": true,
     "strict": false
   },
+  "files": [ "test/setup.ts" ],
   "include": [
     "**/*.spec.ts"
   ],

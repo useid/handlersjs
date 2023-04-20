@@ -3,13 +3,7 @@ import { Logger } from './loggers/logger';
 
 describe('main', () => {
 
-
-  beforeEach(() => {
-
-  });
-
   describe('getLogger', () => {
-
 
     it('should throw an error when no logger is set', () => {
 
