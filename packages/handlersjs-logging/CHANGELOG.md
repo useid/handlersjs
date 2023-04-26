@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.0](https://github.com/digita-ai/handlersjs/compare/v0.17.1...v0.18.0) (2023-04-26)
+
+
+### **Features**
+
+* make use of global object for loggers ([#232](https://github.com/digita-ai/handlersjs/issues/232)) ([5823586](https://github.com/digita-ai/handlersjs/commit/5823586cd9b886a08d5000de1df8fc756c1edd1b))
+
+
+
 ### [0.17.1](https://github.com/digita-ai/handlersjs/compare/v0.17.0...v0.17.1) (2023-04-14)
 
 **Note:** Version bump only for package @digita-ai/handlersjs-logging
