@@ -1,6 +1,5 @@
 import { Handler } from '@digita-ai/handlersjs-core';
 import { lastValueFrom, of } from 'rxjs';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerController } from '../models/http-handler-controller';
@@ -96,12 +95,9 @@ describe('RoutedHttpRequestHandler', () => {
 
   describe('handle', () => {
 
-    const logger = getLoggerFor(RoutedHttpRequestHandler);
-
     it('should call the handle function of the handler in the HttpHandlerRoute when the requested route exists', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
-        logger,
         request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
       };
 
@@ -113,7 +109,6 @@ describe('RoutedHttpRequestHandler', () => {
     it('should return a 404 response when the path does not exist and no default handler exists', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
-        logger,
         request: { url: new URL('/nonExistantPath', 'http://example.com'), method: 'GET', headers: {} },
       };
 
@@ -129,7 +124,6 @@ describe('RoutedHttpRequestHandler', () => {
     it('should return a 405 response when the path exists, but the method does not match ', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
-        logger,
         request: { url: new URL('/path2', 'http://example.com'), method: 'GET', headers: {} },
       };
 
@@ -142,7 +136,6 @@ describe('RoutedHttpRequestHandler', () => {
     it('should return a 204 No Content response on an OPTIONS request', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
-        logger,
         request: { url: new URL('/path2', 'http://example.com'), method: 'OPTIONS', headers: {} },
       };
 
@@ -169,7 +162,7 @@ describe('RoutedHttpRequestHandler', () => {
 
       Object.keys(pathsAndRoutes).forEach(async (key) => {
 
-        const ctx: HttpHandlerContext = { logger, request: { url: new URL(key, 'http://example.com'), method: 'GET', headers: {} } };
+        const ctx: HttpHandlerContext = { request: { url: new URL(key, 'http://example.com'), method: 'GET', headers: {} } };
         await lastValueFrom(routedHttpRequestHandler.handle(ctx));
 
       });
@@ -234,7 +227,7 @@ describe('RoutedHttpRequestHandler', () => {
 
       Object.keys(pathsAndRoutes).forEach(async (key) => {
 
-        const ctx: HttpHandlerContext = { logger, request: { url: new URL(key, 'http://example.com'), method: 'GET', headers: {} } };
+        const ctx: HttpHandlerContext = { request: { url: new URL(key, 'http://example.com'), method: 'GET', headers: {} } };
         await lastValueFrom(routedHttpRequestHandler.handle(ctx));
 
       });
@@ -252,7 +245,6 @@ describe('RoutedHttpRequestHandler', () => {
     it('should call the preresponse handler if present', async() => {
 
       const httpHandlerContext: HttpHandlerContext = {
-        logger,
         request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
       };
 
@@ -265,7 +257,6 @@ describe('RoutedHttpRequestHandler', () => {
     it('should pass the original context to the handler when the preResponseHandler does nothing', async() => {
 
       const httpHandlerContext: HttpHandlerContext = {
-        logger,
         request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
       };
 
@@ -287,7 +278,6 @@ describe('RoutedHttpRequestHandler', () => {
     it('should add allow headers to the response when request method is OPTIONS', async() => {
 
       const httpHandlerContext: HttpHandlerContext = {
-        logger,
         request: { url: new URL('/path1', 'http://example.com'), method: 'OPTIONS', headers: {} },
       };
 
@@ -305,7 +295,6 @@ describe('RoutedHttpRequestHandler', () => {
       const defaultRoutedHttpRequestHandler = new RoutedHttpRequestHandler(handlerControllerList, defaultHandler);
 
       const httpHandlerContext: HttpHandlerContext = {
-        logger,
         request: { url: new URL('/pathWontMatch', 'http://example.com'), method: 'GET', headers: {} },
       };
 
@@ -317,7 +306,6 @@ describe('RoutedHttpRequestHandler', () => {
     it('should not add vary header by default', async() => {
 
       const httpHandlerContext: HttpHandlerContext = {
-        logger,
         request: { url: new URL('/path2', 'http://example.com'), method: 'POST', headers: {} },
       };
 
@@ -329,7 +317,6 @@ describe('RoutedHttpRequestHandler', () => {
     it('should add vary header to the response when specified in the matched route', async() => {
 
       const httpHandlerContext: HttpHandlerContext = {
-        logger,
         request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
       };
 

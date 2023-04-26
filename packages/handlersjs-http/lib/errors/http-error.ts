@@ -23,7 +23,7 @@
  */
 
 import { types } from 'util';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
+import { getLogger } from '@digita-ai/handlersjs-logging';
 
 /**
  * A class for all errors that could be thrown by Solid.
@@ -33,7 +33,7 @@ export class HttpError extends Error {
 
   protected static readonly statusCode: number;
   public readonly statusCode: number;
-  protected static readonly logger = getLoggerFor(this);
+  protected static readonly logger = getLogger();
 
   /**
    * Creates a new HTTP error. Subclasses should call this with their fixed status code.

@@ -1,4 +1,5 @@
 import { Observable, of } from 'rxjs';
+import { getLogger } from '@digita-ai/handlersjs-logging';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerResponse } from '../models/http-handler-response';
@@ -7,6 +8,8 @@ import { HttpHandlerResponse } from '../models/http-handler-response';
  * A mock of an HttpHandler used for tests
  */
 export class MockHttpHandler implements HttpHandler {
+
+  public logger = getLogger();
 
   /**
    * Returns a mock response: ```
@@ -22,7 +25,7 @@ export class MockHttpHandler implements HttpHandler {
    */
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
-    context.logger.setLabel(this);
+    this.logger.info('mock handling');
 
     const response: HttpHandlerResponse = {
       body: 'some mock output',

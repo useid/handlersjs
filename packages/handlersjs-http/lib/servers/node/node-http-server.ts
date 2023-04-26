@@ -1,6 +1,6 @@
 import { createServer, IncomingMessage, ServerResponse, Server as NodeServer } from 'http';
 import { Subject } from 'rxjs';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
+import { getLogger } from '@digita-ai/handlersjs-logging';
 import { Server } from '../../util/server';
 import { NodeHttpStreams } from './node-http-streams.model';
 import { NodeHttpStreamsHandler } from './node-http-streams.handler';
@@ -11,7 +11,7 @@ import { NodeHttpStreamsHandler } from './node-http-streams.handler';
 export class NodeHttpServer extends Server {
 
   private server: NodeServer;
-  private logger = getLoggerFor(this);
+  private logger = getLogger();
 
   /**
    * Creates a { NodeHttpServer } listening on `http://``host``:``port`, passing requests through the given { NodeHttpStreamsHandler }.

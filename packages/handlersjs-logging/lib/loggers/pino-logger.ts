@@ -2,8 +2,8 @@
 import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
 import Pino from 'pino';
 import pretty from 'pino-pretty';
-import { Logger } from '../models/logger';
 import { LoggerLevel } from '../models/logger-level';
+import { Logger } from './logger';
 
 /**
  * A logger that uses the "pino" library to log messages.
