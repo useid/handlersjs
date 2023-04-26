@@ -194,7 +194,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
       }),
       switchMap((context: HttpHandlerContext) => {
 
-        this.logger.info('Handling request: ', { context });
+        this.logger.info('Handling request: ', { eventType: 'domestic_request', context });
 
         return this.httpHandler.handle(context);
 
@@ -267,7 +267,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
       }),
       map((response) => {
 
-        this.logger.info('Sending response: ', { response });
+        this.logger.info('Sending response: ', { eventType: 'domestic_response', response });
 
         nodeHttpStreams.responseStream.writeHead(response.status, response.headers);
 
