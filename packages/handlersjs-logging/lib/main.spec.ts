@@ -7,7 +7,7 @@ describe('main', () => {
 
     it('should throw an error when no logger is set', () => {
 
-      expect(() => getLogger()).toThrowError('No logger was set. Set a logged using setLogger()');
+      expect(() => getLogger()).toThrowError('No logger was set. Set a logger using setLogger()');
 
     });
 
