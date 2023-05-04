@@ -21,7 +21,7 @@ export const setLogger = (
 export const getLogger = (): Logger => {
 
   const logger = getGlobalLogger();
-  if (!logger) throw new Error('No logger was set. Set a logged using setLogger()');
+  if (!logger) throw new Error('No logger was set. Set a logger using setLogger()');
 
   return logger;
 
