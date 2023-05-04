@@ -28,7 +28,7 @@ export class MockHttpHandler implements HttpHandler {
     this.logger.info('mock handling');
 
     const response: HttpHandlerResponse = {
-      body: 'some mock output',
+      body: Buffer.from(`some mock output (${context.request.url.toString()})`),
       headers: {},
       status: 200,
     };
