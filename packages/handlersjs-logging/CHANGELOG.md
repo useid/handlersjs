@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.18.1](https://github.com/digita-ai/handlersjs/compare/v0.18.0...v0.18.1) (2023-05-05)
+
+
+### **Bug Fixes**
+
+* typo logged -> logger ([#233](https://github.com/digita-ai/handlersjs/issues/233)) ([8311e3f](https://github.com/digita-ai/handlersjs/commit/8311e3f0dd291362f76e9112e597e5873b4879d3))
+
+
+
 ## [0.18.0](https://github.com/digita-ai/handlersjs/compare/v0.17.1...v0.18.0) (2023-04-26)
 
 
