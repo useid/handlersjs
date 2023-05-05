@@ -1,7 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { lastValueFrom, of, throwError } from 'rxjs';
 import * as mockhttp from 'mock-http';
-import { getLogger } from '@digita-ai/handlersjs-logging';
 import { HttpHandler } from '../../models/http-handler';
 import { BadRequestHttpError } from '../../errors/bad-request-http-error';
 import { NodeHttpRequestResponseHandler } from './node-http-request-response.handler';
