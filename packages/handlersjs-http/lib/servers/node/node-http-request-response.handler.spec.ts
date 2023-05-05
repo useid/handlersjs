@@ -1,6 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { lastValueFrom, of, throwError } from 'rxjs';
 import * as mockhttp from 'mock-http';
+import { getLogger } from '@digita-ai/handlersjs-logging';
 import { HttpHandler } from '../../models/http-handler';
 import { BadRequestHttpError } from '../../errors/bad-request-http-error';
 import { NodeHttpRequestResponseHandler } from './node-http-request-response.handler';
@@ -458,6 +459,28 @@ describe('NodeHttpRequestResponseHandler', () => {
           'strict-transport-security': 'max-age=5000',
         }),
       );
+
+    });
+
+    it('should not log Buffers', async () => {
+
+      
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(
+        of({ body: Buffer.from('Boeffer'), headers: { }, status:200 }),
+      );
+        
+      handler = new NodeHttpRequestResponseHandler(nestedHttpHandler);
+      const loggerSpy = jest.spyOn(handler.logger, 'info');
+      await lastValueFrom(handler.handle(streamMock));
+
+      expect(streamMock.responseStream.write).toHaveBeenCalledWith(expect.any(Buffer));
+
+      expect(loggerSpy).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({
+        eventType: 'domestic_response',
+        response: expect.objectContaining({
+          body: '<Buffer>',
+        }),
+      }));
 
     });
 
