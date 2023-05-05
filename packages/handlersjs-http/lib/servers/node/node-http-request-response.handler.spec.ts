@@ -463,11 +463,10 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     it('should not log Buffers', async () => {
 
-      
       nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(
         of({ body: Buffer.from('Boeffer'), headers: { }, status:200 }),
       );
-        
+
       handler = new NodeHttpRequestResponseHandler(nestedHttpHandler);
       const loggerSpy = jest.spyOn(handler.logger, 'info');
       await lastValueFrom(handler.handle(streamMock));
