@@ -461,6 +461,27 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     });
 
+    it('should not log Buffers', async () => {
+
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(
+        of({ body: Buffer.from('Boeffer'), headers: { }, status:200 }),
+      );
+
+      handler = new NodeHttpRequestResponseHandler(nestedHttpHandler);
+      const loggerSpy = jest.spyOn(handler.logger, 'info');
+      await lastValueFrom(handler.handle(streamMock));
+
+      expect(streamMock.responseStream.write).toHaveBeenCalledWith(expect.any(Buffer));
+
+      expect(loggerSpy).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({
+        eventType: 'domestic_response',
+        response: expect.objectContaining({
+          body: '<Buffer>',
+        }),
+      }));
+
+    });
+
   });
 
   describe('parseBody', () => {

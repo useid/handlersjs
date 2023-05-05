@@ -76,7 +76,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
   ) {
 
     // don't log the body if it is a buffer. It results in a long, illegible log.
-    this.logger.info('Parsing response body', { body: body instanceof Buffer ? 'Buffer' : body, contentType });
+    this.logger.info('Parsing response body', { body: body instanceof Buffer ? '<Buffer>' : body, contentType });
 
     if (contentType?.startsWith('application/json')) {
 
@@ -282,7 +282,15 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
         nodeHttpStreams.responseStream.end();
 
-        this.logger.info('Domestic response:', { eventType: 'domestic_response', response });
+        this.logger.info('Domestic response:', {
+          eventType: 'domestic_response',
+          response: {
+            ... response,
+            // Set body to string '<Buffer>' if it is a Buffer Object to not pollute logs
+            ... (response.body && response.body instanceof Buffer) && { body: '<Buffer>' },
+          },
+        });
+
         this.logger.clearVariables();
 
       }),
