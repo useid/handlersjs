@@ -1,6 +1,6 @@
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { getLogger } from '@digita-ai/handlersjs-logging';
+import { getLogger, makeErrorLoggable } from '@digita-ai/handlersjs-logging';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -75,7 +75,7 @@ export class ErrorHandler implements HttpHandler {
     return this.nestedHandler.handle(context).pipe(
       catchError((error) => {
 
-        this.logger.warn('Error occurred: ', { error });
+        this.logger.warn('Error occurred: ', { error: makeErrorLoggable(error) });
 
         const status = error?.statusCode ?? error.status;
         const message = error?.message ?? error.body;

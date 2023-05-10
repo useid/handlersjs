@@ -1,7 +1,7 @@
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { map, switchMap, toArray, catchError } from 'rxjs/operators';
 import { v4 } from 'uuid';
-import { getLogger } from '@digita-ai/handlersjs-logging';
+import { getLogger, makeErrorLoggable } from '@digita-ai/handlersjs-logging';
 import { BadRequestHttpError } from '../../errors/bad-request-http-error';
 import { HttpHandler } from '../../models/http-handler';
 import { HttpHandlerContext } from '../../models/http-handler-context';
@@ -204,7 +204,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
         const status = error?.statusCode ?? error.status;
         const message = error?.message ?? error.body;
 
-        this.logger.warn(`${error.name}:`, { error });
+        this.logger.warn(`Unhandled error is handled by Handlersjs :`, { error: makeErrorLoggable(error) });
 
         return of({ headers: {}, ... error, body: message ?? 'Internal Server Error', status: statusCodes[status] ? status : 500 });
 
