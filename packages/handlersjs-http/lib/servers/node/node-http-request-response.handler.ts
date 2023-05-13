@@ -110,6 +110,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!nodeHttpStreams.requestStream) {
 
+      // No request was received, this path is technically impossible to reach
       this.logger.error('No request stream received', { nodeHttpStreams });
 
       return throwError(() => new Error('request stream cannot be null or undefined.'));
@@ -118,6 +119,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!nodeHttpStreams.requestStream.headers) {
 
+      // No request headers were received, this path is technically impossible to reach
       this.logger.error('No request headers received', { requestStream: nodeHttpStreams.requestStream });
 
       return throwError(() => new Error('headers of the request cannot be null or undefined.'));
@@ -138,6 +140,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!nodeHttpStreams.responseStream) {
 
+      // No response was received, this path is technically impossible to reach
       this.logger.error('No response stream received', { nodeHttpStreams });
 
       return throwError(() => new Error('response stream cannot be null or undefined.'));
@@ -148,19 +151,36 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
     if (!url) {
 
+      // No request url was received, this path is technically impossible to reach
       this.logger.warn('No url received', { requestStream: nodeHttpStreams.requestStream });
 
       return throwError(() => new Error('url of the request cannot be null or undefined.'));
 
     }
 
+    // Check if the request method is an HTTP method + this ensures typing throughout the file
     const method = Object.values(HttpMethods).find((m) => m === nodeHttpStreams.requestStream.method);
 
     if (!method) {
 
-      this.logger.warn('No method received', { requestStream: nodeHttpStreams.requestStream });
+      if (nodeHttpStreams.requestStream.method) {
 
-      return throwError(() => new Error('method of the request cannot be null or undefined.'));
+        // An unsupported method was received
+        this.logger.warn('Invalid method received', { method: nodeHttpStreams.requestStream.method });
+        this.logger.clearVariables();
+        nodeHttpStreams.responseStream.writeHead(405, 'Only HTTP methods are allowed!');
+        nodeHttpStreams.responseStream.end();
+
+        return of(void 0);
+
+      } else {
+
+        // No request method was received, this path is technically impossible to reach
+        this.logger.warn('No method received', { requestStream: nodeHttpStreams.requestStream });
+
+        return throwError(() => new Error('method of the request cannot be null or undefined.'));
+
+      }
 
     }
 
