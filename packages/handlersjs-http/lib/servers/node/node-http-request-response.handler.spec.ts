@@ -120,6 +120,19 @@ describe('NodeHttpRequestResponseHandler', () => {
 
     });
 
+    it('should return 405 when request method is not an HTTP method', async () => {
+
+      // This is a valid header in the WebDAV protocol
+      streamMock.requestStream.method = 'PROPFIND';
+      await lastValueFrom(handler.handle(streamMock));
+
+      expect(streamMock.responseStream.writeHead).toHaveBeenCalledWith(
+        405,
+        'Only HTTP methods are allowed!',
+      );
+
+    });
+
     it('throws when headers is null/undefined', async () => {
 
       streamMock.requestStream.headers = null;
