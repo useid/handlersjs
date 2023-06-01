@@ -65,7 +65,7 @@ export class HttpCorsRequestHandler implements HttpHandler {
 
       /* Preflight Request */
 
-      this.logger.info('Processing preflight request');
+      this.logger.debug('Processing preflight request');
 
       const routeMethods = context.route?.operations.map((op) => op.method);
       const allMethods = [ 'GET', 'HEAD', 'PUT', 'POST', 'DELETE', 'PATCH' ];
@@ -100,7 +100,7 @@ export class HttpCorsRequestHandler implements HttpHandler {
 
       /* CORS Request */
 
-      this.logger.info('Processing CORS request');
+      this.logger.debug('Processing CORS request');
 
       return this.handler.handle(noCorsRequestContext).pipe(
         map((response) => ({

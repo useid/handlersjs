@@ -57,7 +57,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
 
     const pathSegments = path.split('#')[0].split('?')[0].split('/').slice(1);
 
-    this.logger.info('Finding route for path: ', { path });
+    this.logger.debug('Finding route for path: ', { path });
 
     // Find a matching route
     const match = Array.from(this.pathToRouteMap.keys()).find((route) => {
@@ -74,7 +74,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
 
     });
 
-    this.logger.info('Route matched:', { path, match: match ?? 'none' });
+    this.logger.debug('Route matched:', { path, match: match ?? 'none' });
 
     const matchingRoutes = match ? this.pathToRouteMap.get(match) : undefined;
 
@@ -99,7 +99,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
 
       // add parameters from requestPath to the request object
       const parameters = this.extractParameters(matchingRouteWithOperation.route.path.split('/').slice(1), pathSegments);
-      this.logger.info('Extracted parameters from path: ', { parameters });
+      this.logger.debug('Extracted parameters from path: ', { parameters });
       const requestWithParams = Object.assign(request, { parameters });
       const newContext = { ... context, request: requestWithParams, route: matchingRouteWithOperation.route };
       const preResponseHandler = matchingRouteWithOperation.controller.preResponseHandler;
