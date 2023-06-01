@@ -50,7 +50,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
     // case 'application/':
     //   return JSON.parse(`{"${decodeURIComponent(body).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`);
 
-    this.logger.info('Parsing request body', { body, contentType });
+    this.logger.debug('Parsing request body', { body, contentType });
 
     if (contentType?.startsWith('application/json')) {
 
@@ -76,7 +76,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
   ) {
 
     // don't log the body if it is a buffer. It results in a long, illegible log.
-    this.logger.info('Parsing response body', { body: body instanceof Buffer ? '<Buffer>' : body, contentType });
+    this.logger.debug('Parsing response body', { body: body instanceof Buffer ? '<Buffer>' : body, contentType });
 
     if (contentType?.startsWith('application/json')) {
 
@@ -136,7 +136,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
     this.logger.setVariable('correlationId', this.correlationId);
 
     // Set the logger label to the last 5 characters of the request id
-    this.logger.info('Set initial Logger variables', { variables: this.logger.getVariables() });
+    this.logger.debug('Set initial Logger variables', { variables: this.logger.getVariables() });
 
     if (!nodeHttpStreams.responseStream) {
 
@@ -287,7 +287,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
       }),
       map((response) => {
 
-        this.logger.info('Sending response');
+        this.logger.debug('Sending response');
 
         nodeHttpStreams.responseStream.writeHead(response.status, response.headers);
 
