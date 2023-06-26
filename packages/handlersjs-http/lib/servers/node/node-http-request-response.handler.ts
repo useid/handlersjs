@@ -169,10 +169,12 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
         this.logger.debug('Invalid method received', { method: nodeHttpStreams.requestStream.method });
         this.logger.clearVariables();
         nodeHttpStreams.responseStream.writeHead(501, { 'Content-Type': 'application/json' });
+
         nodeHttpStreams.responseStream.write(JSON.stringify({
           error: 'http_request_method_not_valid',
-          error_description: 'This is not a known HTTP verb'
+          error_description: 'This is not a known HTTP verb',
         }));
+
         nodeHttpStreams.responseStream.end();
 
         return of(void 0);
