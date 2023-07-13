@@ -265,7 +265,7 @@ describe('NodeHttpRequestResponseHandler', () => {
     it('should calculate the content-length of the response body as utf-8 when no charset is present', async () => {
 
       const body = 'This is a response body with a certain length.';
-      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { 'content-length': '2' }, status:200 }));
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { }, status: 200 }));
 
       await lastValueFrom(handler.handle(streamMock));
 
@@ -278,7 +278,7 @@ describe('NodeHttpRequestResponseHandler', () => {
     it('should calculate the content-length of the response body with the given charset', async () => {
 
       const body = Buffer.from('This is a response body with a certain length.').toString('base64');
-      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { 'content-length': '2', 'content-type': 'text/html; charset=base64' }, status:200 }));
+      nestedHttpHandler.handle = jest.fn().mockReturnValueOnce(of({ body, headers: { 'content-type': 'text/html; charset=base64' }, status:200 }));
 
       await lastValueFrom(handler.handle(streamMock));
 

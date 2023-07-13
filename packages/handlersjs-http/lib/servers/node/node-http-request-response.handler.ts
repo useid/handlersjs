@@ -270,7 +270,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
         const extraHeaders = {
           ... (body !== undefined && body !== null && !response.headers['content-type'] && !response.headers['Content-Type'] && typeof response.body !== 'string' && !(response.body instanceof Buffer)) && { 'content-type': 'application/json' },
-          ... (body !== undefined && body !== null) && { 'content-length': Buffer.byteLength(body, charsetString).toString() },
+          ... (body !== undefined && body !== null && !response.headers['content-length'] && !response.headers['Content-Length']) && { 'content-length': Buffer.byteLength(body, charsetString).toString() },
           ... (this.hsts?.maxAge) && { 'strict-transport-security': `max-age=${this.hsts.maxAge}${this.hsts.includeSubDomains ? '; includeSubDomains' : ''}` },
           'x-powered-by': this.poweredBy,
           'x-request-id': this.requestId,
@@ -308,12 +308,24 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
         nodeHttpStreams.responseStream.end();
 
+        let bodyToLog = '';
+
+        // Set body to string '<Buffer>' if it is a Buffer Object to not pollute logs
+        if (response.body && response.body instanceof Buffer) {
+
+          bodyToLog = '<Buffer>';
+
+        } else if (response.body && typeof response.body === 'string') {
+
+          bodyToLog = response.body.slice(0, 2000);
+
+        }
+
         this.logger.info('Domestic response:', {
           eventType: 'domestic_response',
           response: {
             ... response,
-            // Set body to string '<Buffer>' if it is a Buffer Object to not pollute logs
-            ... (response.body && response.body instanceof Buffer) && { body: '<Buffer>' },
+            ... (bodyToLog) && { body: bodyToLog },
           },
         });
 
