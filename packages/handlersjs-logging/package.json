@@ -29,7 +29,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "ssh://git@github.com/digita-ai/handlersjs.git",
+    "url": "ssh://git@github.com/useid/handlersjs.git",
     "directory": "packages/handlersjs-logging"
   },
   "author": "Digita",
