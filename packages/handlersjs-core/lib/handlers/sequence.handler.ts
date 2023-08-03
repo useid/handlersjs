@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { HandlerArgumentError } from '../errors/handler-argument-error';
@@ -27,6 +28,7 @@ export class SequenceHandler<T, S> implements Handler<T, S> {
 
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return tempInp;
 
   }

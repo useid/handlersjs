@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { lastValueFrom, of } from 'rxjs';
 import { SequenceHandler } from './sequence.handler';
 import { Handler } from './handler';
@@ -10,7 +14,7 @@ describe('SequenceHandler', () => {
   const mockHandler: Handler<number, number> = { handle: (input: number) => of(2 * input) };
   const mockHandler2: Handler<number, number> = { handle: (input: number) => of(4 * input) };
 
-  beforeEach(async () => {
+  beforeEach(() => {
 
     pipeThroughOne = new SequenceHandler([ mockHandler ]);
     pipeThroughTwo = new SequenceHandler([ mockHandler, mockHandler2 ]);
@@ -30,18 +34,22 @@ describe('SequenceHandler', () => {
 
   });
 
-  it('should error when no handlers were provided', async() => {
+  it('should error when no handlers were provided', () => {
 
-    expect(() => new SequenceHandler(null)).toThrow('Argument handlers should be set.');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect(() => new SequenceHandler(null as unknown as Handler<any, any>[])).toThrow('Argument handlers should be set.');
 
   });
 
   it('should pass on the input to every next handler', async() => {
 
     let response = await lastValueFrom(pipeThroughOne.handle(5));
-    expect(response).toEqual(10);
+
+    expect(response).toBe(10);
+
     response = await lastValueFrom(pipeThroughTwo.handle(5));
-    expect(response).toEqual(40);
+
+    expect(response).toBe(40);
 
   });
 

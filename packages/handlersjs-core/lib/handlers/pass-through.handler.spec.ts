@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { of, lastValueFrom } from 'rxjs';
 import { Handler } from './handler';
 import { PassThroughHandler } from './pass-through.handler';
@@ -19,13 +20,14 @@ describe('PassThroughHandler', () => {
   it('should be correctly instantiated', () => {
 
     const newHandler = new PassThroughHandler(nestedHandler);
+
     expect(newHandler).toBeTruthy();
 
   });
 
   it('should error when no handler was provided', () => {
 
-    expect(() => new PassThroughHandler(null)).toThrow('Argument handler should be set.');
+    expect(() => new PassThroughHandler((null as unknown as Handler<unknown, unknown>))).toThrow('Argument handler should be set.');
 
   });
 
@@ -40,6 +42,7 @@ describe('PassThroughHandler', () => {
     it('should call the nested handler', async () => {
 
       await lastValueFrom(handler.handle(input));
+
       expect(nestedHandler.handle).toHaveBeenCalledWith(input);
 
     });

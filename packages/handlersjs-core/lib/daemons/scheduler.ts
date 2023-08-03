@@ -14,7 +14,7 @@ export class Scheduler extends Daemon {
    */
   constructor(
     private readonly interval: number,
-    private readonly task: Handler<void, void>
+    private readonly task: Handler<void, void>,
   ) { super(); }
 
   /**
