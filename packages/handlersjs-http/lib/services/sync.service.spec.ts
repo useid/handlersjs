@@ -1,4 +1,9 @@
-import { MemoryStore } from '@useid/handlersjs-storage';
+/* eslint-disable @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable jest/expect-expect */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { MemoryStore, TimedTypedKeyValueStore } from '@useid/handlersjs-storage';
 import fetch from 'node-fetch';
 import { advanceBy as advanceDateBy, clear as clearDateMock } from 'jest-date-mock';
 import { lastValueFrom } from 'rxjs';
@@ -15,7 +20,7 @@ describe('SyncService', () => {
     Accept: '*/*',
   };
 
-  const peers = ['peer1.com', 'peer2.com'];
+  const peers = [ 'peer1.com', 'peer2.com' ];
 
   type M = {
     storage: number[];
@@ -34,7 +39,7 @@ describe('SyncService', () => {
   }
 
   // mocks the fetch() function with http responses according to the peerResponseMock interface
-  const mockWithStorages = (...responseMocks: peerResponseMock[]) => {
+  const mockWithStorages = (... responseMocks: peerResponseMock[]) => {
 
     fetchMock.mockImplementation(async (url, options) => {
 
@@ -67,9 +72,9 @@ describe('SyncService', () => {
     jest.resetAllMocks();
 
     store = new MemoryStore<M>([
-      ['storage', []],
-      ['peers', peers],
-      ['other', 'something else'],
+      [ 'storage', [] ],
+      [ 'peers', peers ],
+      [ 'other', 'something else' ],
     ]);
 
     fetchMock = (fetch as jest.MockedFunction<typeof fetch>);
@@ -80,7 +85,9 @@ describe('SyncService', () => {
 
   const expectStorageEquals = async (expectedStorage: number[]) => {
 
-    const contents: number[] = await store.get('storage');
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    const contents: number[] = (await store.get('storage') as number[]);
+
     expect(contents.sort()).toEqual(contents.sort());
 
   };
@@ -89,7 +96,17 @@ describe('SyncService', () => {
 
     const calls = fetchMock.mock.calls;
 
-    return calls.length === 0 ? undefined : calls[calls.length - 1][1]?.headers['If-Modified-Since'];
+    if (calls.length !== 0 && calls[calls.length - 1][1] && calls[calls.length - 1][1]?.headers) {
+
+      const h = calls[calls.length - 1][1]?.headers;
+
+      if (h) return h['If-Modified-Since'];
+
+      return undefined;
+
+    }
+
+    return undefined;
 
   };
 
@@ -101,19 +118,19 @@ describe('SyncService', () => {
 
   it('should error when no storage was provided', async () => {
 
-    expect(() => new SyncService<number, 'storage', 'peers', M>(undefined, 'peers', store)).toThrow('A storage must be provided');
+    expect(() => new SyncService<number, 'storage', 'peers', M>((undefined as unknown as 'storage'), 'peers', store)).toThrow('A storage must be provided');
 
   });
 
   it('should error when no peers were provided', async () => {
 
-    expect(() => new SyncService<number, 'storage', 'peers', M>('storage', undefined, store)).toThrow('Peers must be provided');
+    expect(() => new SyncService<number, 'storage', 'peers', M>('storage', (undefined as unknown as 'peers'), store)).toThrow('Peers must be provided');
 
   });
 
   it('should error when no store was provided', async () => {
 
-    expect(() => new SyncService<number, 'storage', 'peers', M>('storage', 'peers', undefined)).toThrow('A store must be provided');
+    expect(() => new SyncService<number, 'storage', 'peers', M>('storage', 'peers', (undefined as unknown as TimedTypedKeyValueStore<M>))).toThrow('A store must be provided');
 
   });
 
@@ -122,6 +139,7 @@ describe('SyncService', () => {
     it('resolves when there are no peers', async () => {
 
       await store.set('peers', []);
+
       await expect(lastValueFrom(syncService.handle())).resolves.toBeUndefined();
 
     });
@@ -129,6 +147,7 @@ describe('SyncService', () => {
     it('resolves when peers are undefined', async () => {
 
       await store.delete('peers');
+
       await expect(lastValueFrom(syncService.handle())).resolves.toBeUndefined();
 
     });
@@ -145,10 +164,15 @@ describe('SyncService', () => {
       it('has the If-Modified-Since header from the second request and onwards', async () => {
 
         await lastValueFrom(syncService.handle());
+
         expect(latestModifiedSinceHeader()).toBeUndefined();
+
         await lastValueFrom(syncService.handle());
+
         expect(latestModifiedSinceHeader()).toBeDefined();
+
         await lastValueFrom(syncService.handle());
+
         expect(latestModifiedSinceHeader()).toBeDefined();
 
       });
@@ -190,12 +214,12 @@ describe('SyncService', () => {
       it("doesn't update store if everything is up to date", async () => {
 
         mockWithStorages(
-          { peer: 'peer1.com', httpStatus: 200, storages: [1, 2, 3] },
-          { peer: 'peer2.com', httpStatus: 200, storages: [1, 4, 5] },
+          { peer: 'peer1.com', httpStatus: 200, storages: [ 1, 2, 3 ] },
+          { peer: 'peer2.com', httpStatus: 200, storages: [ 1, 4, 5 ] },
         );
 
         await lastValueFrom(syncService.handle());
-        expectStorageEquals([1, 2, 3, 4, 5]);
+        expectStorageEquals([ 1, 2, 3, 4, 5 ]);
 
         mockWithStorages(
           { peer: 'peer2.com', httpStatus: 304 },
@@ -203,103 +227,103 @@ describe('SyncService', () => {
         );
 
         await lastValueFrom(syncService.handle());
-        expectStorageEquals([1, 2, 3, 4, 5]);
+        expectStorageEquals([ 1, 2, 3, 4, 5 ]);
 
       });
 
       it('updates store correctly if one host has updated values', async () => {
 
         mockWithStorages(
-          { peer: 'peer1.com', httpStatus: 200, storages: [1, 2, 3] },
+          { peer: 'peer1.com', httpStatus: 200, storages: [ 1, 2, 3 ] },
         );
 
         await lastValueFrom(syncService.handle());
-        expectStorageEquals([1, 2, 3]);
+        expectStorageEquals([ 1, 2, 3 ]);
 
         mockWithStorages(
-          { peer: 'peer2.com', httpStatus: 200, storages: [13, 14, 15] },
+          { peer: 'peer2.com', httpStatus: 200, storages: [ 13, 14, 15 ] },
         );
 
         await lastValueFrom(syncService.handle());
-        expectStorageEquals([1, 2, 3, 13, 14, 15]);
+        expectStorageEquals([ 1, 2, 3, 13, 14, 15 ]);
 
       });
 
       it('updates store correctly if more than one hosts have updated values', async () => {
 
         mockWithStorages(
-          { peer: 'peer1.com', httpStatus: 200, storages: [1, 2, 3] },
-          { peer: 'peer2.com', httpStatus: 200, storages: [1, 4, 5] },
+          { peer: 'peer1.com', httpStatus: 200, storages: [ 1, 2, 3 ] },
+          { peer: 'peer2.com', httpStatus: 200, storages: [ 1, 4, 5 ] },
         );
 
         await lastValueFrom(syncService.handle());
 
-        expectStorageEquals([1, 2, 3, 4, 5]);
+        expectStorageEquals([ 1, 2, 3, 4, 5 ]);
 
       });
 
       it('updates correctly if multiple updates happen sequentially', async () => {
 
         mockWithStorages(
-          { peer: 'peer1.com', httpStatus: 200, storages: [1, 2, 3] },
-          { peer: 'peer2.com', httpStatus: 200, storages: [1, 4, 5] },
+          { peer: 'peer1.com', httpStatus: 200, storages: [ 1, 2, 3 ] },
+          { peer: 'peer2.com', httpStatus: 200, storages: [ 1, 4, 5 ] },
         );
 
         await lastValueFrom(syncService.handle());
-        expectStorageEquals([1, 2, 3, 4, 5]);
+        expectStorageEquals([ 1, 2, 3, 4, 5 ]);
 
         mockWithStorages(
-          { peer: 'peer2.com', httpStatus: 200, storages: [13, 14, 15] },
+          { peer: 'peer2.com', httpStatus: 200, storages: [ 13, 14, 15 ] },
         );
 
         await lastValueFrom(syncService.handle());
-        expectStorageEquals([1, 2, 3, 4, 5, 13, 14, 15]);
+        expectStorageEquals([ 1, 2, 3, 4, 5, 13, 14, 15 ]);
 
         mockWithStorages(
-          { peer: 'peer1.com', httpStatus: 200, storages: [11, 12, 13] },
+          { peer: 'peer1.com', httpStatus: 200, storages: [ 11, 12, 13 ] },
         );
 
         await lastValueFrom(syncService.handle());
-        expectStorageEquals([1, 2, 3, 4, 5, 11, 12, 13, 14, 15]);
+        expectStorageEquals([ 1, 2, 3, 4, 5, 11, 12, 13, 14, 15 ]);
 
       });
 
       it('updates correctly when a host joins', async () => {
 
         mockWithStorages(
-          { peer: 'peer1.com', httpStatus: 200, storages: [1, 2, 3] },
-          { peer: 'peer2.com', httpStatus: 200, storages: [1, 4, 5] },
+          { peer: 'peer1.com', httpStatus: 200, storages: [ 1, 2, 3 ] },
+          { peer: 'peer2.com', httpStatus: 200, storages: [ 1, 4, 5 ] },
         );
 
         await lastValueFrom(syncService.handle());
 
         mockWithStorages(
-          { peer: 'peer3.com', httpStatus: 200, storages: [50, 51, 52] }
+          { peer: 'peer3.com', httpStatus: 200, storages: [ 50, 51, 52 ] },
         );
 
         const peersList = await store.get('peers');
-        peersList.push('peer3.com');
-        await store.set('peers', peersList);
+        peersList?.push('peer3.com');
+        await store.set('peers', (peersList as unknown as string[]));
 
         await lastValueFrom(syncService.handle());
-        expectStorageEquals([1, 2, 3, 4, 5, 50, 51, 52]);
+        expectStorageEquals([ 1, 2, 3, 4, 5, 50, 51, 52 ]);
 
       });
 
       it('only updates the store if httpStatus is 200', async () => {
 
         const peersList = await store.get('peers');
-        peersList.push('peer3.com');
-        await store.set('peers', peersList);
+        peersList?.push('peer3.com');
+        await store.set('peers', (peersList as unknown as string[]));
 
         mockWithStorages(
-          { peer: 'peer1.com', httpStatus: 200, storages: [1, 2, 3] },
-          { peer: 'peer2.com', httpStatus: 304, storages: [4, 5, 6] },
-          { peer: 'peer3.com', httpStatus: 400, storages: [7, 8, 9] },
+          { peer: 'peer1.com', httpStatus: 200, storages: [ 1, 2, 3 ] },
+          { peer: 'peer2.com', httpStatus: 304, storages: [ 4, 5, 6 ] },
+          { peer: 'peer3.com', httpStatus: 400, storages: [ 7, 8, 9 ] },
         );
 
         await lastValueFrom(syncService.handle());
-        expectStorageEquals([1, 2, 3]);
+        expectStorageEquals([ 1, 2, 3 ]);
 
       });
 
@@ -324,7 +348,7 @@ describe('SyncService', () => {
 
         fetchMock.mockImplementation(() => { throw new Error('fetch failed'); });
 
-        await store.set('peers', ['this_is_not_a_valid_peer']);
+        await store.set('peers', [ 'this_is_not_a_valid_peer' ]);
         store.set = jest.fn();
 
         await lastValueFrom(syncService.handle());
@@ -343,13 +367,13 @@ describe('SyncService', () => {
         syncService = new SyncService<number, 'storage', 'peers', M>('storage', 'peers', store, 'endpoint');
 
         mockWithStorages(
-          { peer: 'peer1.com/endpoint', httpStatus: 200, storages: [1, 2, 3] },
-          { peer: 'peer2.com/endpoint', httpStatus: 200, storages: [1, 4, 5] },
+          { peer: 'peer1.com/endpoint', httpStatus: 200, storages: [ 1, 2, 3 ] },
+          { peer: 'peer2.com/endpoint', httpStatus: 200, storages: [ 1, 4, 5 ] },
         );
 
         await lastValueFrom(syncService.handle());
 
-        expectStorageEquals([1, 2, 3, 4, 5]);
+        expectStorageEquals([ 1, 2, 3, 4, 5 ]);
 
       });
 
@@ -358,16 +382,16 @@ describe('SyncService', () => {
         syncService = new SyncService<number, 'storage', 'peers', M>('storage', 'peers', store, 'endpoint');
 
         mockWithStorages(
-          { peer: 'peer1.com/endpoint/endpoint2', httpStatus: 200, storages: [1, 2, 3] },
-          { peer: 'peer1.com/endpoint2/endpoint', httpStatus: 200, storages: [1, 4, 5] },
-          { peer: 'peer1.com', httpStatus: 200, storages: [5, 6, 7] },
-          { peer: 'peer2.com/endpoint', httpStatus: 200, storages: [7, 8, 9] },
-          { peer: 'peer2.com/endpoint2', httpStatus: 200, storages: [8, 9, 10] },
+          { peer: 'peer1.com/endpoint/endpoint2', httpStatus: 200, storages: [ 1, 2, 3 ] },
+          { peer: 'peer1.com/endpoint2/endpoint', httpStatus: 200, storages: [ 1, 4, 5 ] },
+          { peer: 'peer1.com', httpStatus: 200, storages: [ 5, 6, 7 ] },
+          { peer: 'peer2.com/endpoint', httpStatus: 200, storages: [ 7, 8, 9 ] },
+          { peer: 'peer2.com/endpoint2', httpStatus: 200, storages: [ 8, 9, 10 ] },
         );
 
         await lastValueFrom(syncService.handle());
 
-        expectStorageEquals([7, 8, 9]);
+        expectStorageEquals([ 7, 8, 9 ]);
 
       });
 

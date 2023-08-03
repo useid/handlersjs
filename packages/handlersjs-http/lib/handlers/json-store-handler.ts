@@ -26,6 +26,7 @@ export class JsonStoreHandler<T extends string, M extends { [t in T]: unknown }>
    *
    * @returns the stringified storage data as a HTTP response, or a Not Found HTTP response
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private tryProvideData(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
     return from(this.store.get(this.data)).pipe(map((data) => {
@@ -76,7 +77,7 @@ export class JsonStoreHandler<T extends string, M extends { [t in T]: unknown }>
 
           return of({ body: '', headers: {}, status: 304 });
 
-        }) // not modified
+        }), // not modified
       );
 
     } else {

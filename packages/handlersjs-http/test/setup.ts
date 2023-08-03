@@ -1,7 +1,7 @@
 import { ConsoleLogger, LoggerLevel } from '@useid/handlersjs-logging';
 
 jest.mock('@useid/handlersjs-logging', () => ({
-  ...jest.requireActual('@useid/handlersjs-logging') as any,
+  ... jest.requireActual('@useid/handlersjs-logging'),
   setLogger: jest.fn(),
   getLogger: () => {
 

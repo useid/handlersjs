@@ -12,8 +12,8 @@ describe('JsonStoreHandler', () => {
     anotherstring: number;
   }
 
-  const inputData = ['abc', 'defghij', '123'];
-  const inputData2 = [...inputData, '456']; // another list of data that may be used to update the store
+  const inputData = [ 'abc', 'defghij', '123' ];
+  const inputData2 = [ ... inputData, '456' ]; // another list of data that may be used to update the store
 
   let jsonStoreHandler: JsonStoreHandler<'data', StoreInterface>;
   let memoryStore: MemoryStore<StoreInterface>;
@@ -21,7 +21,7 @@ describe('JsonStoreHandler', () => {
 
   beforeEach(() => {
 
-    memoryStore = new MemoryStore([['data', inputData]]);
+    memoryStore = new MemoryStore([ [ 'data', inputData ] ]);
 
     jsonStoreHandler = new JsonStoreHandler('data', memoryStore);
 
@@ -40,10 +40,10 @@ describe('JsonStoreHandler', () => {
     it('can GET the data correctly', async () => {
 
       const response: HttpHandlerResponse = await lastValueFrom(jsonStoreHandler.handle(requestContext));
-      const resultData: string[] = JSON.parse(response.body);
+      const resultData: string[] = JSON.parse(response.body as string);
 
       expect(resultData).toEqual(inputData);
-      expect(response.status).toEqual(200);
+      expect(response.status).toBe(200);
 
     });
 
@@ -62,25 +62,25 @@ describe('JsonStoreHandler', () => {
       await memoryStore.delete('data');
       const response: HttpHandlerResponse = await lastValueFrom(jsonStoreHandler.handle(requestContext));
 
-      expect(response.status).toEqual(404);
+      expect(response.status).toBe(404);
 
     });
 
     it('can GET updated data', async () => {
 
       const response: HttpHandlerResponse = await lastValueFrom(jsonStoreHandler.handle(requestContext));
-      const resultData: string[] = JSON.parse(response.body);
+      const resultData: string[] = JSON.parse(response.body as string);
 
       expect(resultData).toEqual(inputData);
-      expect(response.status).toEqual(200);
+      expect(response.status).toBe(200);
 
       // update the data
       await memoryStore.set('data', inputData2);
       const response2 = await lastValueFrom(jsonStoreHandler.handle(requestContext));
-      const resultData2 = JSON.parse(response2.body);
+      const resultData2 = JSON.parse(response2.body as string);
 
       expect(resultData2).toEqual(inputData2);
-      expect(response2.status).toEqual(200);
+      expect(response2.status).toBe(200);
 
     });
 
@@ -94,8 +94,8 @@ describe('JsonStoreHandler', () => {
         requestContext.request.headers['if-modified-since'] = nextHour.toUTCString();
         const response: HttpHandlerResponse = await lastValueFrom(jsonStoreHandler.handle(requestContext));
 
-        expect(response.status).toEqual(304); // not modified
-        expect(response.body).toEqual('');
+        expect(response.status).toBe(304); // not modified
+        expect(response.body).toBe('');
 
       });
 
@@ -104,9 +104,10 @@ describe('JsonStoreHandler', () => {
         requestContext.request.headers['if-modified-since'] = new Date(1970).toUTCString();
         const response: HttpHandlerResponse = await lastValueFrom(jsonStoreHandler.handle(requestContext));
 
-        expect(response.status).toEqual(200);
+        expect(response.status).toBe(200);
 
-        const resultData: string[] = JSON.parse(response.body);
+        const resultData: string[] = JSON.parse(response.body as string);
+
         expect(resultData).toEqual(inputData);
 
       });

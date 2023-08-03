@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Handler } from '@useid/handlersjs-core';
 import { lastValueFrom, of } from 'rxjs';
 import { HttpHandler } from '../models/http-handler';
@@ -10,9 +12,9 @@ const getMockedHttpHandler = (): HttpHandler => ({
   handle: jest.fn().mockReturnValue(of({ status: 200, headers: {} })),
 });
 
-const getMockedHttpHandlerAndRoute = (route: string): { handler: HttpHandler; route: HttpHandlerRoute; } => {
+const getMockedHttpHandlerAndRoute = (route: string): { handler: HttpHandler; route: HttpHandlerRoute } => {
 
-  const operations = [{ method: 'GET', publish: true }];
+  const operations = [ { method: 'GET', publish: true } ];
   const handler = getMockedHttpHandler();
 
   return { handler, route: { path: route, operations, handler } };
@@ -30,7 +32,7 @@ describe('RoutedHttpRequestHandler', () => {
   let mockHttpHandler: HttpHandler;
   let preresponseHandler: Handler<HttpHandlerContext, HttpHandlerContext>;
 
-  const vary = ['Accept', 'Authorization', 'Origin'];
+  const vary = [ 'Accept', 'Authorization', 'Origin' ];
 
   beforeEach(() => {
 
@@ -41,33 +43,33 @@ describe('RoutedHttpRequestHandler', () => {
       {
         label: '1',
         preResponseHandler: preresponseHandler,
-        routes: [{
-          operations: [{
+        routes: [ {
+          operations: [ {
             method: 'GET',
             publish: true,
             vary,
           }, {
             method: 'OPTIONS',
             publish: false,
-          }],
+          } ],
           path: '/path1',
           handler: mockHttpHandler,
-        }],
+        } ],
       },
       {
         label: '2',
-        routes: [{
-          operations: [{
+        routes: [ {
+          operations: [ {
             method: 'POST',
             publish: true,
           },
           {
             method: 'PUT',
             publish: true,
-          }],
+          } ],
           path: '/path2',
           handler: mockHttpHandler,
-        }],
+        } ],
       },
     ];
 
@@ -83,13 +85,13 @@ describe('RoutedHttpRequestHandler', () => {
 
   it('should throw an error when calling constructor with null', () => {
 
-    expect(() => new RoutedHttpRequestHandler(null)).toThrow('handlerControllerList must be defined.');
+    expect(() => new RoutedHttpRequestHandler((null as unknown as HttpHandlerController<HttpHandlerContext>[]))).toThrow('handlerControllerList must be defined.');
 
   });
 
   it('should throw an error when calling constructor with undefined', () => {
 
-    expect(() => new RoutedHttpRequestHandler(undefined)).toThrow('handlerControllerList must be defined.');
+    expect(() => new RoutedHttpRequestHandler((undefined as unknown as HttpHandlerController<HttpHandlerContext>[]))).toThrow('handlerControllerList must be defined.');
 
   });
 
@@ -102,6 +104,7 @@ describe('RoutedHttpRequestHandler', () => {
       };
 
       await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+
       expect(mockHttpHandler.handle).toHaveBeenCalledTimes(1);
 
     });
@@ -121,13 +124,14 @@ describe('RoutedHttpRequestHandler', () => {
 
     });
 
-    it('should return a 405 response when the path exists, but the method does not match ', async () => {
+    it('should return a 405 response when the path exists, but the method does not match', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
         request: { url: new URL('/path2', 'http://example.com'), method: 'GET', headers: {} },
       };
 
       const response = lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+
       await expect(response).resolves.toEqual(expect.objectContaining({ status: 405 }));
       await expect(response).resolves.toEqual(expect.objectContaining({ headers: { Allow: 'POST, PUT' } }));
 
@@ -140,6 +144,7 @@ describe('RoutedHttpRequestHandler', () => {
       };
 
       const response = lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+
       await expect(response).resolves.toEqual(expect.objectContaining({ status: 204 }));
       await expect(response).resolves.toEqual(expect.objectContaining({ headers: { Allow: 'POST, PUT' } }));
 
@@ -152,7 +157,7 @@ describe('RoutedHttpRequestHandler', () => {
       const { handler: neverHandler, route: neverRoute } = getMockedHttpHandlerAndRoute('/never');
 
       routedHttpRequestHandler = new RoutedHttpRequestHandler([
-        { label: 'testRoutes', routes: [oneDynamicRoute, dynamicOneRoute, neverRoute] },
+        { label: 'testRoutes', routes: [ oneDynamicRoute, dynamicOneRoute, neverRoute ] },
       ]);
 
       const pathsAndRoutes = {
@@ -167,7 +172,7 @@ describe('RoutedHttpRequestHandler', () => {
 
       });
 
-      Object.entries(pathsAndRoutes).forEach(([key, value]) => {
+      Object.entries(pathsAndRoutes).forEach(([ key, value ]) => {
 
         expect(value.handle).toHaveBeenCalledTimes(1);
 
@@ -232,7 +237,8 @@ describe('RoutedHttpRequestHandler', () => {
 
       });
 
-      Object.entries(pathsAndRoutes).forEach(([key, value]) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      Object.entries(pathsAndRoutes).forEach(([ key, value ]) => {
 
         expect(value.handle).toHaveBeenCalledTimes(1);
 
@@ -249,6 +255,7 @@ describe('RoutedHttpRequestHandler', () => {
       };
 
       await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+
       expect(preresponseHandler.handle).toHaveBeenCalledTimes(1);
       expect(mockHttpHandler.handle).toHaveBeenCalledTimes(1);
 
@@ -261,6 +268,7 @@ describe('RoutedHttpRequestHandler', () => {
       };
 
       await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+
       expect(preresponseHandler.handle).toHaveBeenCalledTimes(1);
 
       expect(preresponseHandler.handle).toHaveBeenCalledWith(
@@ -282,6 +290,7 @@ describe('RoutedHttpRequestHandler', () => {
       };
 
       const response = await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+
       expect(response.headers).toEqual(expect.objectContaining({ Allow: 'GET, OPTIONS' }));
 
     });
@@ -310,6 +319,7 @@ describe('RoutedHttpRequestHandler', () => {
       };
 
       const response = await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+
       expect(response.headers.vary).toBeUndefined();
 
     });
@@ -321,6 +331,7 @@ describe('RoutedHttpRequestHandler', () => {
       };
 
       const response = await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+
       expect(response.headers).toEqual(expect.objectContaining({ 'vary': vary.join(', ') }));
 
     });

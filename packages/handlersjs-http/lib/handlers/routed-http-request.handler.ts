@@ -14,7 +14,7 @@ import { HttpHandlerRoute } from '../models/http-handler-route';
  */
 export class RoutedHttpRequestHandler implements HttpHandler {
 
-  private pathToRouteMap: Map<string, { controller: HttpHandlerController; route: HttpHandlerRoute; }[]>;
+  private pathToRouteMap: Map<string, { controller: HttpHandlerController; route: HttpHandlerRoute }[]>;
   public logger = getLogger();
 
   /**
@@ -38,8 +38,8 @@ export class RoutedHttpRequestHandler implements HttpHandler {
         const existing = this.pathToRouteMap.get(route.path);
 
         existing
-          ? this.pathToRouteMap.set(route.path, [...existing, { controller, route }])
-          : this.pathToRouteMap.set(route.path, [{ controller, route }]);
+          ? this.pathToRouteMap.set(route.path, [ ... existing, { controller, route } ])
+          : this.pathToRouteMap.set(route.path, [ { controller, route } ]);
 
       }));
 
@@ -81,7 +81,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
     if (matchingRoutes?.length) {
 
       const matchingRouteWithOperation = matchingRoutes
-        .map((r) => ({ ...r, operation: r.route.operations.find((op) => op.method === request.method) }))
+        .map((r) => ({ ... r, operation: r.route.operations.find((op) => op.method === request.method) }))
         .find((r) => r.operation);
 
       const allowedMethods = matchingRoutes.flatMap((r) => r.route.operations.map((op) => op.method));
@@ -101,7 +101,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
       const parameters = this.extractParameters(matchingRouteWithOperation.route.path.split('/').slice(1), pathSegments);
       this.logger.debug('Extracted parameters from path: ', { parameters });
       const requestWithParams = Object.assign(request, { parameters });
-      const newContext = { ...context, request: requestWithParams, route: matchingRouteWithOperation.route };
+      const newContext = { ... context, request: requestWithParams, route: matchingRouteWithOperation.route };
       const preResponseHandler = matchingRouteWithOperation.controller.preResponseHandler;
 
       return (preResponseHandler
@@ -110,13 +110,13 @@ export class RoutedHttpRequestHandler implements HttpHandler {
       ).pipe(
         switchMap((preresponse) => matchingRouteWithOperation.route.handler.handle(preresponse)),
         map((response) => ({
-          ...response,
+          ... response,
           headers: {
-            ...response.headers,
+            ... response.headers,
             ... (request.method === 'OPTIONS') && { Allow: allowedMethods.join(', ') },
             ... (matchingRouteWithOperation.operation?.vary) && { vary: matchingRouteWithOperation.operation.vary.join(', ') },
           },
-        }))
+        })),
       );
 
     } else if (this.defaultHandler) {
@@ -135,9 +135,9 @@ export class RoutedHttpRequestHandler implements HttpHandler {
 
   }
 
-  private extractParameters(routeSegments: string[], pathSegments: string[]): { [key: string]: string; } {
+  private extractParameters(routeSegments: string[], pathSegments: string[]): { [key: string]: string } {
 
-    const parameters: { [key: string]: string; } = {};
+    const parameters: { [key: string]: string } = {};
 
     routeSegments.forEach((segment, i) => {
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { createServer, IncomingMessage, ServerResponse, Server as NodeServer } from 'http';
 import { Subject } from 'rxjs';
 import { getLogger } from '@useid/handlersjs-logging';
