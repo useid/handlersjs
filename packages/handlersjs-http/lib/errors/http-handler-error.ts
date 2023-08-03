@@ -1,4 +1,4 @@
-import { HandlerError } from '@digita-ai/handlersjs-core';
+import { HandlerError } from '@useid/handlersjs-core';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 
 export class HttpHandlerError extends HandlerError {

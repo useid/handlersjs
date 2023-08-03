@@ -1,3 +1,5 @@
+import { HttpHandler } from './http-handler';
+import { HttpHandlerContext } from './http-handler-context';
 import { HttpHandlerOperation, HttpHandlerOperationHeader, HttpHandlerOperationMedia, HttpHandlerOperationMediaPayload, HttpHandlerOperationResponse, HttpHandlerRoute } from './http-handler-route';
 
 describe('HttpHandlerRoute', () => {
@@ -8,6 +10,7 @@ describe('HttpHandlerRoute', () => {
 
       class testClass extends HttpHandlerOperationMediaPayload { }
       const object = new testClass();
+
       expect(object).toBeDefined();
       expect(object).toBeTruthy();
 
@@ -21,6 +24,7 @@ describe('HttpHandlerRoute', () => {
 
       class testClass extends HttpHandlerOperationMedia { }
       const object = new testClass('type');
+
       expect(object).toBeDefined();
       expect(object).toBeTruthy();
 
@@ -34,6 +38,7 @@ describe('HttpHandlerRoute', () => {
 
       class testClass extends HttpHandlerOperationHeader { }
       const object = new testClass('type', 'description');
+
       expect(object).toBeDefined();
       expect(object).toBeTruthy();
 
@@ -47,6 +52,7 @@ describe('HttpHandlerRoute', () => {
 
       class testClass extends HttpHandlerOperationResponse { }
       const object = new testClass(200);
+
       expect(object).toBeDefined();
       expect(object).toBeTruthy();
 
@@ -60,6 +66,7 @@ describe('HttpHandlerRoute', () => {
 
       class testClass extends HttpHandlerOperation { }
       const object = new testClass('method', true);
+
       expect(object).toBeDefined();
       expect(object).toBeTruthy();
 
@@ -73,7 +80,8 @@ describe('HttpHandlerRoute', () => {
 
     it('should be instantiated correctly', () => {
 
-      const object = new testClass(undefined, 'path', undefined);
+      const object = new testClass((undefined as unknown as HttpHandlerOperation[]), 'path', (undefined as unknown as HttpHandler<HttpHandlerContext>));
+
       expect(object).toBeDefined();
       expect(object).toBeTruthy();
 

@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable no-null/no-null */
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { map, switchMap, toArray, catchError } from 'rxjs/operators';
 import { v4 } from 'uuid';
-import { getLogger, makeErrorLoggable } from '@digita-ai/handlersjs-logging';
+import { getLogger, makeErrorLoggable } from '@useid/handlersjs-logging';
 import { BadRequestHttpError } from '../../errors/bad-request-http-error';
 import { HttpHandler } from '../../models/http-handler';
 import { HttpHandlerContext } from '../../models/http-handler-context';
@@ -58,8 +60,9 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
         return JSON.parse(body);
 
-      } catch(error: any) {
+      } catch (error: any) {
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         throw new BadRequestHttpError(error.message);
 
       }
@@ -211,6 +214,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
         const httpHandlerRequest: HttpHandlerRequest = {
           url: urlObject,
           method,
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
           headers: nodeHttpStreams.requestStream.headers as { [key: string]: string },
           ... (body && body !== '') && { body: this.parseBody(body, nodeHttpStreams.requestStream.headers['content-type']) },
         };
@@ -282,11 +286,11 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
         this.correlationId = '';
 
         return of({
-          ...response,
+          ... response,
           body,
           headers: {
-            ...response.headers,
-            ...extraHeaders,
+            ... response.headers,
+            ... extraHeaders,
           },
         });
 

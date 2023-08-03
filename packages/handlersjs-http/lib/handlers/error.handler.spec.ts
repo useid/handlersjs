@@ -1,6 +1,7 @@
 import { lastValueFrom, of, throwError } from 'rxjs';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpHandlerContext } from '../models/http-handler-context';
+import { HttpHandler } from '../models/http-handler';
 import { HttpCorsRequestHandler } from './http-cors-request.handler';
 import { ErrorHandler } from './error.handler';
 
@@ -34,8 +35,8 @@ describe('error_handler', () => {
 
   it('should error when no nested handler was received', () => {
 
-    expect(() => new ErrorHandler(null)).toThrow('A HttpHandler must be provided');
-    expect(() => new ErrorHandler(undefined)).toThrow('A HttpHandler must be provided');
+    expect(() => new ErrorHandler((null as unknown as HttpHandler))).toThrow('A HttpHandler must be provided');
+    expect(() => new ErrorHandler((undefined as unknown as HttpHandler))).toThrow('A HttpHandler must be provided');
 
   });
 
@@ -52,11 +53,12 @@ describe('error_handler', () => {
 
   `('should return $expected when $status is handled and flag is $flag', async ({ flag, status, expected }) => {
 
-      nestedHttpHandler.handle = jest.fn().mockReturnValue(throwError(() => ({ ...response, status })));
+      nestedHttpHandler.handle = jest.fn().mockReturnValue(throwError(() => ({ ... response, status })));
 
-      const newErrorHandler = new ErrorHandler(nestedHttpHandler, flag);
+      const newErrorHandler = new ErrorHandler(nestedHttpHandler, flag as boolean);
 
       const res = await lastValueFrom(newErrorHandler.handle(context));
+
       expect(res.body).toEqual(expected);
 
     });
@@ -64,7 +66,7 @@ describe('error_handler', () => {
     it('should set the upstream error as body when no body was provided in the response', async () => {
 
       nestedHttpHandler.handle = jest.fn().mockReturnValue(
-        throwError(() => ({ ...response, status: 444, body: undefined }))
+        throwError(() => ({ ... response, status: 444, body: undefined })),
       );
 
       const newErrorHandler = new ErrorHandler(nestedHttpHandler, true);
@@ -86,7 +88,7 @@ describe('error_handler', () => {
     it('should set an empty headers object on the response if none was provided and status as 500 if not known', async () => {
 
       nestedHttpHandler.handle = jest.fn().mockReturnValue(
-        throwError(() => ({ ...response, status: 444, headers: undefined }))
+        throwError(() => ({ ... response, status: 444, headers: undefined })),
       );
 
       const newErrorHandler = new ErrorHandler(nestedHttpHandler, true);
@@ -94,25 +96,26 @@ describe('error_handler', () => {
       const res = await lastValueFrom(newErrorHandler.handle(context));
 
       expect(res.headers).toEqual({});
-      expect(res.status).toEqual(500);
+      expect(res.status).toBe(500);
 
     });
 
     it('should do nothing if status is 200', async () => {
 
-      nestedHttpHandler.handle = jest.fn().mockReturnValue(of({ ...response, status: 200 }));
+      nestedHttpHandler.handle = jest.fn().mockReturnValue(of({ ... response, status: 200 }));
 
       const newErrorHandler = new ErrorHandler(nestedHttpHandler, true);
 
       const res = await lastValueFrom(newErrorHandler.handle(context));
-      expect(res.body).toEqual(`upstream response body`);
-      expect(res.status).toEqual(200);
+
+      expect(res.body).toBe(`upstream response body`);
+      expect(res.status).toBe(200);
 
     });
 
     it('should have the correct description provided by the error handler and cors headers provided by the cors handler', async () => {
 
-      nestedHttpHandler.handle = jest.fn().mockReturnValue(throwError(() => ({ ...response, status: 400 })));
+      nestedHttpHandler.handle = jest.fn().mockReturnValue(throwError(() => ({ ... response, status: 400 })));
 
       const newErrorHandler = new ErrorHandler(nestedHttpHandler, true);
       const corsHandler = new HttpCorsRequestHandler(newErrorHandler);

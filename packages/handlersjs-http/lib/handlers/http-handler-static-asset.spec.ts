@@ -51,10 +51,10 @@ describe('HttpHandlerStaticAssetService', () => {
       const absolutePath = join(__dirname, '../../test/');
       const absoluteService = new HttpHandlerStaticAssetService(absolutePath, contentType);
 
-      context.request.parameters.filename = 'test.txt';
+      context.request.parameters = { filename: 'test.txt' };
 
       const response = await lastValueFrom(absoluteService.handle(
-        { ...context, request: { ...context.request, headers: { accept: undefined } } }
+        { ... context, request: { ... context.request, headers: { accept: (undefined as unknown as string) } } },
       ));
 
       await expect(response.headers).toStrictEqual({ 'Content-Type': `${contentType}` });
@@ -63,39 +63,44 @@ describe('HttpHandlerStaticAssetService', () => {
 
     it('throws an UnsupportedMediaTypeHttpError when content-type is not supported', async() => {
 
-      const response = lastValueFrom(service.handle({ ...context, request: { ...context.request, headers: { accept: 'application/json' } } }));
-      await expect(response).rejects.toThrowError(new UnsupportedMediaTypeHttpError('Content type not supported'));
+      const response = lastValueFrom(service.handle({ ... context, request: { ... context.request, headers: { accept: 'application/json' } } }));
+
+      await expect(response).rejects.toThrow(new UnsupportedMediaTypeHttpError('Content type not supported'));
 
     });
 
     it('throws a ForbiddenHttpError when filename is invalid', async() => {
 
-      context.request.parameters.filename = '../../test.txt';
+      context.request.parameters = { filename: '../../test.txt' };
       const response = lastValueFrom(service.handle(context));
-      await expect(response).rejects.toThrowError(new ForbiddenHttpError(''));
+
+      await expect(response).rejects.toThrow(new ForbiddenHttpError(''));
 
     });
 
     it('throws a NotFoundHttpError when file is not found', async() => {
 
-      context.request.parameters.filename = 'test.php';
+      context.request.parameters = { filename: 'test.php' };
       const response = lastValueFrom(service.handle(context));
-      await expect(response).rejects.toThrowError(new NotFoundHttpError('Error while trying to read file'));
+
+      await expect(response).rejects.toThrow(new NotFoundHttpError('Error while trying to read file'));
 
     });
 
     it('throws a NotFoundHttpError when file is not provided', async() => {
 
-      context.request.parameters.filename = undefined;
+      context.request.parameters = { filename: (undefined as unknown as string) };
       const response = lastValueFrom(service.handle(context));
-      await expect(response).rejects.toThrowError(new NotFoundHttpError('Error while trying to read file'));
+
+      await expect(response).rejects.toThrow(new NotFoundHttpError('Error while trying to read file'));
 
     });
 
     it('should return file content when file is found', async() => {
 
-      context.request.parameters.filename = 'test.txt';
+      context.request.parameters = { filename: 'test.txt' };
       const response = await lastValueFrom(service.handle(context));
+
       expect(response.body).toBe('test file');
 
     });
@@ -105,8 +110,9 @@ describe('HttpHandlerStaticAssetService', () => {
       const absolutePath = join(__dirname, '../../test/');
       const absoluteService = new HttpHandlerStaticAssetService(absolutePath, 'text/plain');
 
-      context.request.parameters.filename = 'test.txt';
+      context.request.parameters = { filename: 'test.txt' };
       const response = await lastValueFrom(absoluteService.handle(context));
+
       expect(response.body).toBe('test file');
 
     });

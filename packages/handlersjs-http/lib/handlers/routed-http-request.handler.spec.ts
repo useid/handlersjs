@@ -1,4 +1,6 @@
-import { Handler } from '@digita-ai/handlersjs-core';
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/unbound-method */
+import { Handler } from '@useid/handlersjs-core';
 import { lastValueFrom, of } from 'rxjs';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -83,13 +85,13 @@ describe('RoutedHttpRequestHandler', () => {
 
   it('should throw an error when calling constructor with null', () => {
 
-    expect(() => new RoutedHttpRequestHandler(null)).toThrow('handlerControllerList must be defined.');
+    expect(() => new RoutedHttpRequestHandler((null as unknown as HttpHandlerController<HttpHandlerContext>[]))).toThrow('handlerControllerList must be defined.');
 
   });
 
   it('should throw an error when calling constructor with undefined', () => {
 
-    expect(() => new RoutedHttpRequestHandler(undefined)).toThrow('handlerControllerList must be defined.');
+    expect(() => new RoutedHttpRequestHandler((undefined as unknown as HttpHandlerController<HttpHandlerContext>[]))).toThrow('handlerControllerList must be defined.');
 
   });
 
@@ -102,6 +104,7 @@ describe('RoutedHttpRequestHandler', () => {
       };
 
       await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+
       expect(mockHttpHandler.handle).toHaveBeenCalledTimes(1);
 
     });
@@ -121,13 +124,14 @@ describe('RoutedHttpRequestHandler', () => {
 
     });
 
-    it('should return a 405 response when the path exists, but the method does not match ', async () => {
+    it('should return a 405 response when the path exists, but the method does not match', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
         request: { url: new URL('/path2', 'http://example.com'), method: 'GET', headers: {} },
       };
 
       const response = lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+
       await expect(response).resolves.toEqual(expect.objectContaining({ status: 405 }));
       await expect(response).resolves.toEqual(expect.objectContaining({ headers: { Allow: 'POST, PUT' } }));
 
@@ -140,12 +144,13 @@ describe('RoutedHttpRequestHandler', () => {
       };
 
       const response = lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+
       await expect(response).resolves.toEqual(expect.objectContaining({ status: 204 }));
       await expect(response).resolves.toEqual(expect.objectContaining({ headers: { Allow: 'POST, PUT' } }));
 
     });
 
-    it('should parse url parameters correctly', async() => {
+    it('should parse url parameters correctly', async () => {
 
       const { handler: oneDynamicHandler, route: oneDynamicRoute } = getMockedHttpHandlerAndRoute('/one/:dynamic');
       const { handler: dynamicOneHandler, route: dynamicOneRoute } = getMockedHttpHandlerAndRoute('/:dynamic/one');
@@ -188,7 +193,7 @@ describe('RoutedHttpRequestHandler', () => {
 
     });
 
-    it('should call the right handler depending on the path', async() => {
+    it('should call the right handler depending on the path', async () => {
 
       const { handler: oneHandler, route: oneRoute } = getMockedHttpHandlerAndRoute('/one');
       const { handler: twoHandler, route: twoRoute } = getMockedHttpHandlerAndRoute('/two');
@@ -232,6 +237,7 @@ describe('RoutedHttpRequestHandler', () => {
 
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       Object.entries(pathsAndRoutes).forEach(([ key, value ]) => {
 
         expect(value.handle).toHaveBeenCalledTimes(1);
@@ -242,25 +248,27 @@ describe('RoutedHttpRequestHandler', () => {
 
     });
 
-    it('should call the preresponse handler if present', async() => {
+    it('should call the preresponse handler if present', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
         request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
       };
 
       await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+
       expect(preresponseHandler.handle).toHaveBeenCalledTimes(1);
       expect(mockHttpHandler.handle).toHaveBeenCalledTimes(1);
 
     });
 
-    it('should pass the original context to the handler when the preResponseHandler does nothing', async() => {
+    it('should pass the original context to the handler when the preResponseHandler does nothing', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
         request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
       };
 
       await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+
       expect(preresponseHandler.handle).toHaveBeenCalledTimes(1);
 
       expect(preresponseHandler.handle).toHaveBeenCalledWith(
@@ -275,13 +283,14 @@ describe('RoutedHttpRequestHandler', () => {
 
     });
 
-    it('should add allow headers to the response when request method is OPTIONS', async() => {
+    it('should add allow headers to the response when request method is OPTIONS', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
         request: { url: new URL('/path1', 'http://example.com'), method: 'OPTIONS', headers: {} },
       };
 
       const response = await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+
       expect(response.headers).toEqual(expect.objectContaining({ Allow: 'GET, OPTIONS' }));
 
     });
@@ -289,7 +298,7 @@ describe('RoutedHttpRequestHandler', () => {
     it('should call handle of the defaultHandler when no route is matched', async () => {
 
       const defaultHandler: HttpHandler = {
-        handle: jest.fn().mockReturnValueOnce(of({ body: 'defaultHandler mockBody', headers: {}, status:200 })),
+        handle: jest.fn().mockReturnValueOnce(of({ body: 'defaultHandler mockBody', headers: {}, status: 200 })),
       };
 
       const defaultRoutedHttpRequestHandler = new RoutedHttpRequestHandler(handlerControllerList, defaultHandler);
@@ -298,29 +307,31 @@ describe('RoutedHttpRequestHandler', () => {
         request: { url: new URL('/pathWontMatch', 'http://example.com'), method: 'GET', headers: {} },
       };
 
-      await expect(lastValueFrom(defaultRoutedHttpRequestHandler.handle(httpHandlerContext))).resolves.toEqual({ body: 'defaultHandler mockBody', headers: {}, status:200 });
+      await expect(lastValueFrom(defaultRoutedHttpRequestHandler.handle(httpHandlerContext))).resolves.toEqual({ body: 'defaultHandler mockBody', headers: {}, status: 200 });
       expect(defaultHandler.handle).toHaveBeenCalledTimes(1);
 
     });
 
-    it('should not add vary header by default', async() => {
+    it('should not add vary header by default', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
         request: { url: new URL('/path2', 'http://example.com'), method: 'POST', headers: {} },
       };
 
       const response = await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+
       expect(response.headers.vary).toBeUndefined();
 
     });
 
-    it('should add vary header to the response when specified in the matched route', async() => {
+    it('should add vary header to the response when specified in the matched route', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
         request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
       };
 
       const response = await lastValueFrom(routedHttpRequestHandler.handle(httpHandlerContext));
+
       expect(response.headers).toEqual(expect.objectContaining({ 'vary': vary.join(', ') }));
 
     });

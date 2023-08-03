@@ -1,5 +1,5 @@
 import { lastValueFrom } from 'rxjs';
-import { MemoryStore } from '@digita-ai/handlersjs-storage';
+import { MemoryStore } from '@useid/handlersjs-storage';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpMethods } from '../models/http-method';
@@ -40,10 +40,10 @@ describe('JsonStoreHandler', () => {
     it('can GET the data correctly', async () => {
 
       const response: HttpHandlerResponse = await lastValueFrom(jsonStoreHandler.handle(requestContext));
-      const resultData: string[] = JSON.parse(response.body);
+      const resultData: string[] = JSON.parse(response.body as string);
 
       expect(resultData).toEqual(inputData);
-      expect(response.status).toEqual(200);
+      expect(response.status).toBe(200);
 
     });
 
@@ -62,25 +62,25 @@ describe('JsonStoreHandler', () => {
       await memoryStore.delete('data');
       const response: HttpHandlerResponse = await lastValueFrom(jsonStoreHandler.handle(requestContext));
 
-      expect(response.status).toEqual(404);
+      expect(response.status).toBe(404);
 
     });
 
     it('can GET updated data', async () => {
 
       const response: HttpHandlerResponse = await lastValueFrom(jsonStoreHandler.handle(requestContext));
-      const resultData: string[] = JSON.parse(response.body);
+      const resultData: string[] = JSON.parse(response.body as string);
 
       expect(resultData).toEqual(inputData);
-      expect(response.status).toEqual(200);
+      expect(response.status).toBe(200);
 
       // update the data
       await memoryStore.set('data', inputData2);
       const response2 = await lastValueFrom(jsonStoreHandler.handle(requestContext));
-      const resultData2 = JSON.parse(response2.body);
+      const resultData2 = JSON.parse(response2.body as string);
 
       expect(resultData2).toEqual(inputData2);
-      expect(response2.status).toEqual(200);
+      expect(response2.status).toBe(200);
 
     });
 
@@ -89,13 +89,13 @@ describe('JsonStoreHandler', () => {
       it('doesn\'t return the data if the data wasn\'t updated', async () => {
 
         const nextHour = new Date();
-        nextHour.setTime(nextHour.getTime() + 60*60*1000);
+        nextHour.setTime(nextHour.getTime() + 60 * 60 * 1000);
 
         requestContext.request.headers['if-modified-since'] = nextHour.toUTCString();
         const response: HttpHandlerResponse = await lastValueFrom(jsonStoreHandler.handle(requestContext));
 
-        expect(response.status).toEqual(304); // not modified
-        expect(response.body).toEqual('');
+        expect(response.status).toBe(304); // not modified
+        expect(response.body).toBe('');
 
       });
 
@@ -104,9 +104,10 @@ describe('JsonStoreHandler', () => {
         requestContext.request.headers['if-modified-since'] = new Date(1970).toUTCString();
         const response: HttpHandlerResponse = await lastValueFrom(jsonStoreHandler.handle(requestContext));
 
-        expect(response.status).toEqual(200);
+        expect(response.status).toBe(200);
 
-        const resultData: string[] = JSON.parse(response.body);
+        const resultData: string[] = JSON.parse(response.body as string);
+
         expect(resultData).toEqual(inputData);
 
       });

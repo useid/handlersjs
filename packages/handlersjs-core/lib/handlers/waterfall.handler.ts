@@ -16,7 +16,7 @@ export class WaterfallHandler<T, S> implements Handler<T, S> {
     return this.handlers.reduce<Observable<S>>((previousOutput, nextHandler) => previousOutput.pipe(
       catchError(() => nextHandler.handle(input)),
     ), throwError(() => void 0)).pipe(
-      catchError(() => throwError(() => new HandlerArgumentError('No handler can handle the input.', input)))
+      catchError(() => throwError(() => new HandlerArgumentError('No handler can handle the input.', input))),
     );
 
   }

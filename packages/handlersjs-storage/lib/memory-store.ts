@@ -45,32 +45,34 @@ export class MemoryStore<M> implements TimedTypedKeyValueStore<M> {
 
   }
 
-  async get<T extends keyof M>(key: T): Promise<M[T] | undefined> {
+  get<T extends keyof M>(key: T): Promise<M[T] | undefined> {
 
-    return this.data.has(key) ? clone(this.data.get(key)?.value as M[T]) : undefined;
-
-  }
-
-  async has<T extends keyof M>(key: T): Promise<boolean> {
-
-    return this.data.has(key);
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return Promise.resolve(this.data.has(key) ? clone(this.data.get(key)?.value as M[T]) : undefined);
 
   }
 
-  async set<T extends keyof M>(key: T, value: M[T]): Promise<this> {
+  has<T extends keyof M>(key: T): Promise<boolean> {
+
+    return Promise.resolve(this.data.has(key));
+
+  }
+
+  set<T extends keyof M>(key: T, value: M[T]): Promise<this> {
 
     this.data.set(key, { value: clone(value), timestamp: Date.now() });
 
-    return this;
+    return Promise.resolve(this);
 
   }
 
-  async delete<T extends keyof M>(key: T): Promise<boolean> {
+  delete<T extends keyof M>(key: T): Promise<boolean> {
 
-    return this.data.delete(key);
+    return Promise.resolve(this.data.delete(key));
 
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async* entries(): AsyncIterableIterator<[keyof M, M[keyof M]]> {
 
     for (const [ key, value ] of this.data.entries()) {
@@ -81,17 +83,17 @@ export class MemoryStore<M> implements TimedTypedKeyValueStore<M> {
 
   }
 
-  async latestUpdate<T extends keyof M>(key: T): Promise<number | undefined> {
+  latestUpdate<T extends keyof M>(key: T): Promise<number | undefined> {
 
-    return this.data.get(key)?.timestamp;
+    return Promise.resolve(this.data.get(key)?.timestamp);
 
   }
 
-  async hasUpdate <T extends keyof M>(key: T, time: number): Promise<boolean | undefined> {
+  hasUpdate <T extends keyof M>(key: T, time: number): Promise<boolean | undefined> {
 
     const timedValue = this.data.get(key);
 
-    return timedValue ? timedValue.timestamp > time : undefined;
+    return Promise.resolve(timedValue ? timedValue.timestamp > time : undefined);
 
   }
 

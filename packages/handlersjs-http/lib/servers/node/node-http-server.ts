@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { createServer, IncomingMessage, ServerResponse, Server as NodeServer } from 'http';
 import { Subject } from 'rxjs';
-import { getLogger } from '@digita-ai/handlersjs-logging';
+import { getLogger } from '@useid/handlersjs-logging';
 import { Server } from '../../util/server';
 import { NodeHttpStreams } from './node-http-streams.model';
 import { NodeHttpStreamsHandler } from './node-http-streams.handler';
@@ -25,7 +26,7 @@ export class NodeHttpServer extends Server {
     protected host: string,
     protected port: number,
     private nodeHttpStreamsHandler: NodeHttpStreamsHandler,
-  ){
+  ) {
 
     super(`http`, host, port);
 

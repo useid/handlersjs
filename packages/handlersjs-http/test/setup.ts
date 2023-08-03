@@ -1,7 +1,7 @@
-import { ConsoleLogger, LoggerLevel } from '@digita-ai/handlersjs-logging';
+import { ConsoleLogger, LoggerLevel } from '@useid/handlersjs-logging';
 
-jest.mock('@digita-ai/handlersjs-logging', () => ({
-  ... jest.requireActual('@digita-ai/handlersjs-logging') as any,
+jest.mock('@useid/handlersjs-logging', () => ({
+  ... jest.requireActual('@useid/handlersjs-logging'),
   setLogger: jest.fn(),
   getLogger: () => {
 

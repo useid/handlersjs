@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { IncomingMessage, ServerResponse } from 'http';
 import { Socket } from 'net';
 import { lastValueFrom, of } from 'rxjs';
 import { HttpHandler } from '../../models/http-handler';
 import { NodeHttpServer } from './node-http-server';
 import { NodeHttpRequestResponseHandler } from './node-http-request-response.handler';
+import { NodeHttpStreamsHandler } from './node-http-streams.handler';
 
 describe('NodeHttpServer', () => {
 
@@ -40,19 +42,19 @@ describe('NodeHttpServer', () => {
 
   it('should throw error when no host was provided', () => {
 
-    expect(() => new NodeHttpServer(null, port, handler)).toThrow('A host must be provided');
+    expect(() => new NodeHttpServer((null as unknown as string), port, handler)).toThrow('A host must be provided');
 
   });
 
   it('should throw error when no port was provided', () => {
 
-    expect(() => new NodeHttpServer(host, null, handler)).toThrow('A port must be provided');
+    expect(() => new NodeHttpServer(host, (null as unknown as number), handler)).toThrow('A port must be provided');
 
   });
 
   it('should throw error when no handler was provided', () => {
 
-    expect(() => new NodeHttpServer(host, port, null)).toThrow('A handler must be provided');
+    expect(() => new NodeHttpServer(host, port, (null as unknown as NodeHttpStreamsHandler))).toThrow('A handler must be provided');
 
   });
 
@@ -61,6 +63,7 @@ describe('NodeHttpServer', () => {
     it('should return server if all goes well', async () => {
 
       await expect(lastValueFrom(server.start())).resolves.toEqual(server);
+
       await lastValueFrom(server.stop());
 
     });
@@ -84,6 +87,7 @@ describe('NodeHttpServer', () => {
     it('should return server if all goes well', async () => {
 
       await lastValueFrom(server.start());
+
       await expect(lastValueFrom(server.stop())).resolves.toEqual(server);
 
     });
@@ -107,21 +111,22 @@ describe('NodeHttpServer', () => {
     it('should call the handle function of the nested handler', () => {
 
       server.serverHelper(req, res);
+
       expect(handler.handle).toHaveBeenCalledTimes(1);
 
     });
 
     it('should throw an error when request is null or undefined', () => {
 
-      expect(() => server.serverHelper(null, res)).toThrow('request must be defined.');
-      expect(() => server.serverHelper(undefined, res)).toThrow('request must be defined.');
+      expect(() => server.serverHelper((null as unknown as IncomingMessage), res)).toThrow('request must be defined.');
+      expect(() => server.serverHelper((undefined as unknown as IncomingMessage), res)).toThrow('request must be defined.');
 
     });
 
     it('should throw an error when response is null or undefined', () => {
 
-      expect(() => server.serverHelper(req, null)).toThrow('response must be defined.');
-      expect(() => server.serverHelper(req, undefined)).toThrow('response must be defined.');
+      expect(() => server.serverHelper(req, (null as unknown as ServerResponse<IncomingMessage>))).toThrow('response must be defined.');
+      expect(() => server.serverHelper(req, (undefined as unknown as ServerResponse<IncomingMessage>))).toThrow('response must be defined.');
 
     });
 

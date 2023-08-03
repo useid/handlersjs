@@ -31,5 +31,5 @@ Email: [your GitHub e-mail address]
 Bugs and other issues are very welcome. To contribute PRs, clone the repository, and set up your git environment as specified above.
 
 ```
-$ git clone git@github.com:digita-ai/handlersjs.git
+$ git clone git@github.com:useid/handlersjs.git
 ```
