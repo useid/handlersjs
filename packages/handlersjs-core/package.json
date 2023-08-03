@@ -37,7 +37,7 @@
   "author": "Wouter Janssens",
   "license": "ISC",
   "devDependencies": {
-    "@useid/typescript-config": "^0.6.2",
+    "@useid/typescript-config": "^0.7.0",
     "@types/clone": "^2.1.1",
     "@types/jest": "^27.0.2",
     "@types/n3": "1.10.0",
@@ -49,7 +49,7 @@
     "lint-staged": "^12.0.2",
     "rimraf": "^2.7.1",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.3"
+    "typescript": "^5.0.4"
   },
   "dependencies": {
     "@types/node": "^18.0.0",
