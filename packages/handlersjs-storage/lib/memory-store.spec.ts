@@ -29,8 +29,8 @@ describe('MemoryStore', () => {
 
     store = new MemoryStore(initialData);
 
-    await expect(store.get('key1')).resolves.toEqual(4);
-    await expect(store.get('key2')).resolves.toEqual('123');
+    await expect(store.get('key1')).resolves.toBe(4);
+    await expect(store.get('key2')).resolves.toBe('123');
     await expect(store.get('key4')).resolves.toEqual([ '', '', '321' ]);
 
   });
@@ -39,7 +39,7 @@ describe('MemoryStore', () => {
 
     store = new MemoryStore();
 
-    await expect(store.has('key1')).resolves.toEqual(false);
+    await expect(store.has('key1')).resolves.toBe(false);
 
   });
 
@@ -62,8 +62,8 @@ describe('MemoryStore', () => {
       await store.set('key1', 5);
       await store.set('key2', 'test');
 
-      await expect(store.get('key1')).resolves.toEqual(5);
-      await expect(store.get('key2')).resolves.toEqual('test');
+      await expect(store.get('key1')).resolves.toBe(5);
+      await expect(store.get('key2')).resolves.toBe('test');
 
     });
 
@@ -77,10 +77,11 @@ describe('MemoryStore', () => {
 
       await store.set('key5', new Set([ 'abc', 'def' ]));
 
-      const set = await store.get('key5');
+      // we can assume key5 will not be undefined
+      const set = await store.get('key5') as unknown as Set<string>;
       set.add('123');
 
-      expect(store.get('key5')).resolves.toEqual(new Set([ 'abc', 'def' ]));
+      await expect(store.get('key5')).resolves.toEqual(new Set([ 'abc', 'def' ]));
 
     });
 
@@ -91,7 +92,8 @@ describe('MemoryStore', () => {
     it('can set a key', async () => {
 
       await store.set('key1', 5);
-      await expect(store.get('key1')).resolves.toEqual(5);
+
+      await expect(store.get('key1')).resolves.toBe(5);
 
     });
 
@@ -99,7 +101,8 @@ describe('MemoryStore', () => {
 
       await store.set('key1', 5);
       await store.set('key1', 8);
-      await expect(store.get('key1')).resolves.toEqual(8);
+
+      await expect(store.get('key1')).resolves.toBe(8);
 
     });
 
@@ -109,7 +112,7 @@ describe('MemoryStore', () => {
       await store.set('key5', set);
       set.add('123');
 
-      expect(store.get('key5')).resolves.toEqual(new Set([ 'abc', 'def' ]));
+      await expect(store.get('key5')).resolves.toEqual(new Set([ 'abc', 'def' ]));
 
     });
 
@@ -130,6 +133,7 @@ describe('MemoryStore', () => {
     it('should have keys that were added', async () => {
 
       await store.set('key1', 5);
+
       await expect(store.has('key1')).resolves.toBe(true);
       // implies ->
       await expect(store.get('key1')).resolves.toBeDefined();
@@ -145,7 +149,8 @@ describe('MemoryStore', () => {
     it('should not contain a deleted key', async () => {
 
       await store.set('key2', 'test');
-      await expect(store.get('key2')).resolves.toEqual('test');
+
+      await expect(store.get('key2')).resolves.toBe('test');
       await expect(store.delete('key2')).resolves.toBe(true);
 
       await expect(store.has('key2')).resolves.toBe(false);
@@ -156,19 +161,21 @@ describe('MemoryStore', () => {
     it('can add an item again after deletion', async () => {
 
       await store.set('key2', 'test');
-      await expect(store.get('key2')).resolves.toEqual('test');
+
+      await expect(store.get('key2')).resolves.toBe('test');
       await expect(store.delete('key2')).resolves.toBe(true);
 
       await store.set('key2', 'test2');
 
       await expect(store.has('key2')).resolves.toBe(true);
-      await expect(store.get('key2')).resolves.toEqual('test2');
+      await expect(store.get('key2')).resolves.toBe('test2');
 
     });
 
     it('can not delete a value twice', async () => {
 
       await store.set('key2', 'test');
+
       await expect(store.delete('key2')).resolves.toBe(true);
       await expect(store.delete('key2')).resolves.toBe(false);
 
@@ -180,7 +187,7 @@ describe('MemoryStore', () => {
 
     it('should not iterate over keys pairs when it is empty', async () => {
 
-      store.entries().next().then((result) => {
+      await store.entries().next().then((result) => {
 
         expect(result.done).toBe(true);
 
@@ -192,10 +199,10 @@ describe('MemoryStore', () => {
 
       await store.set('key5', new Set([ 'abc', 'def' ]));
 
-      const set = (await store.entries().next()).value[1] as Set<string>;
+      const set = ((await store.entries().next()).value as unknown[])[1] as Set<string>;
       set.add('123');
 
-      expect(store.get('key5')).resolves.toEqual(new Set([ 'abc', 'def' ]));
+      await expect(store.get('key5')).resolves.toEqual(new Set([ 'abc', 'def' ]));
 
     });
 
@@ -209,11 +216,16 @@ describe('MemoryStore', () => {
 
       const allValuesMap: Map<keyof TestInterface, TestInterface[keyof TestInterface]> = new Map(allValues);
 
-      allValuesMap.forEach((value, key) => store.set(key, value));
+      for (const [ key, value ] of allValues) {
+
+        await store.set(key, value);
+
+      }
 
       for await (const [ key, value ] of store.entries()) {
 
         expect(value).toEqual(allValuesMap.get(key));
+
         allValuesMap.delete(key);
 
       }
@@ -230,8 +242,12 @@ describe('MemoryStore', () => {
 
       const beforeSetTime = Date.now() - 1;
       await store.set('key1', 8);
-      const setTime = await store.latestUpdate('key1');
+      let setTime = await store.latestUpdate('key1');
       const afterSetTime = Date.now() + 1;
+
+      expect(setTime).toBeDefined();
+
+      setTime = setTime as unknown as number ;
 
       expect(beforeSetTime < setTime && setTime < afterSetTime).toBe(true);
 

@@ -17,9 +17,13 @@ export class LocalStorageStore<M> implements TypedKeyValueStore<M> {
 
     const localStorageStoreString = localStorage.getItem('localStorageStore');
 
-    const localStorageStore = localStorageStoreString ? JSON.parse(localStorageStoreString) : undefined;
+    const localStorageStore = localStorageStoreString
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      ? JSON.parse(localStorageStoreString) as Record<T, unknown>
+      : undefined;
 
-    return localStorageStore ? localStorageStore[key] : undefined;
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return Promise.resolve(localStorageStore ? localStorageStore[key] as M[T] : undefined);
 
   }
 
@@ -27,9 +31,15 @@ export class LocalStorageStore<M> implements TypedKeyValueStore<M> {
 
     const localStorageStoreString = localStorage.getItem('localStorageStore');
 
-    const localStorageStore = localStorageStoreString ? JSON.parse(localStorageStoreString) : undefined;
+    const localStorageStore = localStorageStoreString
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      ? JSON.parse(localStorageStoreString) as Record<T, unknown>
+      : undefined;
 
-    return localStorageStore ? localStorageStore[key] !== undefined : false;
+    return Promise.resolve(localStorageStore
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      ? localStorageStore[key] !== undefined
+      : false);
 
   }
 
@@ -37,13 +47,17 @@ export class LocalStorageStore<M> implements TypedKeyValueStore<M> {
 
     const localStorageStoreString = localStorage.getItem('localStorageStore');
 
-    const localStorageStore = localStorageStoreString ? JSON.parse(localStorageStoreString) : undefined;
+    const localStorageStore = localStorageStoreString
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      ? JSON.parse(localStorageStoreString) as Record<T, unknown>
+      : undefined;
 
-    localStorageStore[key] = value;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    localStorageStore![key] = value;
 
     localStorage.setItem('localStorageStore', JSON.stringify(localStorageStore));
 
-    return this;
+    return Promise.resolve(this);
 
   }
 
@@ -51,18 +65,22 @@ export class LocalStorageStore<M> implements TypedKeyValueStore<M> {
 
     const localStorageStoreString = localStorage.getItem('localStorageStore');
 
-    const localStorageStore = localStorageStoreString ? JSON.parse(localStorageStoreString) : undefined;
+    const localStorageStore = localStorageStoreString
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      ? JSON.parse(localStorageStoreString) as Record<T, unknown>
+      : undefined;
 
-    localStorageStore[key] = undefined;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    localStorageStore![key] = undefined;
 
     localStorage.setItem('localStorageStore', JSON.stringify(localStorageStore));
 
-    return this.has(key);
+    return Promise.resolve(this.has(key));
 
   }
 
   // eslint-disable-next-line require-yield
-  async* entries(): AsyncIterableIterator<[keyof M, M[keyof M]]> {
+  entries(): AsyncIterableIterator<[keyof M, M[keyof M]]> {
 
     throw new Error('Not Implemented');
 

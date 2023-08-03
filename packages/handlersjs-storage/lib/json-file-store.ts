@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /**
  * MIT License
  *
@@ -29,6 +30,7 @@ import { TypedKeyValueStore } from './models/typed-key-value-store';
 /**
  * Uses a JSON file to store key/value pairs.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class JsonFileStore<M extends Record<string, any>> implements TypedKeyValueStore<M> {
 
   private path: string;
@@ -43,7 +45,7 @@ export class JsonFileStore<M extends Record<string, any>> implements TypedKeyVal
 
     const json = await this.getJson();
 
-    return json[key];
+    return Promise.resolve(json[key]);
 
   }
 
@@ -73,7 +75,7 @@ export class JsonFileStore<M extends Record<string, any>> implements TypedKeyVal
 
       if (typeof json[key] !== 'undefined') {
 
-        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete, no-param-reassign
         delete json[key];
 
         return true;
@@ -111,6 +113,7 @@ export class JsonFileStore<M extends Record<string, any>> implements TypedKeyVal
 
       const json = await this.getJson();
       const result = updateFn(json);
+      // eslint-disable-next-line no-null/no-null
       const updatedText = JSON.stringify(json, null, 2);
       await fsPromises.mkdir(dirname(this.path), { recursive: true });
       await fsPromises.writeFile(this.path, updatedText, 'utf8');
@@ -130,11 +133,15 @@ export class JsonFileStore<M extends Record<string, any>> implements TypedKeyVal
 
       const text = await fsPromises.readFile(this.path, 'utf8');
 
-      return JSON.parse(text);
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      return JSON.parse(text) as M;
 
+      // eslint-disable-next-line padded-blocks
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
 
-      if (error && error.syscall && error.code && error.code === 'ENOENT') { return {} as M; }
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/dot-notation, @typescript-eslint/no-unsafe-member-access
+      if (error && error['syscall'] && error['code'] && error['code'] === 'ENOENT') { return {} as M; }
 
       throw error;
 

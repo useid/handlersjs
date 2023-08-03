@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-commented-out-tests */
 
 import { promises as fsPromises } from 'fs';
 import { join } from 'path';
@@ -35,11 +36,11 @@ describe('JsonFileStore', () => {
 
   });
 
-  it('can be initialized', async () => {
+  it('can be initialized', () => {
 
     store = new JsonFileStore('test/store.json');
 
-    await expect(store).toBeTruthy();
+    expect(store).toBeTruthy();
 
   });
 
@@ -50,8 +51,8 @@ describe('JsonFileStore', () => {
       await store.set('key1', 5);
       await store.set('key2', 'test');
 
-      await expect(store.get('key1')).resolves.toEqual(5);
-      await expect(store.get('key2')).resolves.toEqual('test');
+      await expect(store.get('key1')).resolves.toBe(5);
+      await expect(store.get('key2')).resolves.toBe('test');
 
     });
 
@@ -68,7 +69,8 @@ describe('JsonFileStore', () => {
     it('can set a key', async () => {
 
       await store.set('key1', 5);
-      await expect(store.get('key1')).resolves.toEqual(5);
+
+      await expect(store.get('key1')).resolves.toBe(5);
 
     });
 
@@ -76,7 +78,8 @@ describe('JsonFileStore', () => {
 
       await store.set('key1', 5);
       await store.set('key1', 8);
-      await expect(store.get('key1')).resolves.toEqual(8);
+
+      await expect(store.get('key1')).resolves.toBe(8);
 
     });
 
@@ -97,6 +100,7 @@ describe('JsonFileStore', () => {
     it('should have keys that were added', async () => {
 
       await store.set('key1', 5);
+
       await expect(store.has('key1')).resolves.toBe(true);
       // implies ->
       await expect(store.get('key1')).resolves.toBeDefined();
@@ -112,7 +116,8 @@ describe('JsonFileStore', () => {
     it('should not contain a deleted key', async () => {
 
       await store.set('key2', 'test');
-      await expect(store.get('key2')).resolves.toEqual('test');
+
+      await expect(store.get('key2')).resolves.toBe('test');
       await expect(store.delete('key2')).resolves.toBe(true);
 
       await expect(store.has('key2')).resolves.toBe(false);
@@ -123,19 +128,21 @@ describe('JsonFileStore', () => {
     it('can add an item again after deletion', async () => {
 
       await store.set('key2', 'test');
-      await expect(store.get('key2')).resolves.toEqual('test');
+
+      await expect(store.get('key2')).resolves.toBe('test');
       await expect(store.delete('key2')).resolves.toBe(true);
 
       await store.set('key2', 'test2');
 
       await expect(store.has('key2')).resolves.toBe(true);
-      await expect(store.get('key2')).resolves.toEqual('test2');
+      await expect(store.get('key2')).resolves.toBe('test2');
 
     });
 
     it('can not delete a value twice', async () => {
 
       await store.set('key2', 'test');
+
       await expect(store.delete('key2')).resolves.toBe(true);
       await expect(store.delete('key2')).resolves.toBe(false);
 
@@ -147,7 +154,7 @@ describe('JsonFileStore', () => {
 
     it('should not iterate over keys pairs when it is empty', async () => {
 
-      store.entries().next().then((result) => {
+      await store.entries().next().then((result) => {
 
         expect(result.done).toBe(true);
 
@@ -169,7 +176,8 @@ describe('JsonFileStore', () => {
 
       for await (const [ key, value ] of store.entries()) {
 
-        await expect(value).toEqual(allValuesMap.get(key));
+        expect(value).toEqual(allValuesMap.get(key));
+
         allValuesMap.delete(key);
 
       }
