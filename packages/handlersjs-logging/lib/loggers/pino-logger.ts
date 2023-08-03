@@ -31,6 +31,7 @@ export class PinoLogger extends Logger {
 
   log(level: LoggerLevel, message: string, data?: unknown): void {
 
+    // eslint-disable-next-line no-null/no-null
     if (level === null || level === undefined) {
 
       throw new HandlerArgumentError('level should be set', level);

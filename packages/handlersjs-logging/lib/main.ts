@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Logger } from './loggers/logger';
 
 const loggerKey = '__LOGGER__HANDLERSJS__LOGGING__';
