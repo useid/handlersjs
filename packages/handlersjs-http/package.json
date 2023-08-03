@@ -1,5 +1,5 @@
 {
-  "name": "@digita-ai/handlersjs-http",
+  "name": "@useid/handlersjs-http",
   "version": "0.19.3",
   "description": "",
   "main": "./dist/index.js",
@@ -20,7 +20,7 @@
   ],
   "scripts": {
     "start": "node ./dist/main.js",
-    "add": "cd ../.. && npx lerna --scope @digita-ai/handlersjs-http add",
+    "add": "cd ../.. && npx lerna --scope @useid/handlersjs-http add",
     "build": "rimraf ./dist && npm run build:ts && npm run build:components",
     "build:ts": "tsc",
     "build:components": "componentsjs-generator -s lib -c dist/components -i .componentsignore --lenient",
@@ -39,7 +39,7 @@
   "author": "Wouter Janssens",
   "license": "ISC",
   "devDependencies": {
-    "@digita-ai/typescript-config": "^0.3.2",
+    "@useid/typescript-config": "^0.3.2",
     "@types/jest": "^27.0.2",
     "@types/n3": "1.10.0",
     "@types/node": "^14.14.41",
@@ -59,25 +59,25 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
-    "@digita-ai/handlersjs-core": "0.19.3",
-    "@digita-ai/handlersjs-logging": "0.19.3",
-    "@digita-ai/handlersjs-storage": "0.19.3",
+    "@useid/handlersjs-core": "0.19.3",
+    "@useid/handlersjs-logging": "0.19.3",
+    "@useid/handlersjs-storage": "0.19.3",
     "node-fetch": "^2.6.1",
     "rxjs": "^7.5.7",
     "uuid": "^9.0.0"
   },
-  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http",
+  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@useid/handlersjs-http",
   "lsd:components": "dist/components/components.jsonld",
   "lsd:contexts": {
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/context.jsonld": "dist/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/handlersjs-http/^0.0.0/components/context.jsonld": "dist/components/context.jsonld"
   },
   "lsd:importPaths": {
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/": "dist/components/",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/config/": "config/",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/dist/": "dist/"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/handlersjs-http/^0.0.0/components/": "dist/components/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/handlersjs-http/^0.0.0/config/": "config/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/handlersjs-http/^0.0.0/dist/": "dist/"
   },
   "jest": {
-    "preset": "@digita-ai/jest-config",
+    "preset": "@useid/jest-config",
     "displayName": "http",
     "setupFiles": [
       "<rootDir>/test/setup.ts"

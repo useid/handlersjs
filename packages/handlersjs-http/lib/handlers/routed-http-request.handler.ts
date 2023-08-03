@@ -1,6 +1,6 @@
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { getLogger } from '@digita-ai/handlersjs-logging';
+import { getLogger } from '@useid/handlersjs-logging';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerController } from '../models/http-handler-controller';
@@ -14,7 +14,7 @@ import { HttpHandlerRoute } from '../models/http-handler-route';
  */
 export class RoutedHttpRequestHandler implements HttpHandler {
 
-  private pathToRouteMap: Map<string, { controller: HttpHandlerController; route: HttpHandlerRoute }[]>;
+  private pathToRouteMap: Map<string, { controller: HttpHandlerController; route: HttpHandlerRoute; }[]>;
   public logger = getLogger();
 
   /**
@@ -38,8 +38,8 @@ export class RoutedHttpRequestHandler implements HttpHandler {
         const existing = this.pathToRouteMap.get(route.path);
 
         existing
-          ? this.pathToRouteMap.set(route.path, [ ...existing, { controller, route } ])
-          : this.pathToRouteMap.set(route.path, [ { controller, route } ]);
+          ? this.pathToRouteMap.set(route.path, [...existing, { controller, route }])
+          : this.pathToRouteMap.set(route.path, [{ controller, route }]);
 
       }));
 
@@ -101,7 +101,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
       const parameters = this.extractParameters(matchingRouteWithOperation.route.path.split('/').slice(1), pathSegments);
       this.logger.debug('Extracted parameters from path: ', { parameters });
       const requestWithParams = Object.assign(request, { parameters });
-      const newContext = { ... context, request: requestWithParams, route: matchingRouteWithOperation.route };
+      const newContext = { ...context, request: requestWithParams, route: matchingRouteWithOperation.route };
       const preResponseHandler = matchingRouteWithOperation.controller.preResponseHandler;
 
       return (preResponseHandler
@@ -110,9 +110,9 @@ export class RoutedHttpRequestHandler implements HttpHandler {
       ).pipe(
         switchMap((preresponse) => matchingRouteWithOperation.route.handler.handle(preresponse)),
         map((response) => ({
-          ... response,
+          ...response,
           headers: {
-            ... response.headers,
+            ...response.headers,
             ... (request.method === 'OPTIONS') && { Allow: allowedMethods.join(', ') },
             ... (matchingRouteWithOperation.operation?.vary) && { vary: matchingRouteWithOperation.operation.vary.join(', ') },
           },
@@ -135,9 +135,9 @@ export class RoutedHttpRequestHandler implements HttpHandler {
 
   }
 
-  private extractParameters(routeSegments: string[], pathSegments: string[]): { [key: string]: string } {
+  private extractParameters(routeSegments: string[], pathSegments: string[]): { [key: string]: string; } {
 
-    const parameters: { [key: string]: string } = {};
+    const parameters: { [key: string]: string; } = {};
 
     routeSegments.forEach((segment, i) => {
 

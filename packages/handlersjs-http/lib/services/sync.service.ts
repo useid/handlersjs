@@ -1,6 +1,6 @@
-import { Handler } from '@digita-ai/handlersjs-core';
-import { getLogger } from '@digita-ai/handlersjs-logging';
-import { TimedTypedKeyValueStore } from '@digita-ai/handlersjs-storage';
+import { Handler } from '@useid/handlersjs-core';
+import { getLogger } from '@useid/handlersjs-logging';
+import { TimedTypedKeyValueStore } from '@useid/handlersjs-storage';
 import fetch from 'node-fetch';
 import { from, Observable } from 'rxjs';
 
@@ -54,7 +54,7 @@ export class SyncService<T, S extends string, P extends string, M extends {
     this.logger.debug('Updating time of latest synchronization');
     this.latestSync = new Date();
 
-    const fetchedValues: T[][] = await Promise.all(([ ... peers ]).map(async (host) => {
+    const fetchedValues: T[][] = await Promise.all(([...peers]).map(async (host) => {
 
       try {
 
@@ -73,11 +73,11 @@ export class SyncService<T, S extends string, P extends string, M extends {
 
     }));
 
-    const storedValues = [ ...storage, ...fetchedValues.flat() ];
+    const storedValues = [...storage, ...fetchedValues.flat()];
 
     this.logger.info('Saving values to storage', storedValues);
 
-    await this.store.set(this.storage, [ ... new Set(storedValues) ] as M[S]);
+    await this.store.set(this.storage, [... new Set(storedValues)] as M[S]);
 
   }
 

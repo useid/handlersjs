@@ -1,5 +1,5 @@
 /* eslint-disable no-console -- this is a logger service */
-import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
+import { HandlerArgumentError } from '@useid/handlersjs-core';
 import Pino from 'pino';
 import pretty from 'pino-pretty';
 import { LoggerLevel } from '../models/logger-level';

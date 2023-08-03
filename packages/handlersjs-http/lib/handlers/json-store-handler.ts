@@ -1,7 +1,7 @@
 import { from, Observable, of } from 'rxjs';
-import { TimedTypedKeyValueStore } from '@digita-ai/handlersjs-storage';
+import { TimedTypedKeyValueStore } from '@useid/handlersjs-storage';
 import { map, switchMap } from 'rxjs/operators';
-import { getLogger } from '@digita-ai/handlersjs-logging';
+import { getLogger } from '@useid/handlersjs-logging';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
@@ -28,7 +28,7 @@ export class JsonStoreHandler<T extends string, M extends { [t in T]: unknown }>
    */
   private tryProvideData(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
-    return from(this.store.get(this.data)).pipe(map((data) =>  {
+    return from(this.store.get(this.data)).pipe(map((data) => {
 
       if (data) {
 

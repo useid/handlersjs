@@ -1,4 +1,4 @@
-import { Handler } from '@digita-ai/handlersjs-core';
+import { Handler } from '@useid/handlersjs-core';
 import { lastValueFrom, of } from 'rxjs';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -10,9 +10,9 @@ const getMockedHttpHandler = (): HttpHandler => ({
   handle: jest.fn().mockReturnValue(of({ status: 200, headers: {} })),
 });
 
-const getMockedHttpHandlerAndRoute = (route: string): { handler: HttpHandler; route: HttpHandlerRoute } => {
+const getMockedHttpHandlerAndRoute = (route: string): { handler: HttpHandler; route: HttpHandlerRoute; } => {
 
-  const operations = [ { method: 'GET', publish: true } ];
+  const operations = [{ method: 'GET', publish: true }];
   const handler = getMockedHttpHandler();
 
   return { handler, route: { path: route, operations, handler } };
@@ -30,7 +30,7 @@ describe('RoutedHttpRequestHandler', () => {
   let mockHttpHandler: HttpHandler;
   let preresponseHandler: Handler<HttpHandlerContext, HttpHandlerContext>;
 
-  const vary = [ 'Accept', 'Authorization', 'Origin' ];
+  const vary = ['Accept', 'Authorization', 'Origin'];
 
   beforeEach(() => {
 
@@ -41,33 +41,33 @@ describe('RoutedHttpRequestHandler', () => {
       {
         label: '1',
         preResponseHandler: preresponseHandler,
-        routes: [ {
-          operations: [ {
+        routes: [{
+          operations: [{
             method: 'GET',
             publish: true,
             vary,
           }, {
             method: 'OPTIONS',
             publish: false,
-          } ],
+          }],
           path: '/path1',
           handler: mockHttpHandler,
-        } ],
+        }],
       },
       {
         label: '2',
-        routes: [ {
-          operations: [ {
+        routes: [{
+          operations: [{
             method: 'POST',
             publish: true,
           },
           {
             method: 'PUT',
             publish: true,
-          } ],
+          }],
           path: '/path2',
           handler: mockHttpHandler,
-        } ],
+        }],
       },
     ];
 
@@ -145,14 +145,14 @@ describe('RoutedHttpRequestHandler', () => {
 
     });
 
-    it('should parse url parameters correctly', async() => {
+    it('should parse url parameters correctly', async () => {
 
       const { handler: oneDynamicHandler, route: oneDynamicRoute } = getMockedHttpHandlerAndRoute('/one/:dynamic');
       const { handler: dynamicOneHandler, route: dynamicOneRoute } = getMockedHttpHandlerAndRoute('/:dynamic/one');
       const { handler: neverHandler, route: neverRoute } = getMockedHttpHandlerAndRoute('/never');
 
       routedHttpRequestHandler = new RoutedHttpRequestHandler([
-        { label: 'testRoutes', routes: [ oneDynamicRoute, dynamicOneRoute, neverRoute ] },
+        { label: 'testRoutes', routes: [oneDynamicRoute, dynamicOneRoute, neverRoute] },
       ]);
 
       const pathsAndRoutes = {
@@ -167,7 +167,7 @@ describe('RoutedHttpRequestHandler', () => {
 
       });
 
-      Object.entries(pathsAndRoutes).forEach(([ key, value ]) => {
+      Object.entries(pathsAndRoutes).forEach(([key, value]) => {
 
         expect(value.handle).toHaveBeenCalledTimes(1);
 
@@ -188,7 +188,7 @@ describe('RoutedHttpRequestHandler', () => {
 
     });
 
-    it('should call the right handler depending on the path', async() => {
+    it('should call the right handler depending on the path', async () => {
 
       const { handler: oneHandler, route: oneRoute } = getMockedHttpHandlerAndRoute('/one');
       const { handler: twoHandler, route: twoRoute } = getMockedHttpHandlerAndRoute('/two');
@@ -232,7 +232,7 @@ describe('RoutedHttpRequestHandler', () => {
 
       });
 
-      Object.entries(pathsAndRoutes).forEach(([ key, value ]) => {
+      Object.entries(pathsAndRoutes).forEach(([key, value]) => {
 
         expect(value.handle).toHaveBeenCalledTimes(1);
 
@@ -242,7 +242,7 @@ describe('RoutedHttpRequestHandler', () => {
 
     });
 
-    it('should call the preresponse handler if present', async() => {
+    it('should call the preresponse handler if present', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
         request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
@@ -254,7 +254,7 @@ describe('RoutedHttpRequestHandler', () => {
 
     });
 
-    it('should pass the original context to the handler when the preResponseHandler does nothing', async() => {
+    it('should pass the original context to the handler when the preResponseHandler does nothing', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
         request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },
@@ -275,7 +275,7 @@ describe('RoutedHttpRequestHandler', () => {
 
     });
 
-    it('should add allow headers to the response when request method is OPTIONS', async() => {
+    it('should add allow headers to the response when request method is OPTIONS', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
         request: { url: new URL('/path1', 'http://example.com'), method: 'OPTIONS', headers: {} },
@@ -289,7 +289,7 @@ describe('RoutedHttpRequestHandler', () => {
     it('should call handle of the defaultHandler when no route is matched', async () => {
 
       const defaultHandler: HttpHandler = {
-        handle: jest.fn().mockReturnValueOnce(of({ body: 'defaultHandler mockBody', headers: {}, status:200 })),
+        handle: jest.fn().mockReturnValueOnce(of({ body: 'defaultHandler mockBody', headers: {}, status: 200 })),
       };
 
       const defaultRoutedHttpRequestHandler = new RoutedHttpRequestHandler(handlerControllerList, defaultHandler);
@@ -298,12 +298,12 @@ describe('RoutedHttpRequestHandler', () => {
         request: { url: new URL('/pathWontMatch', 'http://example.com'), method: 'GET', headers: {} },
       };
 
-      await expect(lastValueFrom(defaultRoutedHttpRequestHandler.handle(httpHandlerContext))).resolves.toEqual({ body: 'defaultHandler mockBody', headers: {}, status:200 });
+      await expect(lastValueFrom(defaultRoutedHttpRequestHandler.handle(httpHandlerContext))).resolves.toEqual({ body: 'defaultHandler mockBody', headers: {}, status: 200 });
       expect(defaultHandler.handle).toHaveBeenCalledTimes(1);
 
     });
 
-    it('should not add vary header by default', async() => {
+    it('should not add vary header by default', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
         request: { url: new URL('/path2', 'http://example.com'), method: 'POST', headers: {} },
@@ -314,7 +314,7 @@ describe('RoutedHttpRequestHandler', () => {
 
     });
 
-    it('should add vary header to the response when specified in the matched route', async() => {
+    it('should add vary header to the response when specified in the matched route', async () => {
 
       const httpHandlerContext: HttpHandlerContext = {
         request: { url: new URL('/path1', 'http://example.com'), method: 'GET', headers: {} },

@@ -23,7 +23,7 @@
  */
 
 import { types } from 'util';
-import { getLogger } from '@digita-ai/handlersjs-logging';
+import { getLogger } from '@useid/handlersjs-logging';
 
 /**
  * A class for all errors that could be thrown by Solid.
@@ -54,7 +54,7 @@ export class HttpError extends Error {
 
     this.logger.info(`Checking if ${error} is an instance of ${this.name}`);
 
-    return types.isNativeError(error) && Object.entries(error).find(([ key, val ]) => key === 'statusCode' && typeof val === 'number') !== undefined;
+    return types.isNativeError(error) && Object.entries(error).find(([key, val]) => key === 'statusCode' && typeof val === 'number') !== undefined;
 
   }
 

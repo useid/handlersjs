@@ -1,17 +1,17 @@
 import { lastValueFrom, of } from 'rxjs';
-import { Handler } from '@digita-ai/handlersjs-core';
+import { Handler } from '@useid/handlersjs-core';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpSequenceHandler } from './http-sequence-handler';
 
 describe('HttpSequenceHandler', () => {
 
-  const mockHandler: Handler<void, void> = { handle: (input: void) => of(void(0)) };
+  const mockHandler: Handler<void, void> = { handle: (input: void) => of(void (0)) };
   let httpSequenceHandler: HttpSequenceHandler<HttpHandlerContext>;
   let mockContext: HttpHandlerContext;
 
   beforeEach(async () => {
 
-    httpSequenceHandler = new HttpSequenceHandler([ mockHandler ]);
+    httpSequenceHandler = new HttpSequenceHandler([mockHandler]);
 
     mockContext = {
       request: {
@@ -42,7 +42,7 @@ describe('HttpSequenceHandler', () => {
 
     it('should call the nested handlers handler', async () => {
 
-      mockHandler.handle = jest.fn().mockReturnValue(of(void(0)));
+      mockHandler.handle = jest.fn().mockReturnValue(of(void (0)));
 
       await lastValueFrom(httpSequenceHandler.handle(mockContext));
 

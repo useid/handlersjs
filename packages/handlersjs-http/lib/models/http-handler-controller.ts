@@ -1,4 +1,4 @@
-import { Handler } from '@digita-ai/handlersjs-core';
+import { Handler } from '@useid/handlersjs-core';
 import { HttpHandlerContext } from './http-handler-context';
 import { HttpHandlerRoute } from './http-handler-route';
 

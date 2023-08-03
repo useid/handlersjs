@@ -1,5 +1,5 @@
 import { lastValueFrom } from 'rxjs';
-import { MemoryStore } from '@digita-ai/handlersjs-storage';
+import { MemoryStore } from '@useid/handlersjs-storage';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpMethods } from '../models/http-method';
@@ -12,8 +12,8 @@ describe('JsonStoreHandler', () => {
     anotherstring: number;
   }
 
-  const inputData = [ 'abc', 'defghij', '123' ];
-  const inputData2 = [ ... inputData, '456' ]; // another list of data that may be used to update the store
+  const inputData = ['abc', 'defghij', '123'];
+  const inputData2 = [...inputData, '456']; // another list of data that may be used to update the store
 
   let jsonStoreHandler: JsonStoreHandler<'data', StoreInterface>;
   let memoryStore: MemoryStore<StoreInterface>;
@@ -21,7 +21,7 @@ describe('JsonStoreHandler', () => {
 
   beforeEach(() => {
 
-    memoryStore = new MemoryStore([ [ 'data', inputData ] ]);
+    memoryStore = new MemoryStore([['data', inputData]]);
 
     jsonStoreHandler = new JsonStoreHandler('data', memoryStore);
 
@@ -89,7 +89,7 @@ describe('JsonStoreHandler', () => {
       it('doesn\'t return the data if the data wasn\'t updated', async () => {
 
         const nextHour = new Date();
-        nextHour.setTime(nextHour.getTime() + 60*60*1000);
+        nextHour.setTime(nextHour.getTime() + 60 * 60 * 1000);
 
         requestContext.request.headers['if-modified-since'] = nextHour.toUTCString();
         const response: HttpHandlerResponse = await lastValueFrom(jsonStoreHandler.handle(requestContext));

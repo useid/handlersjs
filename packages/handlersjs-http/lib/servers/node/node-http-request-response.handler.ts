@@ -1,7 +1,7 @@
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { map, switchMap, toArray, catchError } from 'rxjs/operators';
 import { v4 } from 'uuid';
-import { getLogger, makeErrorLoggable } from '@digita-ai/handlersjs-logging';
+import { getLogger, makeErrorLoggable } from '@useid/handlersjs-logging';
 import { BadRequestHttpError } from '../../errors/bad-request-http-error';
 import { HttpHandler } from '../../models/http-handler';
 import { HttpHandlerContext } from '../../models/http-handler-context';
@@ -30,7 +30,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
   constructor(
     private httpHandler: HttpHandler,
     private poweredBy = 'handlers.js',
-    private hsts?: { maxAge: number; includeSubDomains: boolean },
+    private hsts?: { maxAge: number; includeSubDomains: boolean; },
   ) {
 
     if (!httpHandler) {
@@ -44,7 +44,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
   private parseBody(
     body: string,
     contentType?: string,
-  ): string | { [key: string]: string } {
+  ): string | { [key: string]: string; } {
 
     // TODO: parse x-www-form-urlencoded body
     // case 'application/':
@@ -58,7 +58,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
         return JSON.parse(body);
 
-      } catch(error: any) {
+      } catch (error: any) {
 
         throw new BadRequestHttpError(error.message);
 
@@ -205,7 +205,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
         const httpHandlerRequest: HttpHandlerRequest = {
           url: urlObject,
           method,
-          headers: nodeHttpStreams.requestStream.headers as { [key: string]: string },
+          headers: nodeHttpStreams.requestStream.headers as { [key: string]: string; },
           ... (body && body !== '') && { body: this.parseBody(body, nodeHttpStreams.requestStream.headers['content-type']) },
         };
 
@@ -226,7 +226,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
         this.logger.warn(`Unhandled error is handled by Handlersjs :`, { error: makeErrorLoggable(error) });
 
-        return of({ headers: {}, ... error, body: message ?? 'Internal Server Error', status: statusCodes[status] ? status : 500 });
+        return of({ headers: {}, ...error, body: message ?? 'Internal Server Error', status: statusCodes[status] ? status : 500 });
 
       }),
       switchMap((response) => {
@@ -305,7 +305,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
         this.logger.info('Domestic response:', {
           eventType: 'domestic_response',
           response: {
-            ... response,
+            ...response,
             // Set body to string '<Buffer>' if it is a Buffer Object to not pollute logs
             ... (response.body && response.body instanceof Buffer) && { body: '<Buffer>' },
           },

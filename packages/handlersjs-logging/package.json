@@ -1,5 +1,5 @@
 {
-  "name": "@digita-ai/handlersjs-logging",
+  "name": "@useid/handlersjs-logging",
   "version": "0.19.3",
   "description": "",
   "main": "./dist/index.js",
@@ -35,7 +35,7 @@
   "author": "Digita",
   "license": "ISC",
   "devDependencies": {
-    "@digita-ai/typescript-config": "^0.3.2",
+    "@useid/typescript-config": "^0.3.2",
     "@types/jest": "^27.0.2",
     "@types/node": "^18.15.11",
     "componentsjs": "^5.2.0",
@@ -50,23 +50,23 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
-    "@digita-ai/handlersjs-core": "0.19.3",
+    "@useid/handlersjs-core": "0.19.3",
     "pino": "^8.11.0",
     "pino-pretty": "^10.0.0",
     "rxjs": "^7.5.4",
     "winston": "^3.7.2"
   },
-  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-logging",
+  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@useid/handlersjs-logging",
   "lsd:components": "dist/components/components.jsonld",
   "lsd:contexts": {
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-logging/^0.0.0/components/context.jsonld": "dist/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/handlersjs-logging/^0.0.0/components/context.jsonld": "dist/components/context.jsonld"
   },
   "lsd:importPaths": {
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-logging/^0.0.0/components/": "dist/components/",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-logging/^0.0.0/dist/": "dist/"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/handlersjs-logging/^0.0.0/components/": "dist/components/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/handlersjs-logging/^0.0.0/dist/": "dist/"
   },
   "jest": {
-    "preset": "@digita-ai/jest-config",
+    "preset": "@useid/jest-config",
     "displayName": "logging",
     "setupFiles": [
       "<rootDir>/test/setup.ts"

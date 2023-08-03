@@ -1,5 +1,5 @@
 {
-  "name": "@digita-ai/handlersjs-core",
+  "name": "@useid/handlersjs-core",
   "version": "0.19.3",
   "description": "",
   "main": "./dist/index.js",
@@ -37,7 +37,7 @@
   "author": "Wouter Janssens",
   "license": "ISC",
   "devDependencies": {
-    "@digita-ai/typescript-config": "^0.3.2",
+    "@useid/typescript-config": "^0.3.2",
     "@types/clone": "^2.1.1",
     "@types/jest": "^27.0.2",
     "@types/n3": "1.10.0",
@@ -56,18 +56,18 @@
     "clone": "^2.1.2",
     "rxjs": "^7.5.7"
   },
-  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core",
+  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@useid/handlersjs-core",
   "lsd:components": "dist/components/components.jsonld",
   "lsd:contexts": {
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/context.jsonld": "dist/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/handlersjs-core/^0.0.0/components/context.jsonld": "dist/components/context.jsonld"
   },
   "lsd:importPaths": {
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/": "dist/components/",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/config/": "config/",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/dist/": "dist/"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/handlersjs-core/^0.0.0/components/": "dist/components/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/handlersjs-core/^0.0.0/config/": "config/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/handlersjs-core/^0.0.0/dist/": "dist/"
   },
   "jest": {
-    "preset": "@digita-ai/jest-config",
+    "preset": "@useid/jest-config",
     "displayName": "core",
     "coverageThreshold": {
       "global": {

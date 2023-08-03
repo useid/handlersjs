@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { ComponentsManager } from 'componentsjs';
-import { LoggerLevel, PinoLogger, getLogger, setLogger } from '@digita-ai/handlersjs-logging';
+import { LoggerLevel, PinoLogger, getLogger, setLogger } from '@useid/handlersjs-logging';
 import { NodeHttpServer } from './servers/node/node-http-server';
 
 export const launch: (variables: Record<string, any>) => Promise<void> = async (variables: Record<string, any>) => {

@@ -25,10 +25,10 @@
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
-    "@digita-ai/commitlint-config": "^0.3.2",
-    "@digita-ai/eslint-config": "^0.3.2",
-    "@digita-ai/jest-config": "^0.3.2",
-    "@digita-ai/lerna-config": "^0.3.2",
+    "@useid/commitlint-config": "^0.3.2",
+    "@useid/eslint-config": "^0.3.2",
+    "@useid/jest-config": "^0.3.2",
+    "@useid/lerna-config": "^0.3.2",
     "@types/jest": "^27.0.2",
     "@types/node": "^14.14.41",
     "@typescript-eslint/eslint-plugin": "^4.10.0",
@@ -50,12 +50,12 @@
   },
   "commitlint": {
     "extends": [
-      "@digita-ai/commitlint-config"
+      "@useid/commitlint-config"
     ]
   },
   "eslintConfig": {
     "extends": [
-      "@digita-ai/eslint-config"
+      "@useid/eslint-config"
     ]
   },
   "lint-staged": {
