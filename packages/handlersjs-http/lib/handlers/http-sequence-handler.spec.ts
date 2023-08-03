@@ -5,6 +5,7 @@ import { HttpSequenceHandler } from './http-sequence-handler';
 
 describe('HttpSequenceHandler', () => {
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const mockHandler: Handler<void, void> = { handle: (input: void) => of(void (0)) };
   let httpSequenceHandler: HttpSequenceHandler<HttpHandlerContext>;
   let mockContext: HttpHandlerContext;
@@ -46,6 +47,7 @@ describe('HttpSequenceHandler', () => {
 
       await lastValueFrom(httpSequenceHandler.handle(mockContext));
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(mockHandler.handle).toHaveBeenCalledTimes(1);
 
     });

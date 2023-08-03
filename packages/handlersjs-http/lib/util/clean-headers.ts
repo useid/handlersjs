@@ -8,5 +8,7 @@ export const cleanHeaders = (headers: { [key: string]: string }): { [key: string
         ? { ... acc, [lKey.toLowerCase()]: `${acc[lKey]},${headers[key]}` }
         : { ... acc, [lKey]: headers[key] };
 
-    }, {} as { [key: string]: string },
+    },
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    {} as { [key: string]: string },
   );

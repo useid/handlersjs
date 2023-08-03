@@ -21,7 +21,7 @@ export class SyncService<T, S extends string, P extends string, M extends {
     private readonly storage: S,
     private readonly peers: P,
     private readonly store: TimedTypedKeyValueStore<M>,
-    private readonly endpoint?: string
+    private readonly endpoint?: string,
   ) {
 
     if (!storage) { throw new Error('A storage must be provided'); }
@@ -54,7 +54,7 @@ export class SyncService<T, S extends string, P extends string, M extends {
     this.logger.debug('Updating time of latest synchronization');
     this.latestSync = new Date();
 
-    const fetchedValues: T[][] = await Promise.all(([...peers]).map(async (host) => {
+    const fetchedValues: T[][] = await Promise.all(([ ... peers ]).map(async (host) => {
 
       try {
 
@@ -73,11 +73,12 @@ export class SyncService<T, S extends string, P extends string, M extends {
 
     }));
 
-    const storedValues = [...storage, ...fetchedValues.flat()];
+    const storedValues = [ ... storage, ... fetchedValues.flat() ];
 
     this.logger.info('Saving values to storage', storedValues);
 
-    await this.store.set(this.storage, [... new Set(storedValues)] as M[S]);
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    await this.store.set(this.storage, [ ... new Set(storedValues) ] as M[S]);
 
   }
 
