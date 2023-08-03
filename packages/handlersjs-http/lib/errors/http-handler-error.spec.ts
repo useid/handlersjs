@@ -7,6 +7,7 @@ describe('HttpHandlerRoute', () => {
     it('should be instantiated correctly', () => {
 
       const error = new HttpHandlerError('label', undefined, undefined);
+
       expect(error).toBeDefined();
       expect(error).toBeTruthy();
 

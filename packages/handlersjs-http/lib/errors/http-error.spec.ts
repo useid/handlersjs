@@ -38,6 +38,7 @@ describe('An HttpError', (): void => {
   it.each(errors)('%s is valid', (name, statusCode, constructor): void => {
 
     const instance = new constructor('message');
+
     expect(constructor.isInstance(instance)).toBeTruthy();
     expect(instance.statusCode).toBe(statusCode);
     expect(instance.name).toBe(name);

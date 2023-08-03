@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { lastValueFrom, of } from 'rxjs';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -83,11 +84,12 @@ describe('HttpCorsRequestHandler', () => {
 
       it('should set all headers to lower case', async() => {
 
-        const noCorsHeaderContext = { ...context, request: { ...context.request, headers: { ACCEPT: 'text/plain' } } };
+        const noCorsHeaderContext = { ... context, request: { ... context.request, headers: { ACCEPT: 'text/plain' } } };
         await lastValueFrom(service.handle(noCorsHeaderContext));
+
         expect(handler.handle).toHaveBeenCalledTimes(1);
 
-        expect(handler.handle).toHaveBeenCalledWith({ ...context, request: { ...context.request, headers: { accept: 'text/plain' } } });
+        expect(handler.handle).toHaveBeenCalledWith({ ... context, request: { ... context.request, headers: { accept: 'text/plain' } } });
 
       });
 
@@ -95,8 +97,9 @@ describe('HttpCorsRequestHandler', () => {
       it('should return the right headers in the response when no special options were passed to the constructor', async() => {
 
         const response = await lastValueFrom(service.handle(context));
+
         expect(handler.handle).toHaveBeenCalledTimes(1);
-        expect(response).toEqual(expect.objectContaining({ headers: { ...mockResponseHeaders, 'access-control-allow-origin': '*' } }));
+        expect(response).toEqual(expect.objectContaining({ headers: { ... mockResponseHeaders, 'access-control-allow-origin': '*' } }));
 
       });
 
@@ -105,6 +108,7 @@ describe('HttpCorsRequestHandler', () => {
 
         context.request.method = 'OPTIONS';
         const response = await lastValueFrom(service.handle(context));
+
         expect(handler.handle).toHaveBeenCalledTimes(0);
         expect(response.headers).toEqual(expect.objectContaining({ 'access-control-max-age': '-1', 'access-control-allow-origin': '*', 'access-control-allow-methods': 'GET, HEAD, PUT, POST, DELETE, PATCH' }));
         expect(response).toEqual(expect.objectContaining({ status: 204 }));
@@ -127,16 +131,17 @@ describe('HttpCorsRequestHandler', () => {
 
       context.request.method = 'OPTIONS';
       const response = await lastValueFrom(service.handle(context));
+
       expect(handler.handle).toHaveBeenCalledTimes(1);
       expect(response).toEqual(expect.objectContaining({ body: 'handler done', status: 200 }));
 
       expect(response.headers).toEqual(
         expect.objectContaining({
-          ...mockResponseHeaders,
+          ... mockResponseHeaders,
           'access-control-max-age': '-1',
           'access-control-allow-origin': '*',
           'access-control-allow-methods': 'GET, HEAD, PUT, POST, DELETE, PATCH',
-        })
+        }),
       );
 
     });
@@ -154,7 +159,8 @@ describe('HttpCorsRequestHandler', () => {
     it('should return the right headers in the response when no special options were passed to the constructor', async() => {
 
       const response = await lastValueFrom(service.handle(context));
-      expect(response.headers).toEqual(expect.objectContaining({ 'access-control-allow-origin': 'http://test.de', 'vary': 'origin', ...mockResponseHeaders  }));
+
+      expect(response.headers).toEqual(expect.objectContaining({ 'access-control-allow-origin': 'http://test.de', 'vary': 'origin', ... mockResponseHeaders }));
 
     });
 
@@ -162,7 +168,8 @@ describe('HttpCorsRequestHandler', () => {
 
       mockOptions.exposeHeaders = [ 'Content-Encoding', 'X-Kuma-Revision' ];
       const response = await lastValueFrom(service.handle(context));
-      expect(response.headers['access-control-expose-headers']).toEqual('Content-Encoding,X-Kuma-Revision');
+
+      expect(response.headers['access-control-expose-headers']).toBe('Content-Encoding,X-Kuma-Revision');
 
     });
 
@@ -170,7 +177,8 @@ describe('HttpCorsRequestHandler', () => {
 
       context.request.method = 'OPTIONS';
       const response = await lastValueFrom(service.handle(context));
-      expect(response.headers).toEqual(expect.objectContaining({ ...mockResponseHeaders, 'vary': 'origin' }));
+
+      expect(response.headers).toEqual(expect.objectContaining({ ... mockResponseHeaders, 'vary': 'origin' }));
       expect(response).toEqual(expect.objectContaining({ status: 200, body: 'handler done' }));
 
     });
@@ -184,8 +192,9 @@ describe('HttpCorsRequestHandler', () => {
       }, true);
 
       const response = await lastValueFrom(service.handle(context));
-      expect(response.headers).toEqual(expect.objectContaining({ 'access-control-allow-credentials': 'true',  'vary': 'origin', ...mockResponseHeaders }));
-      expect(response).toEqual(expect.objectContaining({ status: 200, body: 'handler done'  }));
+
+      expect(response.headers).toEqual(expect.objectContaining({ 'access-control-allow-credentials': 'true', 'vary': 'origin', ... mockResponseHeaders }));
+      expect(response).toEqual(expect.objectContaining({ status: 200, body: 'handler done' }));
 
     });
 
@@ -196,7 +205,8 @@ describe('HttpCorsRequestHandler', () => {
       context.request.method = 'OPTIONS';
       context.request.headers.origin = 'http://test.be';
       const response = await lastValueFrom(handlerWithOptions.handle(context));
-      expect(response.headers['access-control-allow-origin']).toEqual(undefined);
+
+      expect(response.headers['access-control-allow-origin']).toBeUndefined();
 
     });
 
@@ -208,7 +218,8 @@ describe('HttpCorsRequestHandler', () => {
 
       context.request.method = 'OPTIONS';
       const response = await lastValueFrom(handlerWithOptions.handle(context));
-      expect(response.headers['access-control-allow-origin']).toEqual('http://test.de');
+
+      expect(response.headers['access-control-allow-origin']).toBe('http://test.de');
 
     });
 
@@ -223,7 +234,7 @@ describe('HttpCorsRequestHandler', () => {
       context.request.method = 'OPTIONS';
       const response = await lastValueFrom(service.handle(context));
 
-      expect(response.headers['access-control-allow-headers']).toEqual('X-Custom-Header,Upgrade-Insecure-Requests');
+      expect(response.headers['access-control-allow-headers']).toBe('X-Custom-Header,Upgrade-Insecure-Requests');
 
     });
 
@@ -238,13 +249,13 @@ describe('HttpCorsRequestHandler', () => {
       const response = await lastValueFrom(service.handle(context));
 
       expect(response.headers['access-control-allow-origin']).toEqual(context.request.headers.origin);
-      expect(response.headers.vary).toEqual('accept, origin');
+      expect(response.headers.vary).toBe('accept, origin');
 
       context.request.method = 'OPTIONS';
       const responseOptions = await lastValueFrom(service.handle(context));
 
       expect(responseOptions.headers['access-control-allow-origin']).toEqual(context.request.headers.origin);
-      expect(responseOptions.headers.vary).toEqual('accept, origin');
+      expect(responseOptions.headers.vary).toBe('accept, origin');
 
     });
 

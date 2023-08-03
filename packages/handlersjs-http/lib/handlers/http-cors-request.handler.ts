@@ -36,15 +36,15 @@ export class HttpCorsRequestHandler implements HttpHandler {
       /* eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructuring for removal */
       ['access-control-request-method']: requestedMethod,
       ['access-control-request-headers']: requestedHeaders,
-      ...noCorsHeaders
+      ... noCorsHeaders
     } = cleanRequestHeaders;
 
     const noCorsRequestContext = {
-      ...context,
+      ... context,
       request: {
-        ...context.request,
+        ... context.request,
         headers: {
-          ...noCorsHeaders,
+          ... noCorsHeaders,
         },
       },
     };
@@ -68,7 +68,7 @@ export class HttpCorsRequestHandler implements HttpHandler {
       this.logger.debug('Processing preflight request');
 
       const routeMethods = context.route?.operations.map((op) => op.method);
-      const allMethods = ['GET', 'HEAD', 'PUT', 'POST', 'DELETE', 'PATCH'];
+      const allMethods = [ 'GET', 'HEAD', 'PUT', 'POST', 'DELETE', 'PATCH' ];
 
       const initialOptions = this.passThroughOptions
         ? this.handler.handle(noCorsRequestContext)
@@ -76,16 +76,16 @@ export class HttpCorsRequestHandler implements HttpHandler {
 
       return initialOptions.pipe(
         map((response) => ({
-          ...response,
+          ... response,
           headers: cleanHeaders(response.headers),
         })),
         map((response) => ({
-          ...response,
+          ... response,
           headers: {
 
-            ...response.headers,
-            ...allowOrigin && ({
-              ... (allowOrigin !== '*') && { 'vary': [... new Set([...response.headers.vary?.split(',').map((v) => v.trim().toLowerCase()) ?? [], `origin`])].join(', ') },
+            ... response.headers,
+            ... allowOrigin && ({
+              ... (allowOrigin !== '*') && { 'vary': [ ... new Set([ ... response.headers.vary?.split(',').map((v) => v.trim().toLowerCase()) ?? [], `origin` ]) ].join(', ') },
               'access-control-allow-origin': allowOrigin,
               'access-control-allow-methods': (allowMethods ?? routeMethods ?? allMethods).join(', '),
               ... (allowHeadersOrRequested) && { 'access-control-allow-headers': allowHeadersOrRequested },
@@ -104,12 +104,12 @@ export class HttpCorsRequestHandler implements HttpHandler {
 
       return this.handler.handle(noCorsRequestContext).pipe(
         map((response) => ({
-          ...response,
+          ... response,
           headers: {
-            ...response.headers,
-            ...allowOrigin && ({
+            ... response.headers,
+            ... allowOrigin && ({
               'access-control-allow-origin': allowOrigin,
-              ... (allowOrigin !== '*') && { 'vary': [... new Set([...response.headers.vary?.split(',').map((v) => v.trim().toLowerCase()) ?? [], `origin`])].join(', ') },
+              ... (allowOrigin !== '*') && { 'vary': [ ... new Set([ ... response.headers.vary?.split(',').map((v) => v.trim().toLowerCase()) ?? [], `origin` ]) ].join(', ') },
               ... (credentials) && { 'access-control-allow-credentials': 'true' },
               ... (exposeHeaders) && { 'access-control-expose-headers': exposeHeaders.join(',') },
             }),

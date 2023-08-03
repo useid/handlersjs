@@ -5,7 +5,7 @@ import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 
-export const statusCodes: { [code: number]: string; } = {
+export const statusCodes: { [code: number]: string } = {
   400: 'Bad Request',
   401: 'Unauthorized',
   402: 'Payment Required',
@@ -59,7 +59,7 @@ export class ErrorHandler implements HttpHandler {
    */
   constructor(
     private nestedHandler: HttpHandler,
-    private showUpstreamError: boolean = false
+    private showUpstreamError: boolean = false,
   ) {
 
     if (!nestedHandler) {
@@ -88,7 +88,7 @@ export class ErrorHandler implements HttpHandler {
             : statusCodes[status] ?? statusCodes[500],
         });
 
-      })
+      }),
     );
 
   }

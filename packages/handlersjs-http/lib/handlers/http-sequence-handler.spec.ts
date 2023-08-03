@@ -11,7 +11,7 @@ describe('HttpSequenceHandler', () => {
 
   beforeEach(async () => {
 
-    httpSequenceHandler = new HttpSequenceHandler([mockHandler]);
+    httpSequenceHandler = new HttpSequenceHandler([ mockHandler ]);
 
     mockContext = {
       request: {

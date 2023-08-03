@@ -18,7 +18,7 @@ export class HttpHandlerStaticAssetService implements HttpHandler {
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
-    const possibleAcceptHeaders = [this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*'];
+    const possibleAcceptHeaders = [ this.contentType, `${this.contentType.split('/')[0]}/*`, '*/*' ];
 
     if (!context.request?.headers?.accept) {
 
