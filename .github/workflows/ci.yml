@@ -99,18 +99,26 @@ jobs:
 
       - run: npm run build:all
 
-      - run: npm publish packages/handlersjs-core
+      - run: |
+          cd packages/handlersjs-core
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - run: npm publish packages/handlersjs-http
+      - run: |
+          cd packages/handlersjs-http
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - run: npm publish packages/handlersjs-storage
+      - run: |
+          cd packages/handlersjs-storage
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - run: npm publish packages/handlersjs-logging
+      - run: |
+          cd packages/handlersjs-logging
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
