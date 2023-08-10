@@ -1,6 +1,6 @@
 {
   "name": "@useid/handlersjs-core",
-  "version": "0.20.2",
+  "version": "0.21.0",
   "description": "",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

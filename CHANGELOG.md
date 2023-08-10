@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.21.0](https://github.com/useid/handlersjs/compare/v0.20.2...v0.21.0) (2023-08-10)
+
+
+### **Bug Fixes**
+
+* logging of long bodies, omit content-length when already set ([#242](https://github.com/useid/handlersjs/issues/242)) ([80a0a61](https://github.com/useid/handlersjs/commit/80a0a6154e270d410a9863a2da7812a6e4b32c9c))
+
+
+
 ## [0.20.2](https://github.com/useid/handlersjs/compare/v0.20.1...v0.20.2) (2023-08-04)
 
 **Note:** Version bump only for package root
