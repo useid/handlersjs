@@ -2,7 +2,7 @@ import { readFile } from 'fs/promises';
 import { join, isAbsolute } from 'path';
 import { from, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { getLogger } from '@digita-ai/handlersjs-logging';
+import { getLogger } from '@useid/handlersjs-logging';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerResponse } from '../models/http-handler-response';
@@ -25,7 +25,7 @@ export class HttpHandlerStaticAssetService implements HttpHandler {
       this.logger.info('No accept header found', { headers: context.request.headers });
       this.logger.info('Returning default type', { contentType: this.contentType });
 
-    }else{
+    } else {
 
       const reqHeaders = context.request.headers.accept.split(',').map((accept) => accept.split(';')[0]);
 
@@ -41,7 +41,7 @@ export class HttpHandlerStaticAssetService implements HttpHandler {
 
     const filename = context.request.parameters?.filename;
 
-    if(filename && filename.includes('../')) {
+    if (filename && filename.includes('../')) {
 
       this.logger.info('This type of filename is not supported', { filename });
 

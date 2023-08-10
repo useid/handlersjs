@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.20.2](https://github.com/useid/handlersjs/compare/v0.20.1...v0.20.2) (2023-08-04)
+
+**Note:** Version bump only for package @useid/handlersjs-http
+
+
+
+
+
+## [0.20.1](https://github.com/useid/handlersjs/compare/v0.20.0...v0.20.1) (2023-08-04)
+
+**Note:** Version bump only for package @useid/handlersjs-http
+
+
+
+
+
+## [0.20.0](https://github.com/useid/handlersjs/compare/v0.19.3...v0.20.0) (2023-08-03)
+
+
+### **Bug Fixes**
+
+* correct status on unknown method ([#238](https://github.com/useid/handlersjs/issues/238)) ([e36956b](https://github.com/useid/handlersjs/commit/e36956b1ef69a6ab2f502920fda931e1b58c2574))
+
+
+
 ### [0.19.3](https://github.com/digita-ai/handlersjs/compare/v0.19.2...v0.19.3) (2023-06-01)
 
 **Note:** Version bump only for package @digita-ai/handlersjs-http

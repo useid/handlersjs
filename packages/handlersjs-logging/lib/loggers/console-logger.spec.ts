@@ -41,7 +41,9 @@ describe('ConsoleLogger', () => {
       [ 'fatal', 'error' ],
     ])('LoggerLevel.%s should call console.%s', (level, log) => {
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       logger.log(LoggerLevel[level], testMessage, data);
+
       expect(spy.get(log)).toHaveBeenCalledTimes(1);
       expect(spy.get(log)).toHaveBeenCalledWith(expect.stringContaining(testMessage), {}, data);
 
@@ -63,6 +65,7 @@ describe('ConsoleLogger', () => {
 
       logger = new ConsoleLogger('test-logger', LoggerLevel.trace, LoggerLevel.info);
       logger.log(LoggerLevel.debug, testMessage, data);
+
       expect(spy.get('debug')).toHaveBeenCalledTimes(1);
       expect(spy.get('debug')).toHaveBeenCalledWith(expect.stringContaining(testMessage), {}, '');
 
@@ -71,6 +74,7 @@ describe('ConsoleLogger', () => {
     it('should not log data when data is undefined', () => {
 
       logger.trace(testMessage, undefined);
+
       expect(spy.get('log')).toHaveBeenCalledTimes(1);
       expect(spy.get('log')).toHaveBeenCalledWith(expect.stringContaining(testMessage), {}, '');
 

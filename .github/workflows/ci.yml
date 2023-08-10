@@ -29,21 +29,21 @@ jobs:
 
       - name: Extract tag
         id: extract-tag
-        run: echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
+        run: echo "tag=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
 
       - name: Check tag
         run: echo ${{ steps.extract-tag.outputs.tag }}
 
       - name: Extract branch
         id: extract-branch
-        run: echo "::set-output name=branch::${GITHUB_REF/refs\/heads\//}"
+        run: echo "branch=${GITHUB_REF/refs\/heads\//}" >> $GITHUB_OUTPUT
 
       - name: Check branch
         run: echo ${{ steps.extract-branch.outputs.branch }}
 
       - uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 18
           registry-url: https://npm.pkg.github.com
 
       - name: Install dependencies
@@ -89,7 +89,7 @@ jobs:
       
       - uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 18
           registry-url: https://npm.pkg.github.com/
   
       - name: Install dependencies
@@ -99,18 +99,26 @@ jobs:
 
       - run: npm run build:all
 
-      - run: npm publish packages/handlersjs-core
+      - run: |
+          cd packages/handlersjs-core
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - run: npm publish packages/handlersjs-http
+      - run: |
+          cd packages/handlersjs-http
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - run: npm publish packages/handlersjs-storage
+      - run: |
+          cd packages/handlersjs-storage
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - run: npm publish packages/handlersjs-logging
+      - run: |
+          cd packages/handlersjs-logging
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}

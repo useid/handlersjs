@@ -23,7 +23,7 @@
  */
 
 import { types } from 'util';
-import { getLogger } from '@digita-ai/handlersjs-logging';
+import { getLogger } from '@useid/handlersjs-logging';
 
 /**
  * A class for all errors that could be thrown by Solid.

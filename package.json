@@ -24,38 +24,37 @@
     "version": "npm run release:docs"
   },
   "devDependencies": {
-    "@commitlint/cli": "^11.0.0",
-    "@digita-ai/commitlint-config": "^0.3.2",
-    "@digita-ai/eslint-config": "^0.3.2",
-    "@digita-ai/jest-config": "^0.3.2",
-    "@digita-ai/lerna-config": "^0.3.2",
-    "@types/jest": "^27.0.2",
-    "@types/node": "^14.14.41",
-    "@typescript-eslint/eslint-plugin": "^4.10.0",
+    "@commitlint/cli": "^17.0.2",
+    "@useid/commitlint-config": "^0.8.1",
+    "@useid/eslint-config": "^0.8.1",
+    "@useid/jest-config": "^0.8.1",
+    "@useid/lerna-config": "^0.8.1",
+    "@types/jest": "^29.5.2",
+    "@types/node": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
     "dot-json": "^1.2.1",
-    "eslint": "^7.16.0",
+    "eslint": "^8.10.0",
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsdoc": "^32.2.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "husky": "^5.0.6",
-    "jest": "^27.3.1",
-    "lerna": "^4.0.0",
+    "jest": "^29.5.0",
+    "lerna": "^5.1.2",
     "lint-staged": "^12.0.2",
     "shx": "^0.3.3",
-    "ts-jest": "^27.0.3",
+    "ts-jest": "^29.1.0",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.3",
+    "typescript": "^5.0.4",
     "yaml-cli": "^1.1.8"
   },
   "commitlint": {
     "extends": [
-      "@digita-ai/commitlint-config"
+      "@useid/commitlint-config"
     ]
   },
   "eslintConfig": {
     "extends": [
-      "@digita-ai/eslint-config"
+      "@useid/eslint-config"
     ]
   },
   "lint-staged": {

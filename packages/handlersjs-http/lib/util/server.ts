@@ -1,4 +1,4 @@
-import { Daemon } from '@digita-ai/handlersjs-core';
+import { Daemon } from '@useid/handlersjs-core';
 
 /**
  * A {Daemon} process listening on a given `scheme``://``host``:``port` location
@@ -13,7 +13,7 @@ export abstract class Server extends Daemon {
    * @param {string} host - the host name of the location on which the server will listen
    * @param {number} port - the port number of the location on which the server will listen
    */
-  constructor (protected scheme: string, protected host: string, protected port: number){
+  constructor(protected scheme: string, protected host: string, protected port: number) {
 
     super();
 

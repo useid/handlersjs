@@ -1,11 +1,12 @@
 import { lastValueFrom, of } from 'rxjs';
-import { Handler } from '@digita-ai/handlersjs-core';
+import { Handler } from '@useid/handlersjs-core';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpSequenceHandler } from './http-sequence-handler';
 
 describe('HttpSequenceHandler', () => {
 
-  const mockHandler: Handler<void, void> = { handle: (input: void) => of(void(0)) };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const mockHandler: Handler<void, void> = { handle: (input: void) => of(void (0)) };
   let httpSequenceHandler: HttpSequenceHandler<HttpHandlerContext>;
   let mockContext: HttpHandlerContext;
 
@@ -42,10 +43,11 @@ describe('HttpSequenceHandler', () => {
 
     it('should call the nested handlers handler', async () => {
 
-      mockHandler.handle = jest.fn().mockReturnValue(of(void(0)));
+      mockHandler.handle = jest.fn().mockReturnValue(of(void (0)));
 
       await lastValueFrom(httpSequenceHandler.handle(mockContext));
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(mockHandler.handle).toHaveBeenCalledTimes(1);
 
     });

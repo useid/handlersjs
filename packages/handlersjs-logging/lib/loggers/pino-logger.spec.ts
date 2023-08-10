@@ -52,7 +52,9 @@ describe('PinoLogger', () => {
 
     it.each(levels)('should call logger.%s when passed as LoggerLevel', (level) => {
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       logger.log(LoggerLevel[level], testMessage, data);
+
       expect(Pino()[level]).toHaveBeenCalledTimes(1);
       expect(Pino()[level]).toHaveBeenCalledWith({ variables: {}, data }, expect.stringContaining(testMessage));
 

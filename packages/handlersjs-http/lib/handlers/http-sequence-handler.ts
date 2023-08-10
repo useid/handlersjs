@@ -1,4 +1,4 @@
-import { Handler, SequenceHandler } from '@digita-ai/handlersjs-core';
+import { Handler, SequenceHandler } from '@useid/handlersjs-core';
 import { Observable } from 'rxjs';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';

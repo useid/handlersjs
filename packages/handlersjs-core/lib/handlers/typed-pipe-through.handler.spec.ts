@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { of, lastValueFrom } from 'rxjs';
 import { Handler } from './handler';
 import { TypedPipeThroughHandler } from './typed-pipe-through.handler';
@@ -7,8 +8,8 @@ type HandlerSequenceTwo<A, B, C> = [ Handler<A, B>, Handler<B, C> ];
 
 describe('TypedPipeThroughHandler', () => {
 
-  let pipeThroughOne;
-  let pipeThroughTwo;
+  let pipeThroughOne: TypedPipeThroughHandler<number, number, number, number, number>;
+  let pipeThroughTwo: TypedPipeThroughHandler<number, number, number, number, number>;
 
   const mockHandler: Handler<number, number> = { handle: (input: number) => of(2 * input) };
   const mockHandler2: Handler<number, number> = { handle: (input: number) => of(4 * input) };
@@ -16,7 +17,7 @@ describe('TypedPipeThroughHandler', () => {
   const handlersOne: HandlerSequenceOne<number, number> = [ mockHandler ];
   const handlersTwo: HandlerSequenceTwo<number, number, number> = [ mockHandler, mockHandler2 ];
 
-  beforeEach(async () => {
+  beforeEach(() => {
 
     pipeThroughOne = new TypedPipeThroughHandler(handlersOne);
     pipeThroughTwo = new TypedPipeThroughHandler(handlersTwo);
@@ -36,18 +37,22 @@ describe('TypedPipeThroughHandler', () => {
 
   });
 
-  it('should error when no handlers were provided', async() => {
+  it('should error when no handlers were provided', () => {
 
-    expect(() => new TypedPipeThroughHandler(null)).toThrow('Argument handlers should be set.');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+    expect(() => new TypedPipeThroughHandler(null as unknown as any)).toThrow('Argument handlers should be set.');
 
   });
 
   it('should pass on the input to every next handler', async() => {
 
     let response = await lastValueFrom(pipeThroughOne.handle(5));
-    expect(response).toEqual(10);
+
+    expect(response).toBe(10);
+
     response = await lastValueFrom(pipeThroughTwo.handle(5));
-    expect(response).toEqual(40);
+
+    expect(response).toBe(40);
 
   });
 

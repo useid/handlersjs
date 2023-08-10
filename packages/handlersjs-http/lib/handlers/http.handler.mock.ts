@@ -1,5 +1,5 @@
 import { Observable, of } from 'rxjs';
-import { getLogger } from '@digita-ai/handlersjs-logging';
+import { getLogger } from '@useid/handlersjs-logging';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerResponse } from '../models/http-handler-response';

@@ -1,6 +1,6 @@
 /* eslint-disable no-console -- this is a logger service */
 
-import { HandlerArgumentError } from '@digita-ai/handlersjs-core';
+import { HandlerArgumentError } from '@useid/handlersjs-core';
 import { LoggerLevel } from '../models/logger-level';
 import { Logger } from './logger';
 
@@ -11,6 +11,7 @@ export class ConsoleLogger extends Logger {
 
   log(level: LoggerLevel, message: string, data?: unknown): void {
 
+    // eslint-disable-next-line no-null/no-null
     if (level === null || level === undefined) {
 
       throw new HandlerArgumentError('level should be set', level);
@@ -34,21 +35,21 @@ export class ConsoleLogger extends Logger {
       switch (level) {
 
         case LoggerLevel.info:
-          console.info(...log);
+          console.info(... log);
           break;
         case LoggerLevel.debug:
-          console.debug(...log);
+          console.debug(... log);
           break;
         case LoggerLevel.warn:
-          console.warn(...log);
+          console.warn(... log);
           break;
         case LoggerLevel.error:
         case LoggerLevel.fatal:
-          console.error(...log);
+          console.error(... log);
           break;
         case LoggerLevel.trace:
         default:
-          console.log(...log);
+          console.log(... log);
           break;
 
       }

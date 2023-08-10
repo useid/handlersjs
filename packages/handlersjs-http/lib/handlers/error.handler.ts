@@ -1,6 +1,6 @@
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { getLogger, makeErrorLoggable } from '@digita-ai/handlersjs-logging';
+import { getLogger, makeErrorLoggable } from '@useid/handlersjs-logging';
 import { HttpHandlerResponse } from '../models/http-handler-response';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
@@ -59,7 +59,7 @@ export class ErrorHandler implements HttpHandler {
    */
   constructor(
     private nestedHandler: HttpHandler,
-    private showUpstreamError: boolean = false
+    private showUpstreamError: boolean = false,
   ) {
 
     if (!nestedHandler) {
@@ -70,7 +70,7 @@ export class ErrorHandler implements HttpHandler {
 
   }
 
-  handle(context: HttpHandlerContext): Observable<HttpHandlerResponse>{
+  handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
 
     return this.nestedHandler.handle(context).pipe(
       catchError((error) => {
@@ -88,7 +88,7 @@ export class ErrorHandler implements HttpHandler {
             : statusCodes[status] ?? statusCodes[500],
         });
 
-      })
+      }),
     );
 
   }

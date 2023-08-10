@@ -1,7 +1,7 @@
 {
   "@context": [
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/context.jsonld",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/handlersjs-core/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/handlersjs-http/^0.0.0/components/context.jsonld"
   ],
   "@graph": [
     {
@@ -50,7 +50,9 @@
                   "@id": "urn:handlersjs-http:default:MockRoute2",
                   "@type": "HttpHandlerRoute",
                   "operations": [
-                    { "@id": "urn:handlersjs-http:default:GetOperation" }
+                    {
+                      "@id": "urn:handlersjs-http:default:GetOperation"
+                    }
                   ],
                   "handler": {
                     "@type": "MockHttpHandler"

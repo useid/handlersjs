@@ -1,6 +1,6 @@
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { getLogger } from '@digita-ai/handlersjs-logging';
+import { getLogger } from '@useid/handlersjs-logging';
 import { HttpHandler } from '../models/http-handler';
 import { HttpHandlerContext } from '../models/http-handler-context';
 import { HttpHandlerController } from '../models/http-handler-controller';
@@ -38,7 +38,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
         const existing = this.pathToRouteMap.get(route.path);
 
         existing
-          ? this.pathToRouteMap.set(route.path, [ ...existing, { controller, route } ])
+          ? this.pathToRouteMap.set(route.path, [ ... existing, { controller, route } ])
           : this.pathToRouteMap.set(route.path, [ { controller, route } ]);
 
       }));
@@ -81,7 +81,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
     if (matchingRoutes?.length) {
 
       const matchingRouteWithOperation = matchingRoutes
-        .map((r) => ({ ...r, operation: r.route.operations.find((op) => op.method === request.method) }))
+        .map((r) => ({ ... r, operation: r.route.operations.find((op) => op.method === request.method) }))
         .find((r) => r.operation);
 
       const allowedMethods = matchingRoutes.flatMap((r) => r.route.operations.map((op) => op.method));
@@ -116,7 +116,7 @@ export class RoutedHttpRequestHandler implements HttpHandler {
             ... (request.method === 'OPTIONS') && { Allow: allowedMethods.join(', ') },
             ... (matchingRouteWithOperation.operation?.vary) && { vary: matchingRouteWithOperation.operation.vary.join(', ') },
           },
-        }))
+        })),
       );
 
     } else if (this.defaultHandler) {
