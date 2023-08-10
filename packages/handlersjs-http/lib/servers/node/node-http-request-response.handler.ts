@@ -79,7 +79,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
   ) {
 
     // don't log the body if it is a buffer. It results in a long, illegible log.
-    this.logger.debug('Parsing response body', { body: body instanceof Buffer ? '<Buffer>' : body instanceof String ? body.slice(0, 2000) : body, contentType });
+    this.logger.debug('Parsing response body', { body: body instanceof Buffer ? '<Buffer>' : typeof body === 'string' ? body.slice(0, 2000) : body, contentType });
 
     if (contentType?.startsWith('application/json')) {
 
