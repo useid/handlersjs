@@ -29,7 +29,7 @@ export class MockHttpHandler implements HttpHandler {
 
     const response: HttpHandlerResponse = {
       // body: 'a'.repeat(2000) + ' - not in domestic response log',
-      body: { test: { message: 'does it work ? ' }},
+      body: { test: { message: 'does it work ? ' + context.request.url.toString() } },
       headers: { 'content-length': '10' },
       status: 200,
     };
