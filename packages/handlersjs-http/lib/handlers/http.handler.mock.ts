@@ -29,9 +29,8 @@ export class MockHttpHandler implements HttpHandler {
 
     const response: HttpHandlerResponse = {
       // body: 'a'.repeat(2000) + ' - not in domestic response log',
-      body: Buffer.from(`some mock output (${context.request.url.toString()})`),
-      // headers: { 'content-length': '200' },
-      headers: {},
+      body: { test: { message: 'does it work ? ' }},
+      headers: { 'content-length': '10' },
       status: 200,
     };
 

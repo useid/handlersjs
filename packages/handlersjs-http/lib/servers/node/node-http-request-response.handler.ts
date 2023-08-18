@@ -12,6 +12,7 @@ import { HttpMethods } from '../../models/http-method';
 import { statusCodes } from '../../handlers/error.handler';
 import { NodeHttpStreamsHandler } from './node-http-streams.handler';
 import { NodeHttpStreams } from './node-http-streams.model';
+import { HttpHandlerResponse } from 'models/http-handler-response';
 
 /**
  * A { NodeHttpStreamsHandler } reading the request stream into a { HttpHandlerRequest },
@@ -74,7 +75,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
   }
 
   private parseResponseBody(
-    body: unknown,
+    body: any,
     contentType?: string,
   ) {
 
@@ -241,7 +242,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
       }),
       switchMap((response) => {
 
-        const contentTypeHeader = response.headers['content-type'];
+        const contentTypeHeader = response.headers['content-type'] || response.headers['Content-Type'];
 
         const charsetString = contentTypeHeader ? contentTypeHeader.split(';')
           .filter((part: string[]) => part.includes('charset='))
@@ -267,10 +268,8 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
         }
 
-        // If the body is not a string or a buffer, for example an object, stringify it. This is needed
-        // to use Buffer.byteLength and to eventually write the body to the response.
-        // Functions will result in 'undefined' which is desired behavior
-        const body: string | Buffer = response.body !== undefined && response.body !== null ? typeof response.body === 'string' || response.body instanceof Buffer ? response.body : JSON.stringify(response.body) : undefined;
+        const anyBody: any = this.parseResponseBody(response.body, contentTypeHeader);
+        const body: string | Buffer = typeof anyBody === 'string' || anyBody instanceof Buffer ? anyBody : JSON.stringify(anyBody);
 
         const extraHeaders = {
           ... (body !== undefined && body !== null && !response.headers['content-type'] && !response.headers['Content-Type'] && typeof response.body !== 'string' && !(response.body instanceof Buffer)) && { 'content-type': 'application/json' },
@@ -295,7 +294,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
         });
 
       }),
-      map((response) => {
+      map((response: HttpHandlerResponse<string | Buffer>) => {
 
         this.logger.debug('Sending response');
 
@@ -303,10 +302,7 @@ export class NodeHttpRequestResponseHandler implements NodeHttpStreamsHandler {
 
         if (response.body !== undefined && response.body !== null) {
 
-          const contentTypeHeader = response.headers['content-type'] || response.headers['Content-Type'];
-
-          const body = this.parseResponseBody(response.body, contentTypeHeader);
-          nodeHttpStreams.responseStream.write(body);
+          nodeHttpStreams.responseStream.write(response.body);
 
         }
 
