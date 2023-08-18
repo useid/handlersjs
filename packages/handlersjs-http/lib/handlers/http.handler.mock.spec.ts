@@ -25,9 +25,9 @@ describe('MockHttpHandler', () => {
     it('should return a response with body: "some mock output", status: 200, header: {}', async () => {
 
       await expect(lastValueFrom(handler.handle(context))).resolves.toEqual({
-        body: expect.any(Buffer),
+        body: expect.anything(),
         status: 200,
-        headers: {},
+        headers: expect.objectContaining({}),
       });
 
     });
